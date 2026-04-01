@@ -1,0 +1,21 @@
+{
+  "name": "@paste-to-markdown/web",
+  "version": "0.1.0",
+  "description": "Paste-to-Markdown web application",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@paste-to-markdown/core": "workspace:*",
+    "dompurify": "^3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
+  }
+}

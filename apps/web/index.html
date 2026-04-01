@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paste to Markdown</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>Paste to Markdown</h1>
+        <p class="subtitle">Paste rich text, get clean Markdown.</p>
+      </header>
+
+      <div class="instructions">
+        <p>
+          Copy any rich text (from a webpage, document, or editor) and paste it below
+          (<kbd>Ctrl+V</kbd> or <kbd>⌘V</kbd>).
+        </p>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="source-label">Pasted Content</h2>
+            <button id="clear-btn" class="btn btn-secondary" title="Clear content">Clear</button>
+          </div>
+          <div
+            id="source"
+            class="panel-content source-panel"
+            contenteditable="true"
+            role="textbox"
+            aria-multiline="true"
+            aria-labelledby="source-label"
+            spellcheck="false"
+            data-placeholder="Paste rich text here..."
+          ></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Markdown Output</h2>
+            <button id="copy-btn" class="btn btn-primary" title="Copy markdown">Copy</button>
+          </div>
+          <textarea
+            id="output"
+            class="panel-content output-panel"
+            readonly
+            placeholder="Markdown will appear here..."
+            spellcheck="false"
+          ></textarea>
+        </div>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
