@@ -31,7 +31,7 @@ paste-to-markdown/
     └── core/             # Shared conversion logic (@paste-to-markdown/core)
 ```
 
-## Quick Start
+## Getting Started
 
 The checked-in `.nvmrc` selects Node 24; workspace tooling requires Node 24.15 or newer. With `nvm`, run `nvm use`, then install and start the workspace:
 
@@ -51,7 +51,9 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | `pnpm test` | Run core package tests |
 | `pnpm lint` | Lint TypeScript files |
 | `pnpm typecheck` | Type-check all packages |
-| `pnpm check` | Run type checks, lint, tests, and build |
+| `pnpm format` | Format source and documentation files |
+| `pnpm check` | Run lint, type checks, tests, and build |
+| `pnpm audit:prod` | Audit production dependencies |
 
 ## Packages
 
@@ -62,6 +64,12 @@ The shared runtime-agnostic conversion package provides `convertHtmlToMarkdown(h
 ### `apps/web`
 
 The Vite and TypeScript website consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, display, and copy behavior.
+
+## Architecture Notes
+
+- **`packages/core`** is runtime-agnostic: no DOM or browser UI concerns.
+- **`apps/web`** handles all UI interactions.
+- HTML-to-Markdown conversion uses [Turndown](https://github.com/mixmark-io/turndown) and GitHub Flavored Markdown helpers.
 
 ## Release
 

@@ -20,12 +20,13 @@ The supported Node.js version is defined by `.nvmrc` and the `engines` field in
 
 ```bash
 nvm use
-npm install
-npm run dev
+corepack enable
+pnpm install
+pnpm dev
 ```
 
-Use `npm install` for normal local setup. Use `npm ci` when you need a clean,
-lockfile-driven install in CI or when reproducing issues from a known state.
+Use `pnpm install` for normal local setup. Keep the workspace lockfile in sync
+when dependency changes are intentional.
 
 ## Development Workflow
 
@@ -54,16 +55,14 @@ Examples:
 Before opening a pull request for code changes, run:
 
 ```bash
-npm run typecheck
-npm run lint
-npm run build
-npm run audit:prod
+pnpm check
+pnpm audit:prod
 ```
 
 For docs-only changes, run:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Accessibility
