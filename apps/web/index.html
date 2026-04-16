@@ -21,8 +21,8 @@
 
       <div class="instructions">
         <p>
-          Copy any rich text (from a webpage, document, or editor) and paste it below
-          (<kbd>Ctrl+V</kbd> or <kbd>⌘V</kbd>).
+          Copy any rich text (from a webpage, document, or editor) and paste it
+          below (<kbd>Ctrl+V</kbd> or <kbd>⌘V</kbd>).
         </p>
       </div>
 
@@ -30,7 +30,13 @@
         <div class="panel">
           <div class="panel-header">
             <h2 id="source-label">Pasted Content</h2>
-            <button id="clear-btn" class="btn btn-secondary" title="Clear content">Clear</button>
+            <button
+              id="clear-btn"
+              class="btn btn-secondary"
+              title="Clear content"
+            >
+              Clear
+            </button>
           </div>
           <div
             id="source"
@@ -47,7 +53,9 @@
         <div class="panel">
           <div class="panel-header">
             <h2>Markdown Output</h2>
-            <button id="copy-btn" class="btn btn-primary" title="Copy markdown">Copy</button>
+            <button id="copy-btn" class="btn btn-primary" title="Copy markdown">
+              Copy
+            </button>
           </div>
           <textarea
             id="output"
@@ -55,6 +63,7 @@
             readonly
             placeholder="Markdown will appear here..."
             spellcheck="false"
+            aria-label="Markdown output"
           ></textarea>
         </div>
       </div>
