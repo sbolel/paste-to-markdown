@@ -7,4 +7,3 @@ export interface ConversionOptions {
 export interface ClipboardDataLike {
   getData(type: string): string;
 }
-
