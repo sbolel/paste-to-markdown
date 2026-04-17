@@ -58,11 +58,34 @@ function App() {
 
   const handlePaste = async () => {
     try {
-      const text = await navigator.clipboard.readText()
-      setHtmlInput(text)
-      toast.success('Content pasted successfully')
+      const clipboardItems = await navigator.clipboard.read()
+      let content = ''
+      
+      for (const item of clipboardItems) {
+        if (item.types.includes('text/html')) {
+          const blob = await item.getType('text/html')
+          content = await blob.text()
+          break
+        } else if (item.types.includes('text/plain')) {
+          const blob = await item.getType('text/plain')
+          content = await blob.text()
+        }
+      }
+      
+      if (content) {
+        setHtmlInput(content)
+        toast.success('Content pasted successfully')
+      } else {
+        toast.error('No content found in clipboard')
+      }
     } catch (error) {
-      toast.error('Failed to read clipboard. Please grant permission.')
+      try {
+        const text = await navigator.clipboard.readText()
+        setHtmlInput(text)
+        toast.success('Content pasted successfully')
+      } catch (fallbackError) {
+        toast.error('Failed to read clipboard. Please grant permission.')
+      }
     }
   }
 
