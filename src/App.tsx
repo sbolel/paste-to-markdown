@@ -58,22 +58,9 @@ function App() {
 
   const handlePaste = async () => {
     try {
-      const clipboardItems = await navigator.clipboard.read()
-      let content = ''
-      
-      for (const item of clipboardItems) {
-        if (item.types.includes('text/html')) {
-          const blob = await item.getType('text/html')
-          content = await blob.text()
-          break
-        } else if (item.types.includes('text/plain')) {
-          const blob = await item.getType('text/plain')
-          content = await blob.text()
-        }
-      }
-      
-      if (content) {
-        setHtmlInput(content)
+      const text = await navigator.clipboard.readText()
+      if (text) {
+        setHtmlInput(text)
         toast.success('Content pasted successfully')
       } else {
         toast.error('No content found in clipboard')
