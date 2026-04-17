@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import TurndownService from 'turndown'
 import { gfm } from 'turndown-plugin-gfm'
+import { marked } from 'marked'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { ClipboardText, Copy } from '@phosphor-icons/react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { ClipboardText, Copy, Eye, Code } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 
@@ -20,6 +22,7 @@ turndownService.use(gfm)
 function App() {
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
+  const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
 
   useEffect(() => {
     if (htmlInput.trim()) {
@@ -193,13 +196,33 @@ function App() {
                   </Button>
                 </div>
               </div>
-              <Textarea
-                id="markdown-output"
-                value={markdownOutput}
-                readOnly
-                className="min-h-[600px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
-                style={{ lineHeight: '1.5' }}
-              />
+              <Tabs value={previewMode} onValueChange={(value) => setPreviewMode(value as 'raw' | 'preview')} className="flex-1 flex flex-col">
+                <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+                  <TabsTrigger value="raw" className="gap-2">
+                    <Code size={16} />
+                    Raw Markdown
+                  </TabsTrigger>
+                  <TabsTrigger value="preview" className="gap-2">
+                    <Eye size={16} />
+                    Preview
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="raw" className="flex-1 mt-3">
+                  <Textarea
+                    id="markdown-output"
+                    value={markdownOutput}
+                    readOnly
+                    className="min-h-[600px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
+                    style={{ lineHeight: '1.5' }}
+                  />
+                </TabsContent>
+                <TabsContent value="preview" className="flex-1 mt-3">
+                  <div 
+                    className="min-h-[600px] rounded-md border bg-secondary/50 p-6 prose prose-sm max-w-none overflow-auto"
+                    dangerouslySetInnerHTML={{ __html: marked.parse(markdownOutput) as string }}
+                  />
+                </TabsContent>
+              </Tabs>
             </Card>
           </motion.div>
         )}

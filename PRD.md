@@ -40,6 +40,13 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Progression**: User clicks copy → Markdown copied to clipboard → Success toast notification shown
 - **Success criteria**: Converted Markdown is accurately copied and ready to paste elsewhere
 
+### Preview Toggle
+- **Functionality**: Switch between raw markdown text and rendered preview
+- **Purpose**: Allows users to verify how the markdown will render before copying
+- **Trigger**: User clicks on Raw Markdown or Preview tab
+- **Progression**: User clicks tab → View switches between raw markdown text and formatted HTML preview
+- **Success criteria**: Preview accurately renders the markdown with proper formatting for headings, lists, links, code blocks, tables, and other elements
+
 ## Edge Case Handling
 
 - **Empty Paste**: Show helpful placeholder text encouraging users to paste HTML content
