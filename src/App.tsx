@@ -56,36 +56,15 @@ function App() {
     return () => document.removeEventListener('paste', handleGlobalPaste)
   }, [])
 
-  const handlePaste = async () => {
-    try {
-      const clipboardItems = await navigator.clipboard.read()
-      let content = ''
-      
-      for (const item of clipboardItems) {
-        if (item.types.includes('text/html')) {
-          const blob = await item.getType('text/html')
-          content = await blob.text()
-          break
-        } else if (item.types.includes('text/plain')) {
-          const blob = await item.getType('text/plain')
-          content = await blob.text()
-        }
-      }
-      
-      if (content) {
-        setHtmlInput(content)
-        toast.success('Content pasted successfully')
-      } else {
-        toast.error('No content found in clipboard')
-      }
-    } catch (error) {
-      try {
-        const text = await navigator.clipboard.readText()
-        setHtmlInput(text)
-        toast.success('Content pasted successfully')
-      } catch (fallbackError) {
-        toast.error('Failed to read clipboard. Please grant permission.')
-      }
+  const handlePaste = () => {
+    const textarea = document.getElementById('hidden-paste-area') as HTMLTextAreaElement
+    if (textarea) {
+      textarea.focus()
+      setTimeout(() => {
+        toast.info('Now paste your content (Ctrl+V or ⌘+V)', {
+          duration: 3000
+        })
+      }, 100)
     }
   }
 
@@ -165,6 +144,7 @@ function App() {
               </div>
             </Card>
             <textarea
+              id="hidden-paste-area"
               value={htmlInput}
               onChange={(e) => setHtmlInput(e.target.value)}
               onPaste={handleInputPaste}
