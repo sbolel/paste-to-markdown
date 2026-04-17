@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { ClipboardText, Copy, Eye, Code, Download } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
@@ -23,6 +25,8 @@ function App() {
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false)
+  const [filename, setFilename] = useState('markdown')
 
   useEffect(() => {
     if (htmlInput.trim()) {
@@ -83,15 +87,21 @@ function App() {
   }
 
   const handleDownload = () => {
+    setShowDownloadDialog(true)
+  }
+
+  const confirmDownload = () => {
+    const sanitizedFilename = filename.trim() || 'markdown'
     const blob = new Blob([markdownOutput], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `markdown-${Date.now()}.md`
+    a.download = `${sanitizedFilename}.md`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+    setShowDownloadDialog(false)
     toast.success('Markdown file downloaded')
   }
 
@@ -249,6 +259,52 @@ function App() {
           </motion.div>
         )}
       </div>
+
+      <Dialog open={showDownloadDialog} onOpenChange={setShowDownloadDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Download Markdown File</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="filename">Filename</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="filename"
+                  value={filename}
+                  onChange={(e) => setFilename(e.target.value)}
+                  placeholder="Enter filename"
+                  className="flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      confirmDownload()
+                    }
+                  }}
+                />
+                <span className="flex items-center text-sm text-muted-foreground">.md</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                The file will be saved as "{filename || 'markdown'}.md"
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDownloadDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDownload}
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              <Download size={16} className="mr-2" />
+              Download
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
