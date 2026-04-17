@@ -155,10 +155,10 @@ function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="mx-auto max-w-4xl"
+            className="mx-auto max-w-[1400px]"
           >
-            <Card className="bg-card text-card-foreground gap-6 rounded-xl border flex flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
-              <div className="mb-4 flex items-center justify-between">
+            <Card className="bg-card text-card-foreground gap-3 rounded-xl border flex flex-col p-4 shadow-sm transition-shadow hover:shadow-md">
+              <div className="flex items-center justify-between">
                 <Label 
                   htmlFor="markdown-output" 
                   className="text-sm font-medium uppercase tracking-wider"
@@ -192,7 +192,7 @@ function App() {
                 id="markdown-output"
                 value={markdownOutput}
                 readOnly
-                className="min-h-[500px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
+                className="min-h-[600px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
                 style={{ lineHeight: '1.5' }}
               />
             </Card>
