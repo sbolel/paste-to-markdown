@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ClipboardText, Copy, Eye, Code } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 
@@ -80,6 +80,19 @@ function App() {
     } catch (error) {
       toast.error('Failed to copy to clipboard')
     }
+  }
+
+  const handleDownload = () => {
+    const blob = new Blob([markdownOutput], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `markdown-${Date.now()}.md`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('Markdown file downloaded')
   }
 
   const handleInputPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -185,6 +198,15 @@ function App() {
                     className="gap-2 transition-transform hover:scale-105 active:scale-95"
                   >
                     Clear
+                  </Button>
+                  <Button
+                    onClick={handleDownload}
+                    size="sm"
+                    variant="outline"
+                    className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                  >
+                    <Download size={16} />
+                    Download
                   </Button>
                   <Button
                     onClick={handleCopy}
