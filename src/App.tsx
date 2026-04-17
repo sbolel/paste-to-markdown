@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import TurndownService from 'turndown'
 import { gfm } from 'turndown-plugin-gfm'
 import { marked } from 'marked'
@@ -10,16 +10,64 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ClipboardText, Copy, Eye, Code, Download } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
+import { useKV } from '@github/spark/hooks'
 
-const turndownService = new TurndownService({
-  headingStyle: 'atx',
-  codeBlockStyle: 'fenced',
-  bulletListMarker: '-',
-})
-turndownService.use(gfm)
+type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
+
+const createTurndownService = (flavor: MarkdownFlavor) => {
+  let options: TurndownService.Options = {}
+  
+  switch (flavor) {
+    case 'github':
+      options = {
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced',
+        bulletListMarker: '-',
+        emDelimiter: '_',
+        strongDelimiter: '**',
+      }
+      break
+    case 'commonmark':
+      options = {
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced',
+        bulletListMarker: '-',
+        emDelimiter: '*',
+        strongDelimiter: '**',
+      }
+      break
+    case 'strict':
+      options = {
+        headingStyle: 'atx',
+        codeBlockStyle: 'indented',
+        bulletListMarker: '*',
+        emDelimiter: '*',
+        strongDelimiter: '**',
+      }
+      break
+    case 'custom':
+      options = {
+        headingStyle: 'setext',
+        codeBlockStyle: 'fenced',
+        bulletListMarker: '+',
+        emDelimiter: '_',
+        strongDelimiter: '__',
+      }
+      break
+  }
+  
+  const service = new TurndownService(options)
+  
+  if (flavor === 'github') {
+    service.use(gfm)
+  }
+  
+  return service
+}
 
 function App() {
   const [htmlInput, setHtmlInput] = useState('')
@@ -27,6 +75,20 @@ function App() {
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
+  const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
+
+  const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
+
+  const handleFlavorChange = (value: MarkdownFlavor) => {
+    setMarkdownFlavor(value)
+    const flavorNames: Record<MarkdownFlavor, string> = {
+      github: 'GitHub Flavored Markdown',
+      commonmark: 'CommonMark',
+      strict: 'Strict Markdown',
+      custom: 'Custom Style'
+    }
+    toast.success(`Switched to ${flavorNames[value]}`)
+  }
 
   useEffect(() => {
     if (htmlInput.trim()) {
@@ -39,7 +101,7 @@ function App() {
     } else {
       setMarkdownOutput('')
     }
-  }, [htmlInput])
+  }, [htmlInput, turndownService])
 
   useEffect(() => {
     const handleGlobalPaste = (e: ClipboardEvent) => {
@@ -189,14 +251,27 @@ function App() {
             className="mx-auto max-w-[1400px]"
           >
             <Card className="bg-card text-card-foreground gap-3 rounded-xl border flex flex-col p-4 shadow-sm transition-shadow hover:shadow-md">
-              <div className="flex items-center justify-between">
-                <Label 
-                  htmlFor="markdown-output" 
-                  className="text-sm font-medium uppercase tracking-wider"
-                  style={{ letterSpacing: '0.05em' }}
-                >
-                  Markdown Output
-                </Label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Label 
+                    htmlFor="markdown-output" 
+                    className="text-sm font-medium uppercase tracking-wider"
+                    style={{ letterSpacing: '0.05em' }}
+                  >
+                    Markdown Output
+                  </Label>
+                  <Select value={markdownFlavor || 'github'} onValueChange={(value) => handleFlavorChange(value as MarkdownFlavor)}>
+                    <SelectTrigger className="w-[160px] h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="github">GitHub Flavored</SelectItem>
+                      <SelectItem value="commonmark">CommonMark</SelectItem>
+                      <SelectItem value="strict">Strict Markdown</SelectItem>
+                      <SelectItem value="custom">Custom Style</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex gap-2">
                   <Button
                     onClick={() => {

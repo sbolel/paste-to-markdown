@@ -47,6 +47,13 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Progression**: User clicks tab → View switches between raw markdown text and formatted HTML preview
 - **Success criteria**: Preview accurately renders the markdown with proper formatting for headings, lists, links, code blocks, tables, and other elements
 
+### Markdown Flavor Selection
+- **Functionality**: Choose between different markdown syntax flavors (GitHub, CommonMark, Strict, Custom)
+- **Purpose**: Provides flexibility to match the user's target markdown parser requirements
+- **Trigger**: User selects a flavor from the dropdown in the output section
+- **Progression**: User selects flavor → Conversion engine reconfigures → Markdown regenerates with selected flavor's syntax rules
+- **Success criteria**: Each flavor produces syntactically correct markdown according to its specification (e.g., GFM includes tables and strikethrough, CommonMark is more standardized, Strict uses traditional indented code blocks)
+
 ## Edge Case Handling
 
 - **Empty Paste**: Show helpful placeholder text encouraging users to paste HTML content
