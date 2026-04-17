@@ -157,7 +157,7 @@ function App() {
             transition={{ duration: 0.3 }}
             className="mx-auto max-w-4xl"
           >
-            <Card className="flex flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
+            <Card className="bg-card text-card-foreground gap-6 rounded-xl border flex flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
               <div className="mb-4 flex items-center justify-between">
                 <Label 
                   htmlFor="markdown-output" 
@@ -200,7 +200,7 @@ function App() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export default App
