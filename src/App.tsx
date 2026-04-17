@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { ClipboardText, Copy, ArrowRight } from '@phosphor-icons/react'
+import { ClipboardText, Copy } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 
@@ -20,16 +20,6 @@ turndownService.use(gfm)
 function App() {
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   useEffect(() => {
     if (htmlInput.trim()) {
@@ -88,56 +78,64 @@ function App() {
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2 md:gap-8">
+        {!markdownOutput ? (
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="mx-auto max-w-2xl"
           >
-            <Card className="flex h-full flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
-              <div className="mb-4 flex items-center justify-between">
-                <Label 
-                  htmlFor="html-input" 
-                  className="text-sm font-medium uppercase tracking-wider"
-                  style={{ letterSpacing: '0.05em' }}
-                >
-                  HTML Input
-                </Label>
-                {isMobile && (
-                  <Button
-                    onClick={handlePaste}
-                    size="sm"
-                    variant="outline"
-                    className="gap-2 transition-transform hover:scale-105 active:scale-95"
-                  >
-                    <ClipboardText size={16} />
-                    Paste
-                  </Button>
-                )}
+            <Card className="p-8 shadow-sm md:p-12">
+              <div className="mb-8 flex justify-center">
+                <div className="rounded-full bg-accent/20 p-6">
+                  <ClipboardText size={48} className="text-accent" weight="duotone" />
+                </div>
               </div>
-              <Textarea
-                id="html-input"
-                value={htmlInput}
-                onChange={(e) => setHtmlInput(e.target.value)}
-                onPaste={handleInputPaste}
-                placeholder="Paste your HTML content here (Ctrl/Cmd+V)..."
-                className="min-h-[400px] flex-1 resize-none font-mono text-sm transition-all focus:ring-2 focus:ring-accent"
-                style={{ lineHeight: '1.5' }}
-              />
+              <h2 className="mb-4 text-center text-xl font-bold md:text-2xl">
+                Ready to Convert
+              </h2>
+              <p className="mb-8 text-center text-muted-foreground" style={{ lineHeight: '1.6' }}>
+                Paste your HTML content to get started. The converted Markdown will appear instantly.
+              </p>
+              <div className="flex flex-col gap-4">
+                <Button
+                  onClick={handlePaste}
+                  size="lg"
+                  className="gap-3 bg-accent text-accent-foreground transition-transform hover:bg-accent/90 hover:scale-105 active:scale-95"
+                >
+                  <ClipboardText size={20} weight="bold" />
+                  Paste from Clipboard
+                </Button>
+                <div className="relative">
+                  <Separator className="my-4" />
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground uppercase tracking-wider">
+                    or
+                  </span>
+                </div>
+                <p className="text-center text-sm text-muted-foreground">
+                  Press <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">Ctrl+V</kbd> 
+                  {' '}or{' '}
+                  <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘+V</kbd> anywhere on this page
+                </p>
+              </div>
             </Card>
+            <textarea
+              value={htmlInput}
+              onChange={(e) => setHtmlInput(e.target.value)}
+              onPaste={handleInputPaste}
+              className="sr-only"
+              autoFocus
+              aria-label="HTML input"
+            />
           </motion.div>
-
-          <div className="hidden items-center justify-center md:flex">
-            <ArrowRight size={32} className="text-muted-foreground" weight="bold" />
-          </div>
-
+        ) : (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            className="md:col-start-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mx-auto max-w-4xl"
           >
-            <Card className="flex h-full flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
+            <Card className="flex flex-col p-6 shadow-sm transition-shadow hover:shadow-md">
               <div className="mb-4 flex items-center justify-between">
                 <Label 
                   htmlFor="markdown-output" 
@@ -146,27 +144,38 @@ function App() {
                 >
                   Markdown Output
                 </Label>
-                <Button
-                  onClick={handleCopy}
-                  disabled={!markdownOutput}
-                  size="sm"
-                  className="gap-2 bg-accent text-accent-foreground transition-transform hover:bg-accent/90 hover:scale-105 active:scale-95 disabled:opacity-50"
-                >
-                  <Copy size={16} />
-                  Copy
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      setHtmlInput('')
+                      setMarkdownOutput('')
+                    }}
+                    size="sm"
+                    variant="outline"
+                    className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    onClick={handleCopy}
+                    size="sm"
+                    className="gap-2 bg-accent text-accent-foreground transition-transform hover:bg-accent/90 hover:scale-105 active:scale-95"
+                  >
+                    <Copy size={16} />
+                    Copy
+                  </Button>
+                </div>
               </div>
               <Textarea
                 id="markdown-output"
                 value={markdownOutput}
                 readOnly
-                placeholder="Converted Markdown will appear here..."
-                className="min-h-[400px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
+                className="min-h-[500px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
                 style={{ lineHeight: '1.5' }}
               />
             </Card>
           </motion.div>
-        </div>
+        )}
       </div>
     </div>
   )
