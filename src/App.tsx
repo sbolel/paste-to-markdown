@@ -34,6 +34,28 @@ function App() {
     }
   }, [htmlInput])
 
+  useEffect(() => {
+    const handleGlobalPaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT') {
+        return
+      }
+      
+      const htmlContent = e.clipboardData?.getData('text/html')
+      const plainText = e.clipboardData?.getData('text/plain')
+      const content = htmlContent || plainText
+      
+      if (content) {
+        e.preventDefault()
+        setHtmlInput(content)
+        toast.success('Content pasted successfully')
+      }
+    }
+
+    document.addEventListener('paste', handleGlobalPaste)
+    return () => document.removeEventListener('paste', handleGlobalPaste)
+  }, [])
+
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()
