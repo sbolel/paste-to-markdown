@@ -29,27 +29,9 @@ export function CursorSparkles() {
     if (isMobile) return
 
     const handleResize = () => {
-      const oldWidth = windowDimensionsRef.current.width
-      const oldHeight = windowDimensionsRef.current.height
-      const newWidth = window.innerWidth
-      const newHeight = window.innerHeight
-
-      const scaleX = newWidth / oldWidth
-      const scaleY = newHeight / oldHeight
-
-      setParticles((prev) =>
-        prev.map((particle) => ({
-          ...particle,
-          x: particle.x * scaleX,
-          y: particle.y * scaleY,
-        }))
-      )
-
-      windowDimensionsRef.current = { width: newWidth, height: newHeight }
-      
-      mousePositionRef.current = {
-        x: mousePositionRef.current.x * scaleX,
-        y: mousePositionRef.current.y * scaleY,
+      windowDimensionsRef.current = { 
+        width: window.innerWidth, 
+        height: window.innerHeight 
       }
     }
 
@@ -74,7 +56,10 @@ export function CursorSparkles() {
     const particleTypes: Array<'sparkle' | 'star' | 'dot' | 'cross'> = ['sparkle', 'star', 'dot', 'cross']
 
     const handleMouseMove = (e: MouseEvent) => {
-      mousePositionRef.current = { x: e.clientX, y: e.clientY }
+      const viewportX = e.clientX
+      const viewportY = e.clientY
+      
+      mousePositionRef.current = { x: viewportX, y: viewportY }
 
       const now = Date.now()
       if (now - lastEmitTime.current < 16) return
@@ -91,8 +76,8 @@ export function CursorSparkles() {
 
         newParticles.push({
           id: particleIdRef.current++,
-          x: e.clientX + (Math.random() - 0.5) * spread,
-          y: e.clientY + (Math.random() - 0.5) * spread,
+          x: viewportX + (Math.random() - 0.5) * spread,
+          y: viewportY + (Math.random() - 0.5) * spread,
           size,
           color: colors[Math.floor(Math.random() * colors.length)],
           rotation: Math.random() * 360,
