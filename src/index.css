@@ -145,6 +145,15 @@
   margin-bottom: 1em;
 }
 
+.prose .task-list-item {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
 :root {
   --background: oklch(0.97 0.01 60);
   --foreground: oklch(0.15 0.02 250);

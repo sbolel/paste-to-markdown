@@ -12,13 +12,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download, Info } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
+
+interface MarkdownExtensions {
+  yamlFrontMatter: boolean
+  footnotes: boolean
+  taskLists: boolean
+}
 
 const isMarkdown = (text: string): boolean => {
   const trimmed = text.trim()
@@ -82,6 +89,39 @@ const cleanMarkdownLists = (markdown: string, removeBlankLines: boolean): string
   return result.join('\n')
 }
 
+const detectYAMLFrontMatter = (text: string): boolean => {
+  return /^---\n[\s\S]*?\n---/.test(text.trim())
+}
+
+const detectFootnotes = (text: string): boolean => {
+  return /\[\^[^\]]+\]/.test(text)
+}
+
+const detectTaskLists = (text: string): boolean => {
+  return /^\s*[-*+]\s+\[[ xX]\]\s+/.test(text) || /\n\s*[-*+]\s+\[[ xX]\]\s+/.test(text)
+}
+
+const processMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
+  let processed = markdown
+  
+  if (extensions.taskLists) {
+    processed = processed.replace(/(<li>)\s*\[\s*\]\s*/gi, '$1<input type="checkbox" disabled> ')
+    processed = processed.replace(/(<li>)\s*\[x\]\s*/gi, '$1<input type="checkbox" checked disabled> ')
+  }
+  
+  return processed
+}
+
+const applyMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
+  let result = markdown
+  
+  if (extensions.footnotes) {
+    result = result.replace(/\[(\d+)\]/g, '[^$1]')
+  }
+  
+  return result
+}
+
 const createTurndownService = (flavor: MarkdownFlavor) => {
   let options: TurndownService.Options = {}
   
@@ -141,8 +181,26 @@ function App() {
   const [filename, setFilename] = useState('markdown')
   const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
   const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
+  const [showExtensions, setShowExtensions] = useState(false)
+  const [extensions, setExtensions] = useKV<MarkdownExtensions>('markdown-extensions', {
+    yamlFrontMatter: true,
+    footnotes: true,
+    taskLists: true
+  })
+  const [detectedExtensions, setDetectedExtensions] = useState<MarkdownExtensions>({
+    yamlFrontMatter: false,
+    footnotes: false,
+    taskLists: false
+  })
 
   const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
+
+  useEffect(() => {
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+    })
+  }, [])
 
   const handleFlavorChange = (value: MarkdownFlavor) => {
     setMarkdownFlavor(value)
@@ -159,10 +217,33 @@ function App() {
     if (htmlInput.trim()) {
       try {
         if (isMarkdown(htmlInput)) {
+          const detected = {
+            yamlFrontMatter: detectYAMLFrontMatter(htmlInput),
+            footnotes: detectFootnotes(htmlInput),
+            taskLists: detectTaskLists(htmlInput)
+          }
+          setDetectedExtensions(detected)
+          
           const cleaned = cleanMarkdownLists(htmlInput, removeBlankLines ?? true)
           setMarkdownOutput(cleaned)
-          toast.success('Markdown detected and validated')
+          
+          const extensionNames = []
+          if (detected.yamlFrontMatter) extensionNames.push('YAML front matter')
+          if (detected.footnotes) extensionNames.push('footnotes')
+          if (detected.taskLists) extensionNames.push('task lists')
+          
+          if (extensionNames.length > 0) {
+            toast.success(`Markdown detected with ${extensionNames.join(', ')}`)
+          } else {
+            toast.success('Markdown detected and validated')
+          }
         } else {
+          setDetectedExtensions({
+            yamlFrontMatter: false,
+            footnotes: false,
+            taskLists: false
+          })
+          
           const markdown = turndownService.turndown(htmlInput)
           const cleaned = cleanMarkdownLists(markdown, removeBlankLines ?? true)
           setMarkdownOutput(cleaned)
@@ -172,6 +253,11 @@ function App() {
       }
     } else {
       setMarkdownOutput('')
+      setDetectedExtensions({
+        yamlFrontMatter: false,
+        footnotes: false,
+        taskLists: false
+      })
     }
   }, [htmlInput, turndownService, removeBlankLines])
 
@@ -398,6 +484,65 @@ function App() {
                   </Button>
                 </div>
               </div>
+              
+              {(detectedExtensions.yamlFrontMatter || detectedExtensions.footnotes || detectedExtensions.taskLists) && (
+                <Collapsible open={showExtensions} onOpenChange={setShowExtensions}>
+                  <CollapsibleTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+                    >
+                      <Sparkle size={16} weight="fill" className="text-accent" />
+                      <span className="text-xs">
+                        {showExtensions ? 'Hide' : 'Show'} Markdown Extensions Detected
+                      </span>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pt-3">
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                      <p className="text-xs text-muted-foreground mb-3">
+                        The following markdown syntax extensions were detected in your content:
+                      </p>
+                      <div className="space-y-2">
+                        {detectedExtensions.yamlFrontMatter && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">YAML Front Matter</p>
+                              <p className="text-muted-foreground">Metadata block at the beginning of the document</p>
+                            </div>
+                          </div>
+                        )}
+                        {detectedExtensions.footnotes && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Footnotes</p>
+                              <p className="text-muted-foreground">Reference-style footnotes with [^1] syntax</p>
+                            </div>
+                          </div>
+                        )}
+                        {detectedExtensions.taskLists && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Task Lists</p>
+                              <p className="text-muted-foreground">Checkboxes with - [ ] and - [x] syntax</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
               <Tabs value={previewMode} onValueChange={(value) => setPreviewMode(value as 'raw' | 'preview')} className="flex-1 flex flex-col">
                 <TabsList className="grid w-full max-w-[400px] grid-cols-2">
                   <TabsTrigger value="raw" className="gap-2">
