@@ -50,6 +50,32 @@ const isMarkdown = (text: string): boolean => {
   return indicatorCount >= 2 && !hasHtmlTags
 }
 
+const cleanMarkdownLists = (markdown: string): string => {
+  const lines = markdown.split('\n')
+  const result: string[] = []
+  let i = 0
+  
+  while (i < lines.length) {
+    const currentLine = lines[i]
+    const nextLine = i + 1 < lines.length ? lines[i + 1] : null
+    const lineAfterNext = i + 2 < lines.length ? lines[i + 2] : null
+    
+    const isListItem = /^\s*[-*+]\s+/.test(currentLine) || /^\s*\d+\.\s+/.test(currentLine)
+    const nextIsEmpty = nextLine !== null && nextLine.trim() === ''
+    const lineAfterNextIsListItem = lineAfterNext !== null && (/^\s*[-*+]\s+/.test(lineAfterNext) || /^\s*\d+\.\s+/.test(lineAfterNext))
+    
+    result.push(currentLine)
+    
+    if (isListItem && nextIsEmpty && lineAfterNextIsListItem) {
+      i += 2
+    } else {
+      i++
+    }
+  }
+  
+  return result.join('\n')
+}
+
 const createTurndownService = (flavor: MarkdownFlavor) => {
   let options: TurndownService.Options = {}
   
@@ -126,11 +152,13 @@ function App() {
     if (htmlInput.trim()) {
       try {
         if (isMarkdown(htmlInput)) {
-          setMarkdownOutput(htmlInput)
+          const cleaned = cleanMarkdownLists(htmlInput)
+          setMarkdownOutput(cleaned)
           toast.success('Markdown detected and validated')
         } else {
           const markdown = turndownService.turndown(htmlInput)
-          setMarkdownOutput(markdown)
+          const cleaned = cleanMarkdownLists(markdown)
+          setMarkdownOutput(cleaned)
         }
       } catch (error) {
         setMarkdownOutput('Error converting HTML to Markdown')
