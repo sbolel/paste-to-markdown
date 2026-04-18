@@ -18,6 +18,38 @@ import { useKV } from '@github/spark/hooks'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
 
+const isMarkdown = (text: string): boolean => {
+  const trimmed = text.trim()
+  if (!trimmed) return false
+  
+  const markdownIndicators = [
+    /^#{1,6}\s+/m,
+    /\*\*[^*]+\*\*/,
+    /\*[^*]+\*/,
+    /^\s*[-*+]\s+/m,
+    /^\s*\d+\.\s+/m,
+    /\[.+\]\(.+\)/,
+    /^>\s+/m,
+    /^```/m,
+    /`[^`]+`/,
+    /^\s*\|.+\|/m,
+    /__[^_]+__/,
+    /_{1}[^_]+_{1}/,
+    /~~[^~]+~~/,
+  ]
+  
+  let indicatorCount = 0
+  for (const pattern of markdownIndicators) {
+    if (pattern.test(trimmed)) {
+      indicatorCount++
+    }
+  }
+  
+  const hasHtmlTags = /<[^>]+>/.test(trimmed)
+  
+  return indicatorCount >= 2 && !hasHtmlTags
+}
+
 const createTurndownService = (flavor: MarkdownFlavor) => {
   let options: TurndownService.Options = {}
   
@@ -93,8 +125,13 @@ function App() {
   useEffect(() => {
     if (htmlInput.trim()) {
       try {
-        const markdown = turndownService.turndown(htmlInput)
-        setMarkdownOutput(markdown)
+        if (isMarkdown(htmlInput)) {
+          setMarkdownOutput(htmlInput)
+          toast.success('Markdown detected and validated')
+        } else {
+          const markdown = turndownService.turndown(htmlInput)
+          setMarkdownOutput(markdown)
+        }
       } catch (error) {
         setMarkdownOutput('Error converting HTML to Markdown')
       }

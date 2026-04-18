@@ -13,11 +13,11 @@ This is a focused utility that does one thing exceptionally well - converting HT
 ## Essential Features
 
 ### HTML to Markdown Conversion
-- **Functionality**: Accepts HTML input and converts it to valid Markdown syntax
-- **Purpose**: Enables users to quickly transform rich HTML content into portable Markdown format
-- **Trigger**: User pastes HTML content (Ctrl/Cmd+V or mobile paste button)
-- **Progression**: User pastes HTML → Conversion happens instantly → Validated Markdown appears in output area → User can copy result
-- **Success criteria**: All common HTML elements (headings, lists, links, bold, italic, code blocks, tables) convert accurately to Markdown
+- **Functionality**: Accepts HTML input and converts it to valid Markdown syntax, or detects and validates existing Markdown content
+- **Purpose**: Enables users to quickly transform rich HTML content into portable Markdown format, or validate already-formatted Markdown
+- **Trigger**: User pastes HTML content or Markdown (Ctrl/Cmd+V or mobile paste button)
+- **Progression**: User pastes content → System detects if already Markdown → If Markdown, validates and displays as-is → If HTML, converts to Markdown instantly → Validated Markdown appears in output area → User can copy result
+- **Success criteria**: All common HTML elements (headings, lists, links, bold, italic, code blocks, tables) convert accurately to Markdown; already-formatted Markdown is detected and preserved without re-conversion
 
 ### Mobile Paste Support
 - **Functionality**: Explicit "Paste" button that programmatically triggers paste operation
@@ -56,9 +56,10 @@ This is a focused utility that does one thing exceptionally well - converting HT
 
 ## Edge Case Handling
 
-- **Empty Paste**: Show helpful placeholder text encouraging users to paste HTML content
+- **Empty Paste**: Show helpful placeholder text encouraging users to paste HTML content or Markdown
 - **Invalid HTML**: Gracefully handle malformed HTML by converting what's parseable and stripping invalid elements
 - **Plain Text Paste**: Accept plain text input and pass it through without modification
+- **Markdown Paste**: Detect content that's already in Markdown format and validate it instead of re-converting
 - **Large Content**: Handle large HTML documents without UI freezing or performance degradation
 - **Permission Denied**: Show clear message if user denies clipboard permission on mobile
 - **Unsupported Elements**: Strip or convert unsupported HTML elements to closest Markdown equivalent
