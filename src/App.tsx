@@ -9,10 +9,11 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
@@ -629,6 +630,264 @@ function App() {
                   </Tooltip>
                 </div>
                 <div className="flex gap-2">
+                  <Sheet>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SheetTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                          >
+                            <BookOpen size={16} />
+                          </Button>
+                        </SheetTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">Markdown cheatsheet</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
+                      <SheetHeader className="mb-6">
+                        <SheetTitle className="flex items-center gap-2 text-2xl">
+                          <BookOpen size={28} weight="duotone" className="text-accent" />
+                          Markdown Cheatsheet
+                        </SheetTitle>
+                      </SheetHeader>
+                      <div className="space-y-6">
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Headings</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-muted-foreground mb-1">Syntax</p>
+                                <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                  # Heading 1<br/>
+                                  ## Heading 2<br/>
+                                  ### Heading 3<br/>
+                                  #### Heading 4
+                                </code>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground mb-1">Result</p>
+                                <div className="bg-secondary/50 p-3 rounded">
+                                  <h1 className="text-2xl font-bold">Heading 1</h1>
+                                  <h2 className="text-xl font-bold">Heading 2</h2>
+                                  <h3 className="text-lg font-bold">Heading 3</h3>
+                                  <h4 className="text-base font-bold">Heading 4</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Emphasis</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <code className="block bg-muted p-3 rounded font-mono text-xs whitespace-pre-wrap">
+                                  *italic* or _italic_<br/>
+                                  **bold** or __bold__<br/>
+                                  ***bold italic***<br/>
+                                  ~~strikethrough~~
+                                </code>
+                              </div>
+                              <div>
+                                <div className="bg-secondary/50 p-3 rounded space-y-1">
+                                  <p><em>italic</em></p>
+                                  <p><strong>bold</strong></p>
+                                  <p><strong><em>bold italic</em></strong></p>
+                                  <p><s>strikethrough</s></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Lists</h3>
+                          <div className="space-y-4 text-sm">
+                            <div>
+                              <p className="text-muted-foreground mb-2">Unordered Lists</p>
+                              <div className="grid grid-cols-2 gap-4">
+                                <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                  - Item 1<br/>
+                                  - Item 2<br/>
+                                  {"  "}- Nested item<br/>
+                                  - Item 3
+                                </code>
+                                <div className="bg-secondary/50 p-3 rounded">
+                                  <ul className="list-disc list-inside space-y-1">
+                                    <li>Item 1</li>
+                                    <li>Item 2
+                                      <ul className="list-circle list-inside ml-4">
+                                        <li>Nested item</li>
+                                      </ul>
+                                    </li>
+                                    <li>Item 3</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground mb-2">Ordered Lists</p>
+                              <div className="grid grid-cols-2 gap-4">
+                                <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                  1. First item<br/>
+                                  2. Second item<br/>
+                                  3. Third item
+                                </code>
+                                <div className="bg-secondary/50 p-3 rounded">
+                                  <ol className="list-decimal list-inside space-y-1">
+                                    <li>First item</li>
+                                    <li>Second item</li>
+                                    <li>Third item</li>
+                                  </ol>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground mb-2">Task Lists</p>
+                              <div className="grid grid-cols-2 gap-4">
+                                <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                  - [ ] Unchecked<br/>
+                                  - [x] Checked
+                                </code>
+                                <div className="bg-secondary/50 p-3 rounded">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                      <input type="checkbox" disabled />
+                                      <span>Unchecked</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <input type="checkbox" checked disabled />
+                                      <span>Checked</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Links & Images</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                              <code className="block bg-muted p-3 rounded font-mono text-xs whitespace-pre-wrap">
+                                [Link text](url)<br/>
+                                ![Alt text](image.jpg)
+                              </code>
+                              <div className="bg-secondary/50 p-3 rounded space-y-2">
+                                <a href="#" className="text-accent underline">Link text</a>
+                                <p className="text-muted-foreground text-xs">Image would render here</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Code</h3>
+                          <div className="space-y-4 text-sm">
+                            <div>
+                              <p className="text-muted-foreground mb-2">Inline Code</p>
+                              <div className="grid grid-cols-2 gap-4">
+                                <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                  Use `code` in text
+                                </code>
+                                <div className="bg-secondary/50 p-3 rounded">
+                                  Use <code className="bg-muted px-1 py-0.5 rounded text-xs">code</code> in text
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground mb-2">Code Block</p>
+                              <code className="block bg-muted p-3 rounded font-mono text-xs whitespace-pre">
+                                ```javascript<br/>
+                                function hello() {"{"}<br/>
+                                {"  "}console.log("Hi");<br/>
+                                {"}"}<br/>
+                                ```
+                              </code>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Blockquotes</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                              <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                {"> Quote text"}<br/>
+                                {"> More quote"}
+                              </code>
+                              <div className="bg-secondary/50 p-3 rounded">
+                                <blockquote className="border-l-4 border-accent pl-3 italic text-muted-foreground">
+                                  Quote text<br/>
+                                  More quote
+                                </blockquote>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Tables</h3>
+                          <div className="space-y-2 text-sm">
+                            <code className="block bg-muted p-3 rounded font-mono text-xs whitespace-pre">
+                              | Header 1 | Header 2 |<br/>
+                              | -------- | -------- |<br/>
+                              | Cell 1   | Cell 2   |<br/>
+                              | Cell 3   | Cell 4   |
+                            </code>
+                            <div className="bg-secondary/50 p-3 rounded overflow-x-auto">
+                              <table className="w-full border-collapse text-xs">
+                                <thead>
+                                  <tr className="bg-muted">
+                                    <th className="border border-border p-2 text-left">Header 1</th>
+                                    <th className="border border-border p-2 text-left">Header 2</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td className="border border-border p-2">Cell 1</td>
+                                    <td className="border border-border p-2">Cell 2</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="border border-border p-2">Cell 3</td>
+                                    <td className="border border-border p-2">Cell 4</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold border-b pb-2">Horizontal Rule</h3>
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                              <code className="block bg-muted p-3 rounded font-mono text-xs">
+                                ---<br/>
+                                or<br/>
+                                ***
+                              </code>
+                              <div className="bg-secondary/50 p-3 rounded">
+                                <hr className="border-t border-border" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="rounded-lg bg-accent/10 border border-accent/30 p-4">
+                          <p className="text-sm text-accent-foreground">
+                            <strong>Tip:</strong> Use keyboard shortcuts (Cmd/Ctrl + ?) to quickly format selected text in the markdown output area.
+                          </p>
+                        </div>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -782,7 +1041,7 @@ function App() {
                     ref={textareaRef}
                     id="markdown-output"
                     value={markdownOutput}
-                    id="markdown-output"
+                    onChange={(e) => setMarkdownOutput(e.target.value)}
                     className="min-h-[600px] rounded-md border bg-secondary/50 p-6 overflow-auto font-mono text-sm resize-none"
                     placeholder="Your markdown will appear here..."
                   />

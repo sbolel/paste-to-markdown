@@ -61,6 +61,13 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Progression**: Content analyzed → Extensions detected → Collapsible panel displays detected extensions with explanations
 - **Success criteria**: Correctly identifies YAML front matter (--- delimited blocks), footnotes ([^1] syntax), task lists (- [ ] and - [x] syntax), tables (pipe-delimited with header separators), strikethrough (~~text~~ syntax), and definition lists (term\n: definition syntax); displays clear explanations for each detected extension
 
+### Markdown Cheatsheet Reference Panel
+- **Functionality**: Side sheet panel that displays a comprehensive markdown syntax reference with examples
+- **Purpose**: Provides quick access to markdown syntax guide without leaving the application
+- **Trigger**: User clicks the cheatsheet button (book icon) in the toolbar
+- **Progression**: User clicks button → Sheet slides in from right → Reference guide displays with syntax and rendered examples → User can scroll through sections → User closes sheet when done
+- **Success criteria**: Shows all common markdown syntax (headings, emphasis, lists, links, images, code, blockquotes, tables, horizontal rules) with both syntax examples and visual previews; organized into clear sections; easily dismissible
+
 ## Edge Case Handling
 
 - **Empty Paste**: Show helpful placeholder text encouraging users to paste HTML content or Markdown
