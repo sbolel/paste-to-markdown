@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { MarkdownHighlighter } from '@/components/MarkdownHighlighter'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
 
@@ -621,13 +622,9 @@ function App() {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="raw" className="flex-1 mt-3">
-                  <Textarea
-                    id="markdown-output"
-                    value={markdownOutput}
-                    readOnly
-                    className="min-h-[600px] flex-1 resize-none bg-secondary/50 font-mono text-sm"
-                    style={{ lineHeight: '1.5' }}
-                  />
+                  <div className="min-h-[600px] rounded-md border bg-secondary/50 p-6 overflow-auto">
+                    <MarkdownHighlighter markdown={markdownOutput} />
+                  </div>
                 </TabsContent>
                 <TabsContent value="preview" className="flex-1 mt-3">
                   <div 
