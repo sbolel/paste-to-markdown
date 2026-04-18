@@ -55,11 +55,11 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Success criteria**: Each flavor produces syntactically correct markdown according to its specification (e.g., GFM includes tables and strikethrough, CommonMark is more standardized, Strict uses traditional indented code blocks)
 
 ### Markdown Extensions Detection
-- **Functionality**: Automatically detect and display markdown syntax extensions (YAML front matter, footnotes, task lists)
+- **Functionality**: Automatically detect and display markdown syntax extensions (YAML front matter, footnotes, task lists, tables, strikethrough, definition lists)
 - **Purpose**: Inform users when their markdown contains extended syntax that may require special parser support
 - **Trigger**: Content is pasted or converted
 - **Progression**: Content analyzed → Extensions detected → Collapsible panel displays detected extensions with explanations
-- **Success criteria**: Correctly identifies YAML front matter (--- delimited blocks), footnotes ([^1] syntax), and task lists (- [ ] and - [x] syntax); displays clear explanations for each detected extension
+- **Success criteria**: Correctly identifies YAML front matter (--- delimited blocks), footnotes ([^1] syntax), task lists (- [ ] and - [x] syntax), tables (pipe-delimited with header separators), strikethrough (~~text~~ syntax), and definition lists (term\n: definition syntax); displays clear explanations for each detected extension
 
 ## Edge Case Handling
 
@@ -67,7 +67,7 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Invalid HTML**: Gracefully handle malformed HTML by converting what's parseable and stripping invalid elements
 - **Plain Text Paste**: Accept plain text input and pass it through without modification
 - **Markdown Paste**: Detect content that's already in Markdown format and validate it instead of re-converting
-- **Markdown with Extensions**: Detect and inform users about extended markdown syntax (YAML front matter, footnotes, task lists) that may require specific parser support
+- **Markdown with Extensions**: Detect and inform users about extended markdown syntax (YAML front matter, footnotes, task lists, tables, strikethrough, definition lists) that may require specific parser support
 - **Large Content**: Handle large HTML documents without UI freezing or performance degradation
 - **Permission Denied**: Show clear message if user denies clipboard permission on mobile
 - **Unsupported Elements**: Strip or convert unsupported HTML elements to closest Markdown equivalent

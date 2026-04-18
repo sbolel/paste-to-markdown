@@ -25,6 +25,9 @@ interface MarkdownExtensions {
   yamlFrontMatter: boolean
   footnotes: boolean
   taskLists: boolean
+  tables: boolean
+  strikethrough: boolean
+  definitionLists: boolean
 }
 
 const isMarkdown = (text: string): boolean => {
@@ -99,6 +102,18 @@ const detectFootnotes = (text: string): boolean => {
 
 const detectTaskLists = (text: string): boolean => {
   return /^\s*[-*+]\s+\[[ xX]\]\s+/.test(text) || /\n\s*[-*+]\s+\[[ xX]\]\s+/.test(text)
+}
+
+const detectTables = (text: string): boolean => {
+  return /^\s*\|.+\|.+\|?\s*$/m.test(text) && /^\s*\|?\s*[-:]+\s*\|/.test(text)
+}
+
+const detectStrikethrough = (text: string): boolean => {
+  return /~~[^~]+~~/.test(text)
+}
+
+const detectDefinitionLists = (text: string): boolean => {
+  return /^.+\n:\s+.+$/m.test(text) || /^<dt>[\s\S]*?<\/dt>\s*<dd>[\s\S]*?<\/dd>/m.test(text)
 }
 
 const processMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
@@ -185,12 +200,18 @@ function App() {
   const [extensions, setExtensions] = useKV<MarkdownExtensions>('markdown-extensions', {
     yamlFrontMatter: true,
     footnotes: true,
-    taskLists: true
+    taskLists: true,
+    tables: true,
+    strikethrough: true,
+    definitionLists: true
   })
   const [detectedExtensions, setDetectedExtensions] = useState<MarkdownExtensions>({
     yamlFrontMatter: false,
     footnotes: false,
-    taskLists: false
+    taskLists: false,
+    tables: false,
+    strikethrough: false,
+    definitionLists: false
   })
 
   const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
@@ -220,7 +241,10 @@ function App() {
           const detected = {
             yamlFrontMatter: detectYAMLFrontMatter(htmlInput),
             footnotes: detectFootnotes(htmlInput),
-            taskLists: detectTaskLists(htmlInput)
+            taskLists: detectTaskLists(htmlInput),
+            tables: detectTables(htmlInput),
+            strikethrough: detectStrikethrough(htmlInput),
+            definitionLists: detectDefinitionLists(htmlInput)
           }
           setDetectedExtensions(detected)
           
@@ -231,6 +255,9 @@ function App() {
           if (detected.yamlFrontMatter) extensionNames.push('YAML front matter')
           if (detected.footnotes) extensionNames.push('footnotes')
           if (detected.taskLists) extensionNames.push('task lists')
+          if (detected.tables) extensionNames.push('tables')
+          if (detected.strikethrough) extensionNames.push('strikethrough')
+          if (detected.definitionLists) extensionNames.push('definition lists')
           
           if (extensionNames.length > 0) {
             toast.success(`Markdown detected with ${extensionNames.join(', ')}`)
@@ -241,7 +268,10 @@ function App() {
           setDetectedExtensions({
             yamlFrontMatter: false,
             footnotes: false,
-            taskLists: false
+            taskLists: false,
+            tables: false,
+            strikethrough: false,
+            definitionLists: false
           })
           
           const markdown = turndownService.turndown(htmlInput)
@@ -256,7 +286,10 @@ function App() {
       setDetectedExtensions({
         yamlFrontMatter: false,
         footnotes: false,
-        taskLists: false
+        taskLists: false,
+        tables: false,
+        strikethrough: false,
+        definitionLists: false
       })
     }
   }, [htmlInput, turndownService, removeBlankLines])
@@ -485,7 +518,7 @@ function App() {
                 </div>
               </div>
               
-              {(detectedExtensions.yamlFrontMatter || detectedExtensions.footnotes || detectedExtensions.taskLists) && (
+              {(detectedExtensions.yamlFrontMatter || detectedExtensions.footnotes || detectedExtensions.taskLists || detectedExtensions.tables || detectedExtensions.strikethrough || detectedExtensions.definitionLists) && (
                 <Collapsible open={showExtensions} onOpenChange={setShowExtensions}>
                   <CollapsibleTrigger asChild>
                     <Button 
@@ -535,6 +568,39 @@ function App() {
                             <div>
                               <p className="font-medium">Task Lists</p>
                               <p className="text-muted-foreground">Checkboxes with - [ ] and - [x] syntax</p>
+                            </div>
+                          </div>
+                        )}
+                        {detectedExtensions.tables && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Tables</p>
+                              <p className="text-muted-foreground">Pipe-delimited tables with header separators</p>
+                            </div>
+                          </div>
+                        )}
+                        {detectedExtensions.strikethrough && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Strikethrough</p>
+                              <p className="text-muted-foreground">Text wrapped in ~~ for strikethrough effect</p>
+                            </div>
+                          </div>
+                        )}
+                        {detectedExtensions.definitionLists && (
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="rounded-full bg-accent/20 p-1 mt-0.5">
+                              <Sparkle size={10} weight="fill" className="text-accent" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Definition Lists</p>
+                              <p className="text-muted-foreground">Term and definition pairs using : syntax</p>
                             </div>
                           </div>
                         )}
