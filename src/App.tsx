@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen, ArrowCounterClockwise } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
@@ -201,6 +201,8 @@ function App() {
   const [filename, setFilename] = useState('markdown')
   const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
   const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
+  const [lastClearedInput, setLastClearedInput] = useKV<string>('last-cleared-input', '')
+  const [lastClearedOutput, setLastClearedOutput] = useKV<string>('last-cleared-output', '')
   const [showExtensions, setShowExtensions] = useState(false)
   const [extensions, setExtensions] = useKV<MarkdownExtensions>('markdown-extensions', {
     yamlFrontMatter: true,
@@ -369,6 +371,16 @@ function App() {
     if (pastedText) {
       e.preventDefault()
       setHtmlInput(pastedText)
+    }
+  }
+
+  const handleUndo = () => {
+    if (lastClearedInput || lastClearedOutput) {
+      setHtmlInput(lastClearedInput || '')
+      setMarkdownOutput(lastClearedOutput || '')
+      setLastClearedInput('')
+      setLastClearedOutput('')
+      toast.success('Content restored')
     }
   }
 
@@ -907,6 +919,23 @@ function App() {
                       <p className="text-xs">Keyboard shortcuts</p>
                     </TooltipContent>
                   </Tooltip>
+                  {(lastClearedInput || lastClearedOutput) && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={handleUndo}
+                          size="sm"
+                          variant="outline"
+                          className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                        >
+                          <ArrowCounterClockwise size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">Restore last cleared content</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
                   <Button
                     onClick={() => setShowClearDialog(true)}
                     size="sm"
@@ -1205,7 +1234,7 @@ function App() {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-muted-foreground">
-              This will remove all input and output content. This action cannot be undone.
+              This will remove all input and output content. You can restore it with the undo button.
             </p>
           </div>
           <DialogFooter>
@@ -1218,6 +1247,8 @@ function App() {
             <Button
               variant="destructive"
               onClick={() => {
+                setLastClearedInput(htmlInput)
+                setLastClearedOutput(markdownOutput)
                 setHtmlInput('')
                 setMarkdownOutput('')
                 setShowClearDialog(false)
