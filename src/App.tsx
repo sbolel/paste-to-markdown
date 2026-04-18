@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { ClipboardText, Copy, Eye, Code, Download } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
@@ -50,7 +51,11 @@ const isMarkdown = (text: string): boolean => {
   return indicatorCount >= 2 && !hasHtmlTags
 }
 
-const cleanMarkdownLists = (markdown: string): string => {
+const cleanMarkdownLists = (markdown: string, removeBlankLines: boolean): string => {
+  if (!removeBlankLines) {
+    return markdown
+  }
+  
   const lines = markdown.split('\n')
   const result: string[] = []
   let i = 0
@@ -134,6 +139,7 @@ function App() {
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
   const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
+  const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
 
   const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
 
@@ -152,12 +158,12 @@ function App() {
     if (htmlInput.trim()) {
       try {
         if (isMarkdown(htmlInput)) {
-          const cleaned = cleanMarkdownLists(htmlInput)
+          const cleaned = cleanMarkdownLists(htmlInput, removeBlankLines ?? true)
           setMarkdownOutput(cleaned)
           toast.success('Markdown detected and validated')
         } else {
           const markdown = turndownService.turndown(htmlInput)
-          const cleaned = cleanMarkdownLists(markdown)
+          const cleaned = cleanMarkdownLists(markdown, removeBlankLines ?? true)
           setMarkdownOutput(cleaned)
         }
       } catch (error) {
@@ -166,7 +172,7 @@ function App() {
     } else {
       setMarkdownOutput('')
     }
-  }, [htmlInput, turndownService])
+  }, [htmlInput, turndownService, removeBlankLines])
 
   useEffect(() => {
     const handleGlobalPaste = (e: ClipboardEvent) => {
@@ -317,7 +323,7 @@ function App() {
           >
             <Card className="bg-card text-card-foreground gap-3 rounded-xl border flex flex-col p-4 shadow-sm transition-shadow hover:shadow-md">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Label 
                     htmlFor="markdown-output" 
                     className="text-sm font-medium uppercase tracking-wider"
@@ -336,6 +342,19 @@ function App() {
                       <SelectItem value="custom">Custom Style</SelectItem>
                     </SelectContent>
                   </Select>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="remove-blank-lines"
+                      checked={removeBlankLines ?? true}
+                      onCheckedChange={(checked) => setRemoveBlankLines(checked)}
+                    />
+                    <Label 
+                      htmlFor="remove-blank-lines" 
+                      className="text-xs text-muted-foreground cursor-pointer"
+                    >
+                      Remove blank lines in lists
+                    </Label>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
