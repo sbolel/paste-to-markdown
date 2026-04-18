@@ -946,18 +946,25 @@ function App() {
                       </TooltipContent>
                     </Tooltip>
                   )}
-                  <Button
-                    onClick={() => {
-                      setLastClearedInput(htmlInput)
-                      setLastClearedOutput(markdownOutput)
-                      setHtmlInput('')
-                      setMarkdownOutput('')
-                      toast.success('Content cleared')
-                    }}
-                    size="sm"
-                    variant="destructive"
-                    className="gap-2 transition-transform hover:scale-105 active:scale-95"
-                  >Clear</Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => {
+                          setLastClearedInput(htmlInput)
+                          setLastClearedOutput(markdownOutput)
+                          setHtmlInput('')
+                          setMarkdownOutput('')
+                          toast.success('Content cleared')
+                        }}
+                        size="sm"
+                        variant="destructive"
+                        className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                      >Clear</Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Clear content (can be restored)</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <Button
                     onClick={handleDownload}
                     size="sm"
