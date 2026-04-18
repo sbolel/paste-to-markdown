@@ -94,27 +94,27 @@ const cleanMarkdownLists = (markdown: string, removeBlankLines: boolean): string
 }
 
 const detectYAMLFrontMatter = (text: string): boolean => {
-  return /^---\n[\s\S]*?\n---/.test(text.trim())
+  return /^---\n[\s\S]*?\n---/.test(text.trim());
 }
 
 const detectFootnotes = (text: string): boolean => {
-  return /\[\^[^\]]+\]/.test(text)
+  return /\[\^[^\]]+\]/.test(text);
 }
 
 const detectTaskLists = (text: string): boolean => {
-  return /^\s*[-*+]\s+\[[ xX]\]\s+/.test(text) || /\n\s*[-*+]\s+\[[ xX]\]\s+/.test(text)
+  return /^\s*[-*+]\s+\[[ xX]\]\s+/.test(text) || /\n\s*[-*+]\s+\[[ xX]\]\s+/.test(text);
 }
 
 const detectTables = (text: string): boolean => {
-  return /^\s*\|.+\|.+\|?\s*$/m.test(text) && /^\s*\|?\s*[-:]+\s*\|/.test(text)
+  return /^\s*\|.+\|.+\|?\s*$/m.test(text) && /^\s*\|?\s*[-:]+\s*\|/.test(text);
 }
 
 const detectStrikethrough = (text: string): boolean => {
-  return /~~[^~]+~~/.test(text)
+  return /~~[^~]+~~/.test(text);
 }
 
 const detectDefinitionLists = (text: string): boolean => {
-  return /^.+\n:\s+.+$/m.test(text) || /^<dt>[\s\S]*?<\/dt>\s*<dd>[\s\S]*?<\/dd>/m.test(text)
+  return /^.+\n:\s+.+$/m.test(text) || /^<dt>[\s\S]*?<\/dt>\s*<dd>[\s\S]*?<\/dd>/m.test(text);
 }
 
 const processMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
@@ -543,9 +543,7 @@ function App() {
               <h2 className="mb-4 text-center text-xl font-bold md:text-2xl">
                 Ready to Convert
               </h2>
-              <p className="mb-8 text-center text-muted-foreground" style={{ lineHeight: '1.6' }}>
-                Paste your HTML content to get started. The converted Markdown will appear instantly.
-              </p>
+              <p className="mb-8 text-center text-muted-foreground text-sm" style={{ lineHeight: '1.6' }}>Paste to get started. Markdown will appear instantly.</p>
               <div className="flex flex-col gap-4">
                 <Button
                   onClick={handlePaste}
@@ -784,7 +782,7 @@ function App() {
                     ref={textareaRef}
                     id="markdown-output"
                     value={markdownOutput}
-                    onChange={(e) => setMarkdownOutput(e.target.value)}
+                    id="markdown-output"
                     className="min-h-[600px] rounded-md border bg-secondary/50 p-6 overflow-auto font-mono text-sm resize-none"
                     placeholder="Your markdown will appear here..."
                   />
@@ -800,7 +798,6 @@ function App() {
           </motion.div>
         )}
       </div>
-
       <Dialog open={showDownloadDialog} onOpenChange={setShowDownloadDialog}>
         <DialogContent>
           <DialogHeader>
@@ -846,7 +843,6 @@ function App() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       <Dialog open={showShortcutsDialog} onOpenChange={setShowShortcutsDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
