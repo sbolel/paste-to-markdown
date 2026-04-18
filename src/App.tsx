@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import TurndownService from 'turndown'
 import { gfm } from 'turndown-plugin-gfm'
 import { marked } from 'marked'
@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
@@ -194,6 +194,7 @@ function App() {
   const [markdownOutput, setMarkdownOutput] = useState('')
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
+  const [showShortcutsDialog, setShowShortcutsDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
   const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
   const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
@@ -214,6 +215,7 @@ function App() {
     strikethrough: false,
     definitionLists: false
   })
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
 
@@ -367,6 +369,147 @@ function App() {
     }
   }
 
+  const applyMarkdownFormat = (formatType: string) => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const selectedText = markdownOutput.substring(start, end)
+    const beforeText = markdownOutput.substring(0, start)
+    const afterText = markdownOutput.substring(end)
+
+    let newText = ''
+    let cursorOffset = 0
+
+    switch (formatType) {
+      case 'bold':
+        newText = `**${selectedText}**`
+        cursorOffset = selectedText ? 2 : 2
+        toast.success('Applied bold formatting')
+        break
+      case 'italic':
+        newText = `*${selectedText}*`
+        cursorOffset = selectedText ? 1 : 1
+        toast.success('Applied italic formatting')
+        break
+      case 'strikethrough':
+        newText = `~~${selectedText}~~`
+        cursorOffset = selectedText ? 2 : 2
+        toast.success('Applied strikethrough formatting')
+        break
+      case 'code':
+        newText = `\`${selectedText}\``
+        cursorOffset = selectedText ? 1 : 1
+        toast.success('Applied inline code formatting')
+        break
+      case 'code-block':
+        newText = `\`\`\`\n${selectedText}\n\`\`\``
+        cursorOffset = selectedText ? 4 : 4
+        toast.success('Applied code block formatting')
+        break
+      case 'link':
+        newText = `[${selectedText || 'link text'}](url)`
+        cursorOffset = selectedText ? selectedText.length + 3 : 11
+        toast.success('Applied link formatting')
+        break
+      case 'heading1':
+        newText = `# ${selectedText}`
+        cursorOffset = selectedText ? 2 : 2
+        toast.success('Applied heading 1 formatting')
+        break
+      case 'heading2':
+        newText = `## ${selectedText}`
+        cursorOffset = selectedText ? 3 : 3
+        toast.success('Applied heading 2 formatting')
+        break
+      case 'heading3':
+        newText = `### ${selectedText}`
+        cursorOffset = selectedText ? 4 : 4
+        toast.success('Applied heading 3 formatting')
+        break
+      case 'list':
+        newText = `- ${selectedText}`
+        cursorOffset = selectedText ? 2 : 2
+        toast.success('Applied list formatting')
+        break
+      case 'ordered-list':
+        newText = `1. ${selectedText}`
+        cursorOffset = selectedText ? 3 : 3
+        toast.success('Applied ordered list formatting')
+        break
+      case 'quote':
+        newText = `> ${selectedText}`
+        cursorOffset = selectedText ? 2 : 2
+        toast.success('Applied quote formatting')
+        break
+      default:
+        return
+    }
+
+    const updatedMarkdown = beforeText + newText + afterText
+    setMarkdownOutput(updatedMarkdown)
+
+    setTimeout(() => {
+      textarea.focus()
+      const newCursorPos = start + (selectedText ? newText.length : cursorOffset)
+      textarea.setSelectionRange(newCursorPos, newCursorPos)
+    }, 0)
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!markdownOutput || previewMode === 'preview') return
+
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+      const modKey = isMac ? e.metaKey : e.ctrlKey
+
+      if (modKey && e.key === 'b') {
+        e.preventDefault()
+        applyMarkdownFormat('bold')
+      } else if (modKey && e.key === 'i') {
+        e.preventDefault()
+        applyMarkdownFormat('italic')
+      } else if (modKey && e.key === 'd') {
+        e.preventDefault()
+        applyMarkdownFormat('strikethrough')
+      } else if (modKey && e.key === 'k') {
+        e.preventDefault()
+        applyMarkdownFormat('link')
+      } else if (modKey && e.key === 'e') {
+        e.preventDefault()
+        applyMarkdownFormat('code')
+      } else if (modKey && e.shiftKey && e.key === 'C') {
+        e.preventDefault()
+        applyMarkdownFormat('code-block')
+      } else if (modKey && e.shiftKey && e.key === 'L') {
+        e.preventDefault()
+        applyMarkdownFormat('list')
+      } else if (modKey && e.shiftKey && e.key === 'O') {
+        e.preventDefault()
+        applyMarkdownFormat('ordered-list')
+      } else if (modKey && e.shiftKey && e.key === 'Q') {
+        e.preventDefault()
+        applyMarkdownFormat('quote')
+      } else if (modKey && e.key === '1') {
+        e.preventDefault()
+        applyMarkdownFormat('heading1')
+      } else if (modKey && e.key === '2') {
+        e.preventDefault()
+        applyMarkdownFormat('heading2')
+      } else if (modKey && e.key === '3') {
+        e.preventDefault()
+        applyMarkdownFormat('heading3')
+      } else if (modKey && e.key === '/') {
+        e.preventDefault()
+        setShowShortcutsDialog(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [markdownOutput, previewMode])
+
   return (
     <div className="min-h-screen bg-background px-4 py-8 md:px-8 md:py-12">
       <div className="mx-auto max-w-7xl">
@@ -488,6 +631,21 @@ function App() {
                   </Tooltip>
                 </div>
                 <div className="flex gap-2">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setShowShortcutsDialog(true)}
+                        size="sm"
+                        variant="ghost"
+                        className="gap-2 transition-transform hover:scale-105 active:scale-95"
+                      >
+                        <Keyboard size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Keyboard shortcuts</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <Button
                     onClick={() => {
                       setHtmlInput('')
@@ -623,6 +781,7 @@ function App() {
                 </TabsList>
                 <TabsContent value="raw" className="flex-1 mt-3">
                   <Textarea
+                    ref={textareaRef}
                     id="markdown-output"
                     value={markdownOutput}
                     onChange={(e) => setMarkdownOutput(e.target.value)}
@@ -683,6 +842,104 @@ function App() {
             >
               <Download size={16} className="mr-2" />
               Download
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showShortcutsDialog} onOpenChange={setShowShortcutsDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Keyboard size={24} />
+              Keyboard Shortcuts
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Use these keyboard shortcuts to quickly format your markdown text. Select text in the Raw Markdown view and press the shortcut.
+            </p>
+            <div className="grid gap-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold">Text Formatting</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Bold</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + B</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Italic</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + I</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Strikethrough</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + D</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Inline Code</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + E</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Code Block</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + Shift + C</kbd>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold">Structure</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Heading 1</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + 1</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Heading 2</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + 2</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Heading 3</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + 3</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Link</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + K</kbd>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Quote</span>
+                      <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + Shift + Q</kbd>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3 pt-2 border-t">
+                <h3 className="text-sm font-semibold">Lists</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Bullet List</span>
+                    <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + Shift + L</kbd>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Numbered List</span>
+                    <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + Shift + O</kbd>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3 pt-2 border-t">
+                <h3 className="text-sm font-semibold">Other</h3>
+                <div className="flex items-center justify-between text-sm">
+                  <span>Show Shortcuts</span>
+                  <kbd className="rounded bg-muted px-2 py-1 font-mono text-xs">⌘/Ctrl + /</kbd>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setShowShortcutsDialog(false)}
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              Got it
             </Button>
           </DialogFooter>
         </DialogContent>
