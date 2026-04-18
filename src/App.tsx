@@ -197,7 +197,6 @@ function App() {
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
   const [showShortcutsDialog, setShowShortcutsDialog] = useState(false)
-  const [showClearDialog, setShowClearDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
   const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
   const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
@@ -948,7 +947,13 @@ function App() {
                     </Tooltip>
                   )}
                   <Button
-                    onClick={() => setShowClearDialog(true)}
+                    onClick={() => {
+                      setLastClearedInput(htmlInput)
+                      setLastClearedOutput(markdownOutput)
+                      setHtmlInput('')
+                      setMarkdownOutput('')
+                      toast.success('Content cleared')
+                    }}
                     size="sm"
                     variant="destructive"
                     className="gap-2 transition-transform hover:scale-105 active:scale-95"
@@ -1234,39 +1239,6 @@ function App() {
               className="bg-accent text-accent-foreground hover:bg-accent/90"
             >
               Got it
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Clear All Content?</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground">
-              This will remove all input and output content. You can restore it with the undo button.
-            </p>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowClearDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                setLastClearedInput(htmlInput)
-                setLastClearedOutput(markdownOutput)
-                setHtmlInput('')
-                setMarkdownOutput('')
-                setShowClearDialog(false)
-                toast.success('Content cleared')
-              }}
-            >
-              Clear All
             </Button>
           </DialogFooter>
         </DialogContent>
