@@ -12,10 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { useKV } from '@github/spark/hooks'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
 
@@ -342,19 +343,29 @@ function App() {
                       <SelectItem value="custom">Custom Style</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      id="remove-blank-lines"
-                      checked={removeBlankLines ?? true}
-                      onCheckedChange={(checked) => setRemoveBlankLines(checked)}
-                    />
-                    <Label 
-                      htmlFor="remove-blank-lines" 
-                      className="text-xs text-muted-foreground cursor-pointer"
-                    >
-                      Remove blank lines in lists
-                    </Label>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="remove-blank-lines"
+                          checked={removeBlankLines ?? true}
+                          onCheckedChange={(checked) => setRemoveBlankLines(checked)}
+                        />
+                        <Label 
+                          htmlFor="remove-blank-lines" 
+                          className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1"
+                        >
+                          Remove blank lines in lists
+                          <Info size={14} weight="fill" className="text-muted-foreground/60" />
+                        </Label>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs">
+                      <p className="text-xs leading-relaxed">
+                        Turn off to preserve spacing when lists need visual separation between items, such as complex nested lists or lists with multi-paragraph items.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <div className="flex gap-2">
                   <Button
