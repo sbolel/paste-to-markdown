@@ -570,6 +570,17 @@ function App() {
                   <ClipboardText size={20} weight="bold" />
                   Paste from Clipboard
                 </Button>
+                {(lastClearedInput || lastClearedOutput) && (
+                  <Button
+                    onClick={handleUndo}
+                    size="lg"
+                    variant="outline"
+                    className="gap-3 transition-transform hover:scale-105 active:scale-95"
+                  >
+                    <ArrowCounterClockwise size={20} weight="bold" />
+                    Restore Last Cleared Content
+                  </Button>
+                )}
                 <div className="relative">
                   <Separator className="my-4" />
                   <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground uppercase tracking-wider">
