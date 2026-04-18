@@ -622,9 +622,13 @@ function App() {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="raw" className="flex-1 mt-3">
-                  <div className="min-h-[600px] rounded-md border bg-secondary/50 p-6 overflow-auto">
-                    <MarkdownHighlighter markdown={markdownOutput} />
-                  </div>
+                  <Textarea
+                    id="markdown-output"
+                    value={markdownOutput}
+                    onChange={(e) => setMarkdownOutput(e.target.value)}
+                    className="min-h-[600px] rounded-md border bg-secondary/50 p-6 overflow-auto font-mono text-sm resize-none"
+                    placeholder="Your markdown will appear here..."
+                  />
                 </TabsContent>
                 <TabsContent value="preview" className="flex-1 mt-3">
                   <div 
