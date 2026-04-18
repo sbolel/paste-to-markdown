@@ -192,18 +192,19 @@ const createTurndownService = (flavor: MarkdownFlavor) => {
 }
 
 function App() {
+  const [userId, setUserId] = useState<string | null>(null)
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
   const [showShortcutsDialog, setShowShortcutsDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
-  const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>('markdown-flavor', 'github')
-  const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>('remove-blank-lines', true)
-  const [lastClearedInput, setLastClearedInput] = useKV<string>('last-cleared-input', '')
-  const [lastClearedOutput, setLastClearedOutput] = useKV<string>('last-cleared-output', '')
+  const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>(`${userId || 'anon'}-markdown-flavor`, 'github')
+  const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>(`${userId || 'anon'}-remove-blank-lines`, true)
+  const [lastClearedInput, setLastClearedInput] = useKV<string>(`${userId || 'anon'}-last-cleared-input`, '')
+  const [lastClearedOutput, setLastClearedOutput] = useKV<string>(`${userId || 'anon'}-last-cleared-output`, '')
   const [showExtensions, setShowExtensions] = useState(false)
-  const [extensions, setExtensions] = useKV<MarkdownExtensions>('markdown-extensions', {
+  const [extensions, setExtensions] = useKV<MarkdownExtensions>(`${userId || 'anon'}-markdown-extensions`, {
     yamlFrontMatter: true,
     footnotes: true,
     taskLists: true,
@@ -220,6 +221,22 @@ function App() {
     definitionLists: false
   })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await window.spark.user()
+        if (user && user.id) {
+          setUserId(user.id.toString())
+        } else {
+          setUserId('anonymous')
+        }
+      } catch (error) {
+        setUserId('anonymous')
+      }
+    }
+    fetchUser()
+  }, [])
 
   const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
 

@@ -54,6 +54,13 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Progression**: User selects flavor → Conversion engine reconfigures → Markdown regenerates with selected flavor's syntax rules
 - **Success criteria**: Each flavor produces syntactically correct markdown according to its specification (e.g., GFM includes tables and strikethrough, CommonMark is more standardized, Strict uses traditional indented code blocks)
 
+### User-Specific Data Persistence
+- **Functionality**: All user preferences and saved content are isolated per-user using unique user IDs
+- **Purpose**: Ensures data privacy and prevents users from seeing or modifying each other's settings and content
+- **Trigger**: User authentication on app load
+- **Progression**: App loads → User ID fetched → All KV storage keys prefixed with user ID → User accesses only their own data
+- **Success criteria**: Each user sees only their own markdown flavor preference, blank line settings, cleared content history, and extension preferences; different users cannot access each other's data
+
 ### Markdown Extensions Detection
 - **Functionality**: Automatically detect and display markdown syntax extensions (YAML front matter, footnotes, task lists, tables, strikethrough, definition lists)
 - **Purpose**: Inform users when their markdown contains extended syntax that may require special parser support
@@ -78,6 +85,7 @@ This is a focused utility that does one thing exceptionally well - converting HT
 - **Large Content**: Handle large HTML documents without UI freezing or performance degradation
 - **Permission Denied**: Show clear message if user denies clipboard permission on mobile
 - **Unsupported Elements**: Strip or convert unsupported HTML elements to closest Markdown equivalent
+- **Anonymous Users**: If user authentication fails, assign a fallback 'anonymous' ID to ensure data persistence still works
 
 ## Design Direction
 
