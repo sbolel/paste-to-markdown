@@ -647,7 +647,7 @@ function App() {
                         <p className="text-xs">Markdown cheatsheet</p>
                       </TooltipContent>
                     </Tooltip>
-                    <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
+                    <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
                       <SheetHeader className="mb-6">
                         <SheetTitle className="flex items-center gap-2 text-2xl">
                           <BookOpen size={28} weight="duotone" className="text-accent" />
