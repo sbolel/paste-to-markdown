@@ -20,6 +20,7 @@ import { useKV } from '@github/spark/hooks'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { MarkdownHighlighter } from '@/components/MarkdownHighlighter'
+import { CursorSparkles } from '@/components/CursorSparkles'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
 
@@ -512,7 +513,9 @@ function App() {
   }, [markdownOutput, previewMode])
 
   return (
-    <div className="min-h-screen px-4 py-8 md:px-8 md:py-12 relative z-10">
+    <>
+      <CursorSparkles />
+      <div className="min-h-screen px-4 py-8 md:px-8 md:py-12 relative z-10">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -1199,7 +1202,8 @@ function App() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
 
