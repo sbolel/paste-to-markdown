@@ -22,6 +22,40 @@ export function CursorSparkles() {
   const particleIdRef = useRef(0)
   const lastEmitTime = useRef(0)
   const isMobile = useIsMobile()
+  const windowDimensionsRef = useRef({ width: window.innerWidth, height: window.innerHeight })
+  const mousePositionRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (isMobile) return
+
+    const handleResize = () => {
+      const oldWidth = windowDimensionsRef.current.width
+      const oldHeight = windowDimensionsRef.current.height
+      const newWidth = window.innerWidth
+      const newHeight = window.innerHeight
+
+      const scaleX = newWidth / oldWidth
+      const scaleY = newHeight / oldHeight
+
+      setParticles((prev) =>
+        prev.map((particle) => ({
+          ...particle,
+          x: particle.x * scaleX,
+          y: particle.y * scaleY,
+        }))
+      )
+
+      windowDimensionsRef.current = { width: newWidth, height: newHeight }
+      
+      mousePositionRef.current = {
+        x: mousePositionRef.current.x * scaleX,
+        y: mousePositionRef.current.y * scaleY,
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [isMobile])
 
   useEffect(() => {
     if (isMobile) return
@@ -40,6 +74,8 @@ export function CursorSparkles() {
     const particleTypes: Array<'sparkle' | 'star' | 'dot' | 'cross'> = ['sparkle', 'star', 'dot', 'cross']
 
     const handleMouseMove = (e: MouseEvent) => {
+      mousePositionRef.current = { x: e.clientX, y: e.clientY }
+
       const now = Date.now()
       if (now - lastEmitTime.current < 16) return
       lastEmitTime.current = now
