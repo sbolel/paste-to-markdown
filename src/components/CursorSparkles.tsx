@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 interface Particle {
@@ -14,6 +14,7 @@ interface Particle {
   velocityY: number
   type: 'sparkle' | 'star' | 'dot' | 'cross'
   glowIntensity: number
+  mass: number
 }
 
 export function CursorSparkles() {
@@ -48,21 +49,23 @@ export function CursorSparkles() {
 
       for (let i = 0; i < particleCount; i++) {
         const angle = Math.random() * Math.PI * 2
-        const velocity = Math.random() * 3 + 1
+        const velocity = Math.random() * 3 + 2
         const spread = 20
+        const size = Math.random() * 10 + 6
 
         newParticles.push({
           id: particleIdRef.current++,
           x: e.clientX + (Math.random() - 0.5) * spread,
           y: e.clientY + (Math.random() - 0.5) * spread,
-          size: Math.random() * 10 + 6,
+          size,
           color: colors[Math.floor(Math.random() * colors.length)],
           rotation: Math.random() * 360,
           delay: Math.random() * 0.05,
           velocityX: Math.cos(angle) * velocity,
-          velocityY: Math.sin(angle) * velocity,
+          velocityY: Math.sin(angle) * velocity - (Math.random() * 2 + 1),
           type: particleTypes[Math.floor(Math.random() * particleTypes.length)],
           glowIntensity: Math.random() * 0.5 + 0.5,
+          mass: size / 16,
         })
       }
 
@@ -78,7 +81,7 @@ export function CursorSparkles() {
 
     const timeout = setTimeout(() => {
       setParticles((prev) => prev.slice(1))
-    }, 1200)
+    }, 1600)
 
     return () => clearTimeout(timeout)
   }, [particles])
@@ -250,49 +253,89 @@ export function CursorSparkles() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <AnimatePresence>
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            initial={{
-              x: particle.x,
-              y: particle.y,
-              scale: 0,
-              opacity: 0,
-              rotate: particle.rotation,
-            }}
-            animate={{
-              x: particle.x + particle.velocityX * 40,
-              y: particle.y + particle.velocityY * 40 - 60,
-              scale: [0, 1.2, 1, 0.8, 0],
-              opacity: [0, 1, 1, 0.8, 0],
-              rotate: particle.rotation + particle.velocityX * 120,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0,
-            }}
-            transition={{
-              duration: 1.2,
-              delay: particle.delay,
-              ease: [0.23, 1, 0.32, 1],
-              scale: {
-                times: [0, 0.2, 0.5, 0.8, 1],
-                ease: 'easeOut',
-              },
-              opacity: {
-                times: [0, 0.2, 0.6, 0.9, 1],
-                ease: 'easeInOut',
-              },
-            }}
-            className="absolute will-change-transform"
-            style={{
-              width: particle.size,
-              height: particle.size,
-            }}
-          >
-            {renderParticle(particle)}
-          </motion.div>
-        ))}
+        {particles.map((particle) => {
+          const gravity = 400
+          const airResistance = 0.98
+          const duration = 1.5
+          
+          const timeSteps = 60
+          const deltaTime = duration / timeSteps
+          
+          let posX = particle.x
+          let posY = particle.y
+          let velX = particle.velocityX * 30
+          let velY = particle.velocityY * 30
+          
+          const keyframes = { x: [posX], y: [posY] }
+          
+          for (let i = 0; i < timeSteps; i++) {
+            velY += (gravity * particle.mass * deltaTime)
+            velX *= airResistance
+            velY *= airResistance
+            
+            posX += velX * deltaTime
+            posY += velY * deltaTime
+            
+            keyframes.x.push(posX)
+            keyframes.y.push(posY)
+          }
+
+          return (
+            <motion.div
+              key={particle.id}
+              initial={{
+                x: particle.x,
+                y: particle.y,
+                scale: 0,
+                opacity: 0,
+                rotate: particle.rotation,
+              }}
+              animate={{
+                x: keyframes.x,
+                y: keyframes.y,
+                scale: [0, 1.3, 1.1, 0.9, 0.6, 0],
+                opacity: [0, 1, 1, 0.9, 0.6, 0],
+                rotate: particle.rotation + (particle.velocityX * 180),
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0,
+              }}
+              transition={{
+                duration: duration,
+                delay: particle.delay,
+                ease: 'linear',
+                x: {
+                  duration: duration,
+                  ease: 'linear',
+                },
+                y: {
+                  duration: duration,
+                  ease: 'linear',
+                },
+                scale: {
+                  times: [0, 0.15, 0.35, 0.6, 0.85, 1],
+                  ease: 'easeOut',
+                },
+                opacity: {
+                  times: [0, 0.15, 0.45, 0.7, 0.9, 1],
+                  ease: 'easeInOut',
+                },
+                rotate: {
+                  duration: duration,
+                  ease: 'easeOut',
+                },
+              }}
+              className="absolute will-change-transform"
+              style={{
+                width: particle.size,
+                height: particle.size,
+              }}
+            >
+              {renderParticle(particle)}
+            </motion.div>
+          )
+        })}
       </AnimatePresence>
     </div>
   )
