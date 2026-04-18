@@ -1110,7 +1110,7 @@ function App() {
               Keyboard Shortcuts
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 pl-6">
             <p className="text-sm text-muted-foreground">
               Use these keyboard shortcuts to quickly format your markdown text. Select text in the Raw Markdown view and press the shortcut.
             </p>
