@@ -512,7 +512,7 @@ function App() {
   }, [markdownOutput, previewMode])
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8 md:px-8 md:py-12">
+    <div className="min-h-screen px-4 py-8 md:px-8 md:py-12 relative z-10">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -535,7 +535,7 @@ function App() {
             transition={{ duration: 0.3 }}
             className="mx-auto max-w-2xl"
           >
-            <Card className="p-8 shadow-sm md:p-12">
+            <Card className="p-8 shadow-lg backdrop-blur-sm md:p-12 border-primary/20">
               <div className="mb-8 flex justify-center">
                 <div className="rounded-full bg-accent/20 p-6">
                   <ClipboardText size={48} className="text-accent" weight="duotone" />
@@ -584,7 +584,7 @@ function App() {
             transition={{ duration: 0.3 }}
             className="mx-auto max-w-[1400px]"
           >
-            <Card className="bg-card text-card-foreground gap-3 rounded-xl border flex flex-col p-4 shadow-sm transition-shadow hover:shadow-md">
+            <Card className="bg-card text-card-foreground gap-3 rounded-xl border border-primary/30 flex flex-col p-4 shadow-lg backdrop-blur-sm transition-shadow hover:shadow-xl hover:border-accent/40">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-3">
                   <Label 
