@@ -1,23 +1,51 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# Paste to Markdown
 
-This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
+Convert rich clipboard HTML into clean, validated Markdown in the browser.
 
-🚀 What's Inside?
-- A clean, minimal Spark environment
-- Pre-configured for local development
-- Ready to scale with your ideas
-  
-🧠 What Can You Do?
+**Live demo:** [paste-to-markdown--sbolel.github.app](https://paste-to-markdown--sbolel.github.app)
 
-Right now, this is just a starting point — the perfect place to begin building and testing your Spark applications.
+| Ready to convert | Markdown output |
+| --- | --- |
+| ![Paste to Markdown ready state](docs/assets/paste-to-markdown-ready.png) | ![Paste to Markdown Markdown output](docs/assets/paste-to-markdown-output.png) |
 
-🧹 Just Exploring?
-No problem! If you were just checking things out and don’t need to keep this code:
+## What It Does
 
-- Simply delete your Spark.
-- Everything will be cleaned up — no traces left behind.
+- Pastes rich HTML from documents, email, webpages, and editors.
+- Converts content to Markdown locally in the browser.
+- Supports raw Markdown and preview views.
+- Lets you copy or download the result.
+- Keeps recent cleared content restorable.
 
-📄 License For Spark Template Resources 
+## Development
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the local development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## Project Notes
+
+This app is built with React, TypeScript, Vite, and Spark. Markdown conversion uses Turndown and GitHub Flavored Markdown helpers.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
