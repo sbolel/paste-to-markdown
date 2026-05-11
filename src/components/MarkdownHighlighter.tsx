@@ -14,7 +14,6 @@ interface Token {
 
 const tokenizeMarkdown = (text: string): Token[] => {
   const tokens: Token[] = []
-  let index = 0
 
   const patterns = [
     { type: 'heading', regex: /^(#{1,6})\s+(.*)$/gm },
@@ -93,7 +92,6 @@ const highlightInlineElements = (text: string, lineType: string): ReactElement[]
     let match
 
     const tempText = text
-    let searchIndex = 0
     
     while ((match = regex.exec(tempText)) !== null) {
       const matchIndex = match.index

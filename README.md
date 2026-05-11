@@ -2,7 +2,7 @@
 
 Convert rich clipboard HTML into clean, validated Markdown in the browser.
 
-**Live demo:** [paste-to-markdown--sbolel.github.app](https://paste-to-markdown--sbolel.github.app)
+**Live demo:** [sbolel.github.io/paste-to-markdown](https://sbolel.github.io/paste-to-markdown/)
 
 | Ready to convert | Markdown output |
 | --- | --- |
@@ -14,11 +14,21 @@ Convert rich clipboard HTML into clean, validated Markdown in the browser.
 - Converts content to Markdown locally in the browser.
 - Supports raw Markdown and preview views.
 - Lets you copy or download the result.
-- Keeps recent cleared content restorable.
+- Keeps recently cleared content restorable for the current page session.
 
-## Development
+## Privacy
 
-Supported Node.js versions are `^20.19.0 || >=22.12.0`. The `.nvmrc` file pins the validated local development version. If you use `nvm`, run:
+Paste to Markdown runs conversion in your browser. Pasted content is not sent to
+an app server by this tool, and cleared content is only kept in memory for the
+current page session so it can be restored. Display preferences such as Markdown
+flavor may be stored in browser local storage.
+
+## Quick Start
+
+Use the live demo, or run it locally:
+
+Supported Node.js versions are `^20.19.0 || >=22.12.0`. The `.nvmrc` file pins
+the validated local development version. If you use `nvm`, run:
 
 ```bash
 nvm use
@@ -48,9 +58,26 @@ Preview the production build:
 npm run preview
 ```
 
+Run the baseline checks:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm run audit:prod
+```
+
 ## Project Notes
 
-This app is built with React, TypeScript, Vite, and Spark. Markdown conversion uses Turndown and GitHub Flavored Markdown helpers.
+This app is built with React, TypeScript, and Vite. Markdown conversion uses
+Turndown and GitHub Flavored Markdown helpers. Markdown preview HTML is
+sanitized before rendering.
+
+## Feedback Wanted
+
+Feedback is welcome on conversion quality, pasted-content edge cases, and README
+clarity. Please open an issue with a small reproduction if something converts
+poorly or behaves unexpectedly.
 
 ## License
 
