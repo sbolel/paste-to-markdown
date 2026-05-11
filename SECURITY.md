@@ -1,31 +1,33 @@
-Thanks for helping make GitHub safe for everyone.
+# Security Policy
 
-# Security
+## Supported Versions
 
-GitHub takes the security of our software products and services seriously, including all of the open source code repositories managed through our GitHub organizations, such as [GitHub](https://github.com/GitHub).
+Security fixes are handled on the default branch. Until this project starts
+publishing versioned releases, please report issues against `main`.
 
-Even though [open source repositories are outside of the scope of our bug bounty program](https://bounty.github.com/index.html#scope) and therefore not eligible for bounty rewards, we will ensure that your finding gets passed along to the appropriate maintainers for remediation. 
+## Reporting a Vulnerability
 
-## Reporting Security Issues
+Please do not report security vulnerabilities through public GitHub issues,
+discussions, or pull requests.
 
-If you believe you have found a security vulnerability in any GitHub-owned repository, please report it to us through coordinated disclosure.
+Use GitHub private vulnerability reporting from the repository Security tab. If
+that option is unavailable, contact the maintainer privately before sharing
+details publicly.
 
-**Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
+Include as much detail as possible:
 
-Instead, please send an email to opensource-security[@]github.com.
+- affected URL, branch, or commit
+- steps to reproduce
+- expected and actual behavior
+- proof of concept, screenshots, or sample pasted content when safe to share
+- impact and any known workarounds
 
-Please include as much of the information listed below as you can to help us better understand and resolve the issue:
+## Project Security Notes
 
-  * The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
-  * Full paths of source file(s) related to the manifestation of the issue
-  * The location of the affected source code (tag/branch/commit or direct URL)
-  * Any special configuration required to reproduce the issue
-  * Step-by-step instructions to reproduce the issue
-  * Proof-of-concept or exploit code (if possible)
-  * Impact of the issue, including how an attacker might exploit the issue
+Paste to Markdown is a client-side browser tool. The main untrusted input is
+HTML or text from the user's clipboard. Reports involving pasted HTML,
+Markdown output, dependency updates, build tooling, or the deployed static site
+are in scope.
 
-This information will help us triage your report more quickly.
-
-## Policy
-
-See [GitHub's Safe Harbor Policy](https://docs.github.com/en/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor#1-safe-harbor-terms)
+Please avoid including sensitive clipboard contents in reports. Reduce examples
+to the smallest safe reproduction whenever possible.
