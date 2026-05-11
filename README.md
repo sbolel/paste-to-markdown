@@ -18,6 +18,12 @@ Convert rich clipboard HTML into clean, validated Markdown in the browser.
 
 ## Development
 
+Supported Node.js versions are `^20.19.0 || >=22.12.0`. The `.nvmrc` file pins the validated local development version. If you use `nvm`, run:
+
+```bash
+nvm use
+```
+
 Install dependencies:
 
 ```bash
