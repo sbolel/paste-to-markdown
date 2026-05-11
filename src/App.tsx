@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import TurndownService from 'turndown'
 import { gfm } from 'turndown-plugin-gfm'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,7 +17,6 @@ import { Switch } from '@/components/ui/switch'
 import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen, ArrowCounterClockwise } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
-import { useKV } from '@github/spark/hooks'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { MarkdownHighlighter } from '@/components/MarkdownHighlighter'
@@ -119,27 +119,6 @@ const detectDefinitionLists = (text: string): boolean => {
   return /^.+\n:\s+.+$/m.test(text) || /^<dt>[\s\S]*?<\/dt>\s*<dd>[\s\S]*?<\/dd>/m.test(text);
 }
 
-const processMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
-  let processed = markdown
-  
-  if (extensions.taskLists) {
-    processed = processed.replace(/(<li>)\s*\[\s*\]\s*/gi, '$1<input type="checkbox" disabled> ')
-    processed = processed.replace(/(<li>)\s*\[x\]\s*/gi, '$1<input type="checkbox" checked disabled> ')
-  }
-  
-  return processed
-}
-
-const applyMarkdownExtensions = (markdown: string, extensions: MarkdownExtensions): string => {
-  let result = markdown
-  
-  if (extensions.footnotes) {
-    result = result.replace(/\[(\d+)\]/g, '[^$1]')
-  }
-  
-  return result
-}
-
 const createTurndownService = (flavor: MarkdownFlavor) => {
   let options: TurndownService.Options = {}
   
@@ -191,27 +170,39 @@ const createTurndownService = (flavor: MarkdownFlavor) => {
   return service
 }
 
+const useLocalStorageState = <T,>(key: string, initialValue: T) => {
+  const [value, setValue] = useState<T>(() => {
+    try {
+      const storedValue = window.localStorage.getItem(key)
+      return storedValue ? JSON.parse(storedValue) as T : initialValue
+    } catch {
+      return initialValue
+    }
+  })
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value))
+    } catch {
+      // Keep the current in-memory value if browser storage is unavailable.
+    }
+  }, [key, value])
+
+  return [value, setValue] as const
+}
+
 function App() {
-  const [userId, setUserId] = useState<string | null>(null)
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
   const [previewMode, setPreviewMode] = useState<'raw' | 'preview'>('raw')
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
   const [showShortcutsDialog, setShowShortcutsDialog] = useState(false)
   const [filename, setFilename] = useState('markdown')
-  const [markdownFlavor, setMarkdownFlavor] = useKV<MarkdownFlavor>(`${userId || 'anon'}-markdown-flavor`, 'github')
-  const [removeBlankLines, setRemoveBlankLines] = useKV<boolean>(`${userId || 'anon'}-remove-blank-lines`, true)
-  const [lastClearedInput, setLastClearedInput] = useKV<string>(`${userId || 'anon'}-last-cleared-input`, '')
-  const [lastClearedOutput, setLastClearedOutput] = useKV<string>(`${userId || 'anon'}-last-cleared-output`, '')
+  const [markdownFlavor, setMarkdownFlavor] = useLocalStorageState<MarkdownFlavor>('markdown-flavor', 'github')
+  const [removeBlankLines, setRemoveBlankLines] = useLocalStorageState<boolean>('remove-blank-lines', true)
+  const [lastClearedInput, setLastClearedInput] = useState('')
+  const [lastClearedOutput, setLastClearedOutput] = useState('')
   const [showExtensions, setShowExtensions] = useState(false)
-  const [extensions, setExtensions] = useKV<MarkdownExtensions>(`${userId || 'anon'}-markdown-extensions`, {
-    yamlFrontMatter: true,
-    footnotes: true,
-    taskLists: true,
-    tables: true,
-    strikethrough: true,
-    definitionLists: true
-  })
   const [detectedExtensions, setDetectedExtensions] = useState<MarkdownExtensions>({
     yamlFrontMatter: false,
     footnotes: false,
@@ -222,23 +213,12 @@ function App() {
   })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await window.spark.user()
-        if (user && user.id) {
-          setUserId(user.id.toString())
-        } else {
-          setUserId('anonymous')
-        }
-      } catch (error) {
-        setUserId('anonymous')
-      }
-    }
-    fetchUser()
-  }, [])
+  const turndownService = useMemo(() => createTurndownService(markdownFlavor), [markdownFlavor])
 
-  const turndownService = useMemo(() => createTurndownService(markdownFlavor || 'github'), [markdownFlavor])
+  const sanitizedPreviewHtml = useMemo(() => {
+    const renderedMarkdown = marked.parse(markdownOutput, { async: false }) as string
+    return DOMPurify.sanitize(renderedMarkdown)
+  }, [markdownOutput])
 
   useEffect(() => {
     marked.setOptions({
@@ -272,10 +252,10 @@ function App() {
           }
           setDetectedExtensions(detected)
           
-          const cleaned = cleanMarkdownLists(htmlInput, removeBlankLines ?? true)
+          const cleaned = cleanMarkdownLists(htmlInput, removeBlankLines)
           setMarkdownOutput(cleaned)
           
-          const extensionNames = []
+          const extensionNames: string[] = []
           if (detected.yamlFrontMatter) extensionNames.push('YAML front matter')
           if (detected.footnotes) extensionNames.push('footnotes')
           if (detected.taskLists) extensionNames.push('task lists')
@@ -299,7 +279,7 @@ function App() {
           })
           
           const markdown = turndownService.turndown(htmlInput)
-          const cleaned = cleanMarkdownLists(markdown, removeBlankLines ?? true)
+          const cleaned = cleanMarkdownLists(markdown, removeBlankLines)
           setMarkdownOutput(cleaned)
         }
       } catch (error) {
@@ -400,7 +380,7 @@ function App() {
     }
   }
 
-  const applyMarkdownFormat = (formatType: string) => {
+  const applyMarkdownFormat = useCallback((formatType: string) => {
     const textarea = textareaRef.current
     if (!textarea) return
 
@@ -486,7 +466,7 @@ function App() {
       const newCursorPos = start + (selectedText ? newText.length : cursorOffset)
       textarea.setSelectionRange(newCursorPos, newCursorPos)
     }, 0)
-  }
+  }, [markdownOutput])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -539,7 +519,7 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [markdownOutput, previewMode])
+  }, [applyMarkdownFormat, markdownOutput, previewMode])
 
   return (
     <>
@@ -637,7 +617,7 @@ function App() {
                   >
                     Markdown Output
                   </Label>
-                  <Select value={markdownFlavor || 'github'} onValueChange={(value) => handleFlavorChange(value as MarkdownFlavor)}>
+                  <Select value={markdownFlavor} onValueChange={(value) => handleFlavorChange(value as MarkdownFlavor)}>
                     <SelectTrigger className="w-[160px] h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
@@ -653,7 +633,7 @@ function App() {
                       <div className="flex items-center gap-2">
                         <Switch
                           id="remove-blank-lines"
-                          checked={removeBlankLines ?? true}
+                          checked={removeBlankLines}
                           onCheckedChange={(checked) => setRemoveBlankLines(checked)}
                         />
                         <Label 
@@ -1117,7 +1097,7 @@ function App() {
                 <TabsContent value="preview" className="flex-1 mt-3">
                   <div 
                     className="min-h-[600px] rounded-md border bg-secondary/50 p-6 prose prose-sm max-w-none overflow-auto"
-                    dangerouslySetInnerHTML={{ __html: marked.parse(markdownOutput) as string }}
+                    dangerouslySetInnerHTML={{ __html: sanitizedPreviewHtml }}
                   />
                 </TabsContent>
               </Tabs>
