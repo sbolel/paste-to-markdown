@@ -1,7 +1,7 @@
 {
     "name": "paste-to-markdown",
     "private": true,
-    "version": "0.0.0",
+    "version": "0.0.0-semantic-release",
     "type": "module",
     "homepage": "https://sbolel.github.io/paste-to-markdown/",
     "scripts": {
@@ -12,7 +12,8 @@
         "lint": "eslint .",
         "audit:prod": "npm audit --omit=dev",
         "optimize": "vite optimize",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "semantic-release": "semantic-release"
     },
     "engines": {
         "node": "^20.19.0 || >=22.12.0"
@@ -83,15 +84,24 @@
         "zod": "^3.25.76"
     },
     "devDependencies": {
+        "@commitlint/cli": "^21.0.1",
+        "@commitlint/config-conventional": "^21.0.1",
         "@eslint/js": "^9.21.0",
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/github": "^12.0.8",
+        "@semantic-release/npm": "^13.1.5",
+        "@semantic-release/release-notes-generator": "^14.1.1",
         "@tailwindcss/postcss": "^4.1.8",
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react-swc": "^4.2.2",
+        "conventional-changelog-conventionalcommits": "^9.3.1",
         "eslint": "^9.28.0",
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.19",
         "globals": "^17.6.0",
+        "semantic-release": "^25.0.3",
         "tailwindcss": "^4.1.11",
         "typescript": "~5.7.2",
         "typescript-eslint": "^8.38.0",
@@ -100,6 +110,54 @@
     "workspaces": {
         "packages": [
             "packages/*"
+        ]
+    },
+    "release": {
+        "private": true,
+        "branches": [
+            "main"
+        ],
+        "tagFormat": "v${version}",
+        "preset": "conventionalcommits",
+        "plugins": [
+            [
+                "@semantic-release/commit-analyzer",
+                {
+                    "preset": "conventionalcommits"
+                }
+            ],
+            [
+                "@semantic-release/changelog",
+                {
+                    "changelogFile": "CHANGELOG.md"
+                }
+            ],
+            "@semantic-release/release-notes-generator",
+            [
+                "@semantic-release/npm",
+                {
+                    "npmPublish": false
+                }
+            ],
+            [
+                "@semantic-release/github",
+                {
+                    "assets": [
+                        {
+                            "path": "dist.tar.gz",
+                            "label": "Distribution"
+                        },
+                        {
+                            "path": "CHANGELOG.md",
+                            "label": "Changelog"
+                        },
+                        {
+                            "path": "README.md",
+                            "label": "Readme"
+                        }
+                    ]
+                }
+            ]
         ]
     }
 }

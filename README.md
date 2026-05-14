@@ -67,6 +67,15 @@ npm run build
 npm run audit:prod
 ```
 
+## Release
+
+- Pull request titles must follow Conventional Commits so squash merges produce release-ready commits.
+- `fix:` creates a patch release.
+- `feat:` creates a minor release.
+- `feat!:` or `BREAKING CHANGE:` creates a major release.
+- Releases and GitHub tags are created automatically after merges to `main`.
+- npm publishing is disabled; releases are GitHub-only.
+
 ## Project Notes
 
 This app is built with React, TypeScript, and Vite. Markdown conversion uses
