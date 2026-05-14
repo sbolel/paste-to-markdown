@@ -88,6 +88,9 @@ Feedback is welcome on conversion quality, pasted-content edge cases, and README
 clarity. Please open an issue with a small reproduction if something converts
 poorly or behaves unexpectedly.
 
-## License
+## Project Docs
 
-This project is licensed under the [MIT License](LICENSE).
+- [License: MIT License](LICENSE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security](SECURITY.md)
