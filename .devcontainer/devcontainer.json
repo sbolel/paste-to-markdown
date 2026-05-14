@@ -34,7 +34,7 @@
 
   "portsAttributes": {
     "5000": {
-      "label": "Vite dev server",
+      "label": "Primary app port",
       "onAutoForward": "openPreview"
     },
     "5173": {
