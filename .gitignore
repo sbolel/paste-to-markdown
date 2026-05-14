@@ -30,5 +30,7 @@ packages
 pids
 .file-manifest
 .devcontainer/
+!.devcontainer/
+!.devcontainer/devcontainer.json
 
 .spark-workbench-id
