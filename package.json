@@ -76,7 +76,7 @@
         "recharts": "^2.15.1",
         "sonner": "^2.0.1",
         "tailwind-merge": "^3.0.2",
-        "three": "^0.175.0",
+        "three": "^0.184.0",
         "turndown": "^7.2.4",
         "turndown-plugin-gfm": "^1.0.2",
         "tw-animate-css": "^1.2.4",
