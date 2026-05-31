@@ -19,7 +19,6 @@ import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { MarkdownHighlighter } from '@/components/MarkdownHighlighter'
 import { CursorSparkles } from '@/components/CursorSparkles'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
