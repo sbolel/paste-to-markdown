@@ -38,7 +38,7 @@
   <text x="144" y="435" fill="#9cedf8" font-family="'JetBrains Mono', monospace" font-size="24">&lt;h1&gt;Notes&lt;/h1&gt;</text>
   <text x="144" y="473" fill="#ffc2e1" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
 
-  <rect x="760" y="206" width="280" height="264" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" />
+  <rect x="760" y="206" width="280" height="292" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" />
   <text x="806" y="280" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700"># Notes</text>
   <text x="790" y="322" fill="#bcd5ff" font-family="'JetBrains Mono', monospace" font-size="21">Clean Markdown output</text>
   <text x="806" y="376" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
