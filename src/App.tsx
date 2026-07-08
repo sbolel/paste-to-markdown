@@ -538,7 +538,7 @@ function App() {
             Convert any HTML content into clean, validated Markdown
           </p>
           <a
-            href="https://github.com/sbolel/paste-to-markdown/"
+            href="https://github.com/sbolel/paste-to-markdown"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="View the Paste to Markdown GitHub repository (opens in a new tab)"
