@@ -23,11 +23,14 @@
   <rect x="64" y="64" width="1072" height="502" rx="36" fill="rgba(14, 10, 27, 0.52)" stroke="rgba(255, 255, 255, 0.1)" />
 
   <text x="112" y="144" fill="#6fe6fa" font-family="'Inter', Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="4">HTML TO MARKDOWN CONVERTER</text>
-  <text x="112" y="238" fill="#f9f7ff" font-family="'Space Grotesk', Arial, sans-serif" font-size="74" font-weight="700">Paste to Markdown</text>
-  <text x="112" y="294" fill="#dacff4" font-family="'Inter', Arial, sans-serif" font-size="30">
-    Clean Markdown from rich clipboard HTML, directly in the browser.
+  <text x="112" y="228" fill="#f9f7ff" font-family="'Space Grotesk', Arial, sans-serif" font-size="70" font-weight="700">Paste to Markdown</text>
+  <text x="112" y="292" fill="#dacff4" font-family="'Inter', Arial, sans-serif" font-size="28">
+    Clean Markdown from rich clipboard HTML,
   </text>
-  <text x="112" y="343" fill="#c4b7e7" font-family="'Inter', Arial, sans-serif" font-size="28">
+  <text x="112" y="328" fill="#dacff4" font-family="'Inter', Arial, sans-serif" font-size="28">
+    directly in the browser.
+  </text>
+  <text x="112" y="376" fill="#c4b7e7" font-family="'Inter', Arial, sans-serif" font-size="28">
     Built by Sinan Bolel • github.com/sbolel
   </text>
 
@@ -35,10 +38,10 @@
   <text x="144" y="435" fill="#9cedf8" font-family="'JetBrains Mono', monospace" font-size="24">&lt;h1&gt;Notes&lt;/h1&gt;</text>
   <text x="144" y="473" fill="#ffc2e1" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
 
-  <rect x="604" y="140" width="436" height="330" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" />
-  <text x="652" y="216" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700"># Notes</text>
-  <text x="652" y="264" fill="#bcd5ff" font-family="'JetBrains Mono', monospace" font-size="24">Clean Markdown output</text>
-  <text x="652" y="320" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
-  <text x="652" y="362" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet two</text>
-  <text x="652" y="404" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- ready for GitHub</text>
+  <rect x="760" y="206" width="280" height="264" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" />
+  <text x="806" y="280" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700"># Notes</text>
+  <text x="790" y="322" fill="#bcd5ff" font-family="'JetBrains Mono', monospace" font-size="21">Clean Markdown output</text>
+  <text x="806" y="376" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
+  <text x="806" y="414" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet two</text>
+  <text x="806" y="452" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- ready for GitHub</text>
 </svg>
