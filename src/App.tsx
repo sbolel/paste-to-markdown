@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen, ArrowCounterClockwise } from '@phosphor-icons/react'
+import { ClipboardText, Copy, Eye, Code, Download, Info, Sparkle, Keyboard, BookOpen, ArrowCounterClockwise, GithubLogo } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
@@ -537,6 +537,16 @@ function App() {
           <p className="text-muted-foreground text-base md:text-lg" style={{ lineHeight: '1.6' }}>
             Convert any HTML content into clean, validated Markdown
           </p>
+          <a
+            href="https://github.com/sbolel/paste-to-markdown/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View the Paste to Markdown GitHub repository (opens in a new tab)"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent/80 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <GithubLogo size={18} weight="fill" aria-hidden="true" />
+            <span>View on GitHub</span>
+          </a>
         </motion.div>
 
         {!markdownOutput ? (
