@@ -537,16 +537,27 @@ function App() {
           <p className="text-muted-foreground text-base md:text-lg" style={{ lineHeight: '1.6' }}>
             Convert any HTML content into clean, validated Markdown
           </p>
-          <a
-            href="https://github.com/sbolel/paste-to-markdown"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View the Paste to Markdown GitHub repository (opens in a new tab)"
-            className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent/80 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <GithubLogo size={18} weight="fill" aria-hidden="true" />
-            <span>View on GitHub</span>
-          </a>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm">
+            <a
+              href="/paste-to-markdown/about/"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/60 px-4 py-2 font-medium text-foreground transition-colors hover:border-accent/70 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              About This Project
+            </a>
+            <a
+              href="https://github.com/sbolel/paste-to-markdown"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View the Paste to Markdown GitHub repository (opens in a new tab)"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/60 px-4 py-2 font-medium text-foreground transition-colors hover:border-accent/70 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <GithubLogo size={18} weight="fill" aria-hidden="true" />
+              <span>View on GitHub</span>
+            </a>
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Built by <a className="font-medium text-accent hover:underline" href="https://sinanbolel.com/">Sinan Bolel</a>.
+          </p>
         </motion.div>
 
         {!markdownOutput ? (
