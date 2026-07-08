@@ -43,38 +43,86 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Paste to Markdown",
-        "url": "https://sbolel.github.io/paste-to-markdown/",
-        "description": "Paste to Markdown converts rich clipboard HTML into clean Markdown locally in the browser.",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web",
-        "browserRequirements": "Requires JavaScript and clipboard access",
-        "isAccessibleForFree": true,
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Sinan Bolel",
-          "url": "https://sinanbolel.com/",
-          "sameAs": [
-            "https://github.com/sbolel",
-            "https://www.linkedin.com/in/sinanbolel"
-          ]
-        },
-        "creator": {
-          "@type": "Person",
-          "name": "Sinan Bolel",
-          "url": "https://sinanbolel.com/",
-          "sameAs": [
-            "https://github.com/sbolel",
-            "https://www.linkedin.com/in/sinanbolel"
-          ]
-        },
-        "codeRepository": "https://github.com/sbolel/paste-to-markdown"
+        "@graph": [
+          {
+            "@type": "AboutPage",
+            "@id": "https://sbolel.github.io/paste-to-markdown/about/#webpage",
+            "url": "https://sbolel.github.io/paste-to-markdown/about/",
+            "name": "About Paste to Markdown | Sinan Bolel",
+            "description": "Learn about Paste to Markdown, the privacy-friendly HTML to Markdown web app built by Sinan Bolel, and how it connects to his website, GitHub, and LinkedIn.",
+            "about": [
+              {
+                "@id": "https://sinanbolel.com/#person"
+              },
+              {
+                "@id": "https://sbolel.github.io/paste-to-markdown/#webapp"
+              }
+            ],
+            "mainEntity": {
+              "@id": "https://sbolel.github.io/paste-to-markdown/#webapp"
+            },
+            "publisher": {
+              "@id": "https://sinanbolel.com/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://sinanbolel.com/#person",
+            "name": "Sinan Bolel",
+            "url": "https://sinanbolel.com/",
+            "image": "https://sinanbolel.com/sinan-bolel.jpg",
+            "sameAs": [
+              "https://linkedin.com/in/sinanbolel",
+              "https://github.com/sbolel",
+              "https://twitter.com/sinbols",
+              "https://www.npmjs.com/~sinanbolel",
+              "https://stackoverflow.com/users/1526037/sinan-bolel"
+            ],
+            "jobTitle": "Director, Software Engineering",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Aquia Inc."
+            },
+            "alumniOf": {
+              "@type": "CollegeOrUniversity",
+              "name": "Northwestern University",
+              "url": "https://www.northwestern.edu/"
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://sbolel.github.io/paste-to-markdown/#webapp",
+            "name": "Paste to Markdown",
+            "url": "https://sbolel.github.io/paste-to-markdown/",
+            "description": "Paste to Markdown converts rich clipboard HTML into clean Markdown locally in the browser.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "browserRequirements": "Requires JavaScript and clipboard access",
+            "isAccessibleForFree": true,
+            "featureList": [
+              "Convert pasted HTML from documents, web pages, email clients, and editors into Markdown.",
+              "Preview rendered Markdown before copying or downloading it.",
+              "Copy Markdown to the clipboard or download it as a .md file.",
+              "Choose Markdown flavor and formatting preferences in the browser.",
+              "Run conversion locally in the browser without sending pasted content to an application server."
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "author": {
+              "@id": "https://sinanbolel.com/#person"
+            },
+            "creator": {
+              "@id": "https://sinanbolel.com/#person"
+            },
+            "publisher": {
+              "@id": "https://sinanbolel.com/#person"
+            },
+            "codeRepository": "https://github.com/sbolel/paste-to-markdown"
+          }
+        ]
       }
     </script>
   </head>
