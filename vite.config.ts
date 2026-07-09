@@ -8,17 +8,27 @@ import { defineConfig, type Plugin } from "vite";
 const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname;
 const siteOrigin = 'https://sbolel.github.io';
 const siteBasePath = '/paste-to-markdown/';
-const sitePages = [
+const buildPages = [
   {
     name: 'main',
     input: 'index.html',
+  },
+  {
+    name: 'about',
+    input: 'about/index.html',
+  },
+  {
+    name: 'googleVerification',
+    input: 'google0602f969983537ca.html',
+  },
+] as const;
+const sitemapPages = [
+  {
     route: '',
     changefreq: 'monthly',
     priority: '0.9',
   },
   {
-    name: 'about',
-    input: 'about/index.html',
     route: 'about/',
     changefreq: 'monthly',
     priority: '0.8',
@@ -26,7 +36,7 @@ const sitePages = [
 ] as const;
 const sitemapBaseUrl = new URL(siteBasePath, siteOrigin).toString();
 const rollupInput = Object.fromEntries(
-  sitePages.map(({ name, input }) => [name, resolve(projectRoot, input)]),
+  buildPages.map(({ name, input }) => [name, resolve(projectRoot, input)]),
 );
 
 const getBuildDate = () => {
@@ -49,7 +59,7 @@ const sitemapPlugin = (): Plugin => {
     },
     async closeBundle() {
       const lastmod = getBuildDate();
-      const urls = sitePages
+      const urls = sitemapPages
         .map(({ route, changefreq, priority }) => {
           const loc = new URL(route, sitemapBaseUrl).toString();
 
