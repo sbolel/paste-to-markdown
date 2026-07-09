@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest an improvement to the app, Markdown conversion, or contributor workflow.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What user or contributor pain point does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the change you want to see.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Describe workarounds or alternative approaches.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Share example pasted content, UI references, or contributor workflow context if useful.

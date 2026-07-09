@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a defect in the app, conversion output, or contributor workflow.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please share a minimal, sanitized reproduction and avoid posting private clipboard content.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+      placeholder: A concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include clipboard content type, exact steps, and whether this happens in the live demo or local dev.
+      placeholder: |
+        1. Copy ...
+        2. Paste into ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Minimal sanitized sample
+      description: Paste a small HTML or Markdown example if it helps reproduce the issue. Remove private or sensitive content first.
+      render: markdown
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, and Node.js version if local tooling is involved.
+      placeholder: macOS 15, Chrome 136, Node 22.12.0
