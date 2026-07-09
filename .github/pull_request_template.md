@@ -5,7 +5,9 @@
 
 ## Validation
 
+- [ ] `npm run typecheck` (code changes)
 - [ ] `npm run lint`
+- [ ] `npm run build` (code changes)
 - [ ] docs updated if needed
 
 ## Risks
