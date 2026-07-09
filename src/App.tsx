@@ -190,6 +190,8 @@ const useLocalStorageState = <T,>(key: string, initialValue: T) => {
   return [value, setValue] as const
 }
 
+const aboutPageHref = `${import.meta.env.BASE_URL}about/`
+
 function App() {
   const [htmlInput, setHtmlInput] = useState('')
   const [markdownOutput, setMarkdownOutput] = useState('')
@@ -539,7 +541,7 @@ function App() {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm">
             <a
-              href="/paste-to-markdown/about/"
+              href={aboutPageHref}
               className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/60 px-4 py-2 font-medium text-foreground transition-colors hover:border-accent/70 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               About This Project
