@@ -96,11 +96,19 @@
         transition:
           transform 140ms ease,
           background-color 140ms ease,
-          border-color 140ms ease;
+          border-color 140ms ease,
+          box-shadow 140ms ease;
       }
 
       a:hover {
         transform: translateY(-1px);
+      }
+
+      a:focus-visible {
+        outline: none;
+        box-shadow:
+          0 0 0 3px rgba(9, 7, 15, 0.9),
+          0 0 0 5px rgba(255, 255, 255, 0.92);
       }
 
       .primary {
