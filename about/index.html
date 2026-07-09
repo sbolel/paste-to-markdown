@@ -40,6 +40,210 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
       rel="stylesheet"
     />
+    <style>
+      .about-page {
+        position: relative;
+        z-index: 2;
+        min-height: 100vh;
+        padding: clamp(1.25rem, 3vw, 2.15rem);
+        color: #f8f4ff;
+      }
+
+      .about-shell {
+        width: min(75rem, 100%);
+        margin: 0 auto;
+        padding: clamp(1.5rem, 4vw, 3rem);
+        border: 1px solid rgb(167 139 250 / 0.22);
+        border-radius: 2rem;
+        background:
+          radial-gradient(circle at 6% 8%, rgb(168 85 247 / 0.16), transparent 26rem),
+          linear-gradient(135deg, rgb(40 23 80 / 0.88), rgb(12 33 82 / 0.88));
+        box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.35);
+        backdrop-filter: blur(20px);
+      }
+
+      .about-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        background: rgb(139 92 246 / 0.24);
+        padding: 0.45rem 0.8rem;
+        color: #c4a7ff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .about-title {
+        margin: 1.35rem 0 0;
+        color: #ffffff;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        font-size: clamp(2.15rem, 3.2vw, 2.65rem);
+        line-height: 1.05;
+      }
+
+      .about-intro {
+        max-width: 48rem;
+        margin: 1.1rem 0 0;
+        color: rgb(232 226 255 / 0.86);
+        font-size: clamp(1rem, 1.25vw, 1.08rem);
+        line-height: 1.6;
+      }
+
+      .about-link {
+        color: #a78bfa;
+        font-weight: 600;
+        text-decoration: underline;
+        text-decoration-color: rgb(167 139 250 / 0.48);
+        text-underline-offset: 0.18em;
+        transition: color 160ms ease, text-decoration-color 160ms ease;
+      }
+
+      .about-link:hover {
+        color: #ddd6fe;
+        text-decoration-color: currentColor;
+      }
+
+      .about-link:focus-visible,
+      .about-project-link:focus-visible {
+        outline: 2px solid #c4b5fd;
+        outline-offset: 4px;
+        border-radius: 0.35rem;
+      }
+
+      .about-sections {
+        margin-top: clamp(1.75rem, 3vw, 2.35rem);
+      }
+
+      .about-row {
+        display: grid;
+        grid-template-columns: 3.75rem minmax(0, 1fr);
+        gap: clamp(1.25rem, 3vw, 2.25rem);
+        padding: 1.25rem 0;
+        border-top: 1px solid rgb(255 255 255 / 0.09);
+      }
+
+      .about-row:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .about-icon {
+        display: grid;
+        place-items: center;
+        width: 3.75rem;
+        height: 3.75rem;
+        border-radius: 0.8rem;
+        background: linear-gradient(145deg, rgb(124 58 237 / 0.48), rgb(91 33 182 / 0.5));
+        color: #c4b5fd;
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+      }
+
+      .about-icon svg {
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+
+      .about-row h2 {
+        margin: 0;
+        color: #ffffff;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        font-size: clamp(1.2rem, 1.7vw, 1.38rem);
+        line-height: 1.25;
+      }
+
+      .about-row p,
+      .about-row li {
+        color: rgb(232 226 255 / 0.82);
+        font-size: clamp(0.96rem, 1.15vw, 1rem);
+        line-height: 1.55;
+      }
+
+      .about-row p {
+        max-width: 48rem;
+        margin: 0.65rem 0 0;
+      }
+
+      .about-list {
+        list-style: disc;
+        margin: 0.75rem 0 0;
+        padding-left: 1.15rem;
+      }
+
+      .about-list li {
+        padding-left: 0.25rem;
+      }
+
+      .about-list li::marker {
+        color: #a78bfa;
+      }
+
+      .about-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.35rem;
+        margin-top: 1rem;
+      }
+
+      .about-project-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: #a78bfa;
+        font-size: 0.96rem;
+        font-weight: 600;
+        line-height: 1.4;
+        text-decoration: underline;
+        text-decoration-color: rgb(167 139 250 / 0.42);
+        text-underline-offset: 0.2em;
+        transition: color 160ms ease, text-decoration-color 160ms ease;
+      }
+
+      .about-project-link:hover {
+        color: #ddd6fe;
+        text-decoration-color: currentColor;
+      }
+
+      .about-project-link svg {
+        flex: 0 0 auto;
+        width: 1.15rem;
+        height: 1.15rem;
+      }
+
+      .about-external-icon {
+        width: 0.8rem;
+        height: 0.8rem;
+        opacity: 0.84;
+      }
+
+      @media (max-width: 42rem) {
+        .about-shell {
+          border-radius: 1.5rem;
+        }
+
+        .about-row {
+          grid-template-columns: 1fr;
+          gap: 0.95rem;
+          padding: 1.35rem 0;
+        }
+
+        .about-icon {
+          width: 3rem;
+          height: 3rem;
+          border-radius: 0.7rem;
+        }
+
+        .about-icon svg {
+          width: 1.45rem;
+          height: 1.45rem;
+        }
+
+        .about-links {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -127,70 +331,165 @@
     </script>
   </head>
   <body>
-    <main class="min-h-screen px-4 py-8 md:px-8 md:py-12">
-      <div class="mx-auto max-w-4xl">
-        <nav class="mb-8 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <a
-            href="%BASE_URL%"
-            class="inline-flex items-center rounded-full border border-border/60 bg-card/60 px-4 py-2 font-medium text-foreground transition-colors hover:border-accent/70 hover:text-accent"
-          >
-            Open the Tool
-          </a>
-          <a
-            href="https://github.com/sbolel/paste-to-markdown"
-            class="inline-flex items-center rounded-full border border-border/60 bg-card/60 px-4 py-2 font-medium text-foreground transition-colors hover:border-accent/70 hover:text-accent"
-          >
-            View the Repository
-          </a>
-        </nav>
-
-        <article class="rounded-[2rem] border border-primary/20 bg-card/80 p-6 shadow-2xl backdrop-blur-sm md:p-10 prose prose-neutral max-w-none">
-          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent !mt-0">About This Project</p>
-          <h1 class="!mt-2">Paste to Markdown</h1>
-          <p class="text-lg text-muted-foreground">
-            Paste to Markdown is a browser-based tool for converting rich clipboard HTML into clean, reusable Markdown.
-            It is built and maintained by <strong>Sinan Bolel</strong>, published from the
-            <a href="https://github.com/sbolel/paste-to-markdown">sbolel/paste-to-markdown</a> repository, and deployed on GitHub Pages.
+    <main class="about-page">
+      <article class="about-shell" aria-labelledby="about-title">
+        <header>
+          <p class="about-eyebrow">About This Project</p>
+          <h1 id="about-title" class="about-title">Paste to Markdown</h1>
+          <p class="about-intro">
+            Paste to Markdown is a browser-based tool for converting rich clipboard HTML into clean,
+            reusable Markdown. It is built and maintained by
+            <a class="about-link" href="https://sinanbolel.com/">Sinan Bolel</a>, published from the
+            <a class="about-link" href="https://github.com/sbolel/paste-to-markdown">sbolel/paste-to-markdown</a>
+            repository, and deployed on GitHub Pages.
           </p>
+        </header>
 
-          <h2>What the tool does</h2>
-          <p>
-            The app accepts pasted HTML from documents, web pages, email clients, and editors, then converts that content
-            into Markdown you can copy, inspect, preview, and download. It is designed for people who move between
-            rich-text tools and Markdown-first workflows.
-          </p>
+        <div class="about-sections">
+          <section class="about-row" aria-labelledby="what-tool-does">
+            <div class="about-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
+                <path d="M14 2v5h5" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="what-tool-does">What the tool does</h2>
+              <p>
+                The app accepts pasted HTML from documents, web pages, email clients, and editors,
+                then converts that content into Markdown you can copy, inspect, preview, and download.
+                It is designed for people who move between rich-text tools and Markdown-first workflows.
+              </p>
+            </div>
+          </section>
 
-          <h2>Who built it</h2>
-          <p>
-            Paste to Markdown is part of the public work of <a href="https://sinanbolel.com/">Sinan Bolel</a>,
-            also known online as <a href="https://github.com/sbolel">sbolel</a>. It complements his broader technical profile
-            across his personal site, GitHub, and <a href="https://www.linkedin.com/in/sinanbolel">LinkedIn</a>.
-          </p>
+          <section class="about-row" aria-labelledby="who-built-it">
+            <div class="about-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21a8 8 0 0 0-16 0" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="who-built-it">Who built it</h2>
+              <p>
+                Paste to Markdown is part of the public work of
+                <a class="about-link" href="https://sinanbolel.com/">Sinan Bolel</a>, also known online as
+                <a class="about-link" href="https://github.com/sbolel">sbolel</a>. It complements his broader technical profile
+                across his personal site, <a class="about-link" href="https://github.com/sbolel">GitHub</a>, and
+                <a class="about-link" href="https://www.linkedin.com/in/sinanbolel">LinkedIn</a>.
+              </p>
+            </div>
+          </section>
 
-          <h2>Privacy model</h2>
-          <p>
-            Conversion runs locally in the browser. Pasted content is not sent to an application server by this tool.
-            Cleared content is only kept in memory for the current page session so it can be restored, and display preferences
-            such as Markdown flavor may be saved in browser local storage.
-          </p>
+          <section class="about-row" aria-labelledby="privacy-model">
+            <div class="about-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                <path d="M12 15v2" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="privacy-model">Privacy model</h2>
+              <p>
+                Conversion runs locally in the browser. Pasted content is not sent to an application server by this tool.
+                Cleared content is only kept in memory for the current page session so it can be restored,
+                and display preferences such as Markdown flavor may be saved in browser local storage.
+              </p>
+            </div>
+          </section>
 
-          <h2>Intended users and use cases</h2>
-          <ul>
-            <li>Developers moving formatted notes or docs into repositories, issues, and pull requests</li>
-            <li>Writers and operators who need to preserve structure while leaving rich-text editors</li>
-            <li>Anyone cleaning up pasted HTML before using Markdown in GitHub, docs tools, or static sites</li>
-          </ul>
+          <section class="about-row" aria-labelledby="intended-users">
+            <div class="about-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-8 0v2" />
+                <circle cx="12" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                <path d="M2 21v-2a4 4 0 0 1 3-3.87" />
+                <path d="M8 3.13a4 4 0 0 0 0 7.75" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="intended-users">Intended users and use cases</h2>
+              <ul class="about-list">
+                <li>Developers moving formatted notes or docs into repositories, issues, and pull requests</li>
+                <li>Writers and operators who need to preserve structure while leaving rich-text editors</li>
+                <li>Anyone cleaning up pasted HTML before using Markdown in GitHub, docs tools, or static sites</li>
+              </ul>
+            </div>
+          </section>
 
-          <h2>Project links</h2>
-          <ul>
-            <li><a href="%BASE_URL%">Live tool</a></li>
-            <li><a href="https://github.com/sbolel/paste-to-markdown">GitHub repository</a></li>
-            <li><a href="https://sinanbolel.com/">sinanbolel.com</a></li>
-            <li><a href="https://github.com/sbolel">github.com/sbolel</a></li>
-            <li><a href="https://www.linkedin.com/in/sinanbolel">linkedin.com/in/sinanbolel</a></li>
-          </ul>
-        </article>
-      </div>
+          <section class="about-row" aria-labelledby="project-links">
+            <div class="about-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11 4.93" />
+                <path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L13 19.07" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="project-links">Project links</h2>
+              <div class="about-links">
+                <a class="about-project-link" href="%BASE_URL%">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M2 12h20" />
+                    <path d="M12 2a15.3 15.3 0 0 1 0 20" />
+                    <path d="M12 2a15.3 15.3 0 0 0 0 20" />
+                  </svg>
+                  <span>Live tool</span>
+                  <svg class="about-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17 17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </a>
+                <a class="about-project-link" href="https://github.com/sbolel/paste-to-markdown">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6c.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+                  </svg>
+                  <span>GitHub repository</span>
+                  <svg class="about-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17 17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </a>
+                <a class="about-project-link" href="https://sinanbolel.com/">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21a8 8 0 0 0-16 0" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span>sinanbolel.com</span>
+                  <svg class="about-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17 17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </a>
+                <a class="about-project-link" href="https://github.com/sbolel">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.35 1.08 2.92.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6c.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+                  </svg>
+                  <span>github.com/sbolel</span>
+                  <svg class="about-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17 17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </a>
+                <a class="about-project-link" href="https://www.linkedin.com/in/sinanbolel">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.45 20.45h-3.56v-5.58c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.68H9.35V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.33 7.42a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14Zm1.78 13.03H3.55V8.98h3.56v11.47ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
+                  </svg>
+                  <span>linkedin.com/in/sinanbolel</span>
+                  <svg class="about-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17 17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </article>
     </main>
     <script type="module" src="/src/about.ts"></script>
   </body>
