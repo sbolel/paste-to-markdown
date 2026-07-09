@@ -6,8 +6,28 @@ import react from "@vitejs/plugin-react-swc";
 import { defineConfig, type Plugin } from "vite";
 
 const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname;
-const sitemapBaseUrl = 'https://sbolel.github.io/paste-to-markdown/';
-const sitemapRoutes = ['', 'about/'];
+const siteOrigin = 'https://sbolel.github.io';
+const siteBasePath = '/paste-to-markdown/';
+const sitePages = [
+  {
+    name: 'main',
+    input: 'index.html',
+    route: '',
+    changefreq: 'monthly',
+    priority: '0.9',
+  },
+  {
+    name: 'about',
+    input: 'about/index.html',
+    route: 'about/',
+    changefreq: 'monthly',
+    priority: '0.8',
+  },
+] as const;
+const sitemapBaseUrl = new URL(siteBasePath, siteOrigin).toString();
+const rollupInput = Object.fromEntries(
+  sitePages.map(({ name, input }) => [name, resolve(projectRoot, input)]),
+);
 
 const getBuildDate = () => {
   const now = new Date();
@@ -29,14 +49,16 @@ const sitemapPlugin = (): Plugin => {
     },
     async closeBundle() {
       const lastmod = getBuildDate();
-      const urls = sitemapRoutes
-        .map((route) => {
+      const urls = sitePages
+        .map(({ route, changefreq, priority }) => {
           const loc = new URL(route, sitemapBaseUrl).toString();
 
           return [
             '  <url>',
             `    <loc>${loc}</loc>`,
             `    <lastmod>${lastmod}</lastmod>`,
+            `    <changefreq>${changefreq}</changefreq>`,
+            `    <priority>${priority}</priority>`,
             '  </url>',
           ].join('\n');
         })
@@ -56,13 +78,10 @@ const sitemapPlugin = (): Plugin => {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/paste-to-markdown/',
+  base: siteBasePath,
   build: {
     rollupOptions: {
-      input: {
-        main: resolve(projectRoot, 'index.html'),
-        about: resolve(projectRoot, 'about/index.html'),
-      },
+      input: rollupInput,
     },
   },
   plugins: [
