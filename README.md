@@ -1,8 +1,17 @@
 # Paste to Markdown
 
-Convert rich clipboard HTML into clean, validated Markdown in the browser.
+Paste to Markdown is a browser-based HTML to Markdown converter built by [Sinan Bolel](https://sinanbolel.com/) ([`sbolel`](https://github.com/sbolel)). It converts rich clipboard HTML into clean, validated Markdown locally in the browser.
 
 **Live demo:** [sbolel.github.io/paste-to-markdown](https://sbolel.github.io/paste-to-markdown/)
+**About the project:** [sbolel.github.io/paste-to-markdown/about](https://sbolel.github.io/paste-to-markdown/about/)
+
+## Project Ownership
+
+Paste to Markdown is part of Sinan Bolel's public body of work across:
+
+- [sinanbolel.com](https://sinanbolel.com/)
+- [GitHub profile: sbolel](https://github.com/sbolel)
+- [LinkedIn: sinanbolel](https://www.linkedin.com/in/sinanbolel)
 
 | Ready to convert | Markdown output |
 | --- | --- |
