@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Paste to Markdown</title>
+  <desc id="desc">Social preview card for Paste to Markdown by Sinan Bolel.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#150d28" />
+      <stop offset="45%" stop-color="#29184b" />
+      <stop offset="100%" stop-color="#101a3c" />
+    </linearGradient>
+    <radialGradient id="glowA" cx="20%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#f865b0" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#f865b0" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowB" cx="75%" cy="78%" r="70%">
+      <stop offset="0%" stop-color="#3ad6f2" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#3ad6f2" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glowA)" />
+  <rect width="1200" height="630" fill="url(#glowB)" />
+
+  <rect x="64" y="64" width="1072" height="502" rx="36" fill="rgba(14, 10, 27, 0.52)" stroke="rgba(255, 255, 255, 0.1)" />
+
+  <text x="112" y="144" fill="#6fe6fa" font-family="'Inter', Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="4">HTML TO MARKDOWN CONVERTER</text>
+  <text x="112" y="228" fill="#f9f7ff" font-family="'Space Grotesk', Arial, sans-serif" font-size="70" font-weight="700">Paste to Markdown</text>
+  <text x="112" y="292" fill="#dacff4" font-family="'Inter', Arial, sans-serif" font-size="28">
+    Clean Markdown from rich clipboard HTML,
+  </text>
+  <text x="112" y="328" fill="#dacff4" font-family="'Inter', Arial, sans-serif" font-size="28">
+    directly in the browser.
+  </text>
+  <text x="112" y="376" fill="#c4b7e7" font-family="'Inter', Arial, sans-serif" font-size="28">
+    Built by Sinan Bolel • github.com/sbolel
+  </text>
+
+  <rect x="112" y="392" width="374" height="104" rx="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" />
+  <text x="144" y="435" fill="#9cedf8" font-family="'JetBrains Mono', monospace" font-size="24">&lt;h1&gt;Notes&lt;/h1&gt;</text>
+  <text x="144" y="473" fill="#ffc2e1" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
+
+  <rect x="760" y="206" width="280" height="292" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" />
+  <text x="806" y="280" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700"># Notes</text>
+  <text x="790" y="322" fill="#bcd5ff" font-family="'JetBrains Mono', monospace" font-size="21">Clean Markdown output</text>
+  <text x="806" y="376" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet one</text>
+  <text x="806" y="414" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- bullet two</text>
+  <text x="806" y="452" fill="#f9f7ff" font-family="'JetBrains Mono', monospace" font-size="24">- ready for GitHub</text>
+</svg>
