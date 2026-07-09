@@ -7,7 +7,7 @@ import { defineConfig, type Plugin } from "vite";
 
 const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname;
 const sitemapBaseUrl = 'https://sbolel.github.io/paste-to-markdown/';
-const sitemapRoutes = [''];
+const sitemapRoutes = ['', 'about/'];
 
 const getBuildDate = () => {
   const now = new Date();
