@@ -20,6 +20,7 @@ import { motion } from 'framer-motion'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { CursorSparkles } from '@/components/CursorSparkles'
+import { applyMarkdownFormatToTextarea, type MarkdownFormatType } from '@/lib/markdown-formatting'
 
 type MarkdownFlavor = 'github' | 'commonmark' | 'strict' | 'custom'
 
@@ -381,93 +382,18 @@ function App() {
     }
   }
 
-  const applyMarkdownFormat = useCallback((formatType: string) => {
+  const applyMarkdownFormat = useCallback((formatType: MarkdownFormatType) => {
     const textarea = textareaRef.current
     if (!textarea) return
 
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = markdownOutput.substring(start, end)
-    const beforeText = markdownOutput.substring(0, start)
-    const afterText = markdownOutput.substring(end)
-
-    let newText = ''
-    let cursorOffset = 0
-
-    switch (formatType) {
-      case 'bold':
-        newText = `**${selectedText}**`
-        cursorOffset = selectedText ? 2 : 2
-        toast.success('Applied bold formatting')
-        break
-      case 'italic':
-        newText = `*${selectedText}*`
-        cursorOffset = selectedText ? 1 : 1
-        toast.success('Applied italic formatting')
-        break
-      case 'strikethrough':
-        newText = `~~${selectedText}~~`
-        cursorOffset = selectedText ? 2 : 2
-        toast.success('Applied strikethrough formatting')
-        break
-      case 'code':
-        newText = `\`${selectedText}\``
-        cursorOffset = selectedText ? 1 : 1
-        toast.success('Applied inline code formatting')
-        break
-      case 'code-block':
-        newText = `\`\`\`\n${selectedText}\n\`\`\``
-        cursorOffset = selectedText ? 4 : 4
-        toast.success('Applied code block formatting')
-        break
-      case 'link':
-        newText = `[${selectedText || 'link text'}](url)`
-        cursorOffset = selectedText ? selectedText.length + 3 : 11
-        toast.success('Applied link formatting')
-        break
-      case 'heading1':
-        newText = `# ${selectedText}`
-        cursorOffset = selectedText ? 2 : 2
-        toast.success('Applied heading 1 formatting')
-        break
-      case 'heading2':
-        newText = `## ${selectedText}`
-        cursorOffset = selectedText ? 3 : 3
-        toast.success('Applied heading 2 formatting')
-        break
-      case 'heading3':
-        newText = `### ${selectedText}`
-        cursorOffset = selectedText ? 4 : 4
-        toast.success('Applied heading 3 formatting')
-        break
-      case 'list':
-        newText = `- ${selectedText}`
-        cursorOffset = selectedText ? 2 : 2
-        toast.success('Applied list formatting')
-        break
-      case 'ordered-list':
-        newText = `1. ${selectedText}`
-        cursorOffset = selectedText ? 3 : 3
-        toast.success('Applied ordered list formatting')
-        break
-      case 'quote':
-        newText = `> ${selectedText}`
-        cursorOffset = selectedText ? 2 : 2
-        toast.success('Applied quote formatting')
-        break
-      default:
-        return
-    }
-
-    const updatedMarkdown = beforeText + newText + afterText
-    setMarkdownOutput(updatedMarkdown)
+    const { selectionStart, selectionEnd, successMessage } = applyMarkdownFormatToTextarea(textarea, formatType)
+    toast.success(successMessage)
 
     setTimeout(() => {
       textarea.focus()
-      const newCursorPos = start + (selectedText ? newText.length : cursorOffset)
-      textarea.setSelectionRange(newCursorPos, newCursorPos)
+      textarea.setSelectionRange(selectionStart, selectionEnd)
     }, 0)
-  }, [markdownOutput])
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
