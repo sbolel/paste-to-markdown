@@ -13,13 +13,13 @@ Paste to Markdown is a browser-based HTML-to-Markdown converter built by [Sinan 
 
 - Pastes rich HTML from documents, email, webpages, and editors.
 - Converts content to Markdown locally in the browser.
-- Supports raw Markdown and preview views.
-- Lets you copy or download the result.
-- Keeps recently cleared content restorable for the current page session.
+- Displays the converted Markdown as raw text.
+- Lets you copy the result to your clipboard.
+- Lets you clear the current paste and output.
 
 ## Privacy
 
-Paste to Markdown runs conversion in your browser. Pasted content is not sent to an app server, and cleared content is only kept in memory for the current page session. Display preferences such as Markdown flavor may be stored in browser local storage.
+Paste to Markdown runs conversion in your browser. Pasted content is not sent to an app server, and the canonical workspace app does not persist pasted content or display preferences.
 
 ## Workspace Structure
 
@@ -66,15 +66,17 @@ See the [core package's runtime compatibility policy](packages/core/README.md#ru
 
 ### `apps/web`
 
-The Vite and TypeScript website consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, display, and copy behavior.
+The Vite and TypeScript website is the canonical production app and GitHub Pages build. It consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, raw Markdown display, clearing, and copy behavior.
 
 This private package uses the workspace's Node.js `>=24.15.0` requirement for development and build tooling. The deployed application runs in the browser.
+
+The richer root-era React implementation in `src/` and its root `vite.config.ts` are intentionally retained while migration ownership and feature parity are resolved. They are not part of the workspace production build, so their preview, download, restore, and preference features are not currently available in `apps/web`.
 
 ## Architecture Notes
 
 - **`packages/core`** is runtime-agnostic: no DOM or browser UI concerns.
 - **`apps/web`** handles all UI interactions.
-- HTML-to-Markdown conversion uses [Turndown](https://github.com/mixmark-io/turndown) and GitHub Flavored Markdown helpers.
+- HTML-to-Markdown conversion uses [Turndown](https://github.com/mixmark-io/turndown). The workspace core's supported GFM helpers are strikethrough and checked or unchecked task-list markers.
 
 ## Release
 

@@ -81,7 +81,11 @@ async function handleCopy(): Promise<void> {
     showStatus("Copied to clipboard!", "success");
   } catch {
     outputEl.select();
-    document.execCommand("copy");
+    const copied = document.execCommand("copy");
+    if (!copied) {
+      showStatus("Unable to copy automatically. Select the text and copy it manually.", "error");
+      return;
+    }
     showStatus("Copied!", "success");
   }
 }

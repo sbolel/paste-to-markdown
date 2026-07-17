@@ -4,14 +4,18 @@ import { defineConfig } from "vite";
 const contentSecurityPolicy =
   "default-src 'self'; base-uri 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; form-action 'self'";
 
+const siteBase = "/paste-to-markdown/";
+const workspaceRoot = new URL("../../", import.meta.url);
+
 export default defineConfig(({ command }) => ({
-  base: "/paste-to-markdown/",
-  plugins:
-    command === "build"
+  base: siteBase,
+  publicDir: new URL("public", workspaceRoot).pathname,
+  plugins: [
+    ...(command === "build"
       ? [
           {
             name: "inject-content-security-policy",
-            transformIndexHtml(html) {
+            transformIndexHtml(html: string) {
               return {
                 html,
                 tags: [
@@ -28,7 +32,8 @@ export default defineConfig(({ command }) => ({
             },
           },
         ]
-      : [],
+      : []),
+  ],
   resolve: {
     alias: {
       "@paste-to-markdown/core": fileURLToPath(
@@ -39,7 +44,10 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: "dist",
     rollupOptions: {
-      input: "index.html",
+      input: {
+        main: "index.html",
+        about: "about/index.html",
+      },
     },
   },
 }));
