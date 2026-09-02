@@ -3,8 +3,11 @@ import { convertClipboardData } from "@paste-to-markdown/core";
 
 function getRequiredElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
-  if (!(element instanceof HTMLElement)) {
+  if (element === null) {
     throw new Error(`Missing required element: #${id}`);
+  }
+  if (!(element instanceof HTMLElement)) {
+    throw new Error(`Required element is not an HTMLElement: #${id}`);
   }
   return element as T;
 }
