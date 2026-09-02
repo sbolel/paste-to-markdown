@@ -72,6 +72,20 @@ describe("convertHtmlToMarkdown", () => {
     expect(result).toBe("~~deleted~~");
   });
 
+  it("converts checked and unchecked task-list markers (GFM)", () => {
+    const result = convertHtmlToMarkdown(
+      '<ul><li><input type="checkbox" checked> Done</li><li><input type="checkbox"> Next</li></ul>',
+    );
+    expect(result).toMatch(/\[x\]\s+Done/);
+    expect(result).toMatch(/\[ \]\s+Next/);
+  });
+
+  it("can disable the workspace GFM helpers", () => {
+    expect(convertHtmlToMarkdown("<del>deleted</del>", { gfm: false })).toBe(
+      "deleted",
+    );
+  });
+
   it("converts nested lists", () => {
     const html =
       "<ul><li>Item 1<ul><li>Nested</li></ul></li><li>Item 2</li></ul>";

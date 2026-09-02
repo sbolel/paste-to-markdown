@@ -17,7 +17,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @paste-to-markdown/web dev",
-    "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build",
+    "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build && pnpm artifact:check",
     "test": "pnpm --filter @paste-to-markdown/core test",
     "lint": "eslint .",
     "typecheck": "pnpm --filter @paste-to-markdown/core typecheck && pnpm --filter @paste-to-markdown/web typecheck",
@@ -25,7 +25,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "audit:prod": "pnpm audit --prod",
     "semantic-release": "semantic-release",
-    "release:check": "node scripts/check-release-config.mjs"
+    "release:check": "node scripts/check-release-config.mjs",
+    "artifact:check": "node scripts/check-pages-artifact.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
