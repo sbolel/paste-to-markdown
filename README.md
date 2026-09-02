@@ -36,6 +36,7 @@ paste-to-markdown/
 The checked-in `.nvmrc` selects Node 24; workspace tooling requires Node 24.15 or newer. With `nvm`, run `nvm use`, then install and start the workspace:
 
 ```bash
+nvm use
 pnpm install
 pnpm dev
 ```
