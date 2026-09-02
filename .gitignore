@@ -8,7 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+node_modules/
 dist
+dist/
 dist-ssr
 *-dist
 *.local
@@ -26,10 +28,10 @@ dist-ssr
 
 .env
 **/agent-eval-report*
-packages
 pids
 .file-manifest
 .devcontainer/*
 !.devcontainer/devcontainer.json
 
 .spark-workbench-id
+.cache

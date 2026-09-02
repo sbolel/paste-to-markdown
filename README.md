@@ -1,21 +1,13 @@
 # Paste to Markdown
 
-Paste to Markdown is a browser-based HTML to Markdown converter built by [Sinan Bolel](https://sinanbolel.com/) ([`sbolel`](https://github.com/sbolel)). It converts rich clipboard HTML into clean, validated Markdown locally in the browser.
+Paste to Markdown is a browser-based HTML-to-Markdown converter built by [Sinan Bolel](https://sinanbolel.com/) ([`sbolel`](https://github.com/sbolel)). It converts rich clipboard HTML into clean, validated Markdown locally in the browser and is organized as a pnpm workspace with a reusable core package.
 
 **Live demo:** [sbolel.github.io/paste-to-markdown](https://sbolel.github.io/paste-to-markdown/)
 **About the project:** [sbolel.github.io/paste-to-markdown/about](https://sbolel.github.io/paste-to-markdown/about/)
 
-## Project Ownership
-
-Paste to Markdown is part of Sinan Bolel's public body of work across:
-
-- [sinanbolel.com](https://sinanbolel.com/)
-- [GitHub profile: sbolel](https://github.com/sbolel)
-- [LinkedIn: sinanbolel](https://www.linkedin.com/in/sinanbolel)
-
 | Ready to convert | Markdown output |
 | --- | --- |
-| ![Paste to Markdown ready state](docs/assets/paste-to-markdown-ready.png) | ![Paste to Markdown Markdown output](docs/assets/paste-to-markdown-output.png) |
+| ![Paste to Markdown ready state](docs/assets/paste-to-markdown-ready.png) | ![Paste to Markdown output](docs/assets/paste-to-markdown-output.png) |
 
 ## What It Does
 
@@ -27,75 +19,57 @@ Paste to Markdown is part of Sinan Bolel's public body of work across:
 
 ## Privacy
 
-Paste to Markdown runs conversion in your browser. Pasted content is not sent to
-an app server by this tool, and cleared content is only kept in memory for the
-current page session so it can be restored. Display preferences such as Markdown
-flavor may be stored in browser local storage.
+Paste to Markdown runs conversion in your browser. Pasted content is not sent to an app server, and cleared content is only kept in memory for the current page session. Display preferences such as Markdown flavor may be stored in browser local storage.
+
+## Workspace Structure
+
+```
+paste-to-markdown/
+├── apps/
+│   └── web/              # Website application (Vite + TypeScript)
+└── packages/
+    └── core/             # Shared conversion logic (@paste-to-markdown/core)
+```
 
 ## Quick Start
 
-Use the live demo, or run it locally:
-
-Supported Node.js versions are `^20.19.0 || >=22.12.0`. The `.nvmrc` file pins
-the validated local development version. If you use `nvm`, run:
+The checked-in `.nvmrc` selects Node 24; workspace tooling requires Node 24.15 or newer. With `nvm`, run `nvm use`, then install and start the workspace:
 
 ```bash
-nvm use
+pnpm install
+pnpm dev
 ```
 
-Install dependencies:
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```bash
-npm install
-```
+## Scripts
 
-Start the local development server:
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Start the website application |
+| `pnpm build` | Build the core package and web app |
+| `pnpm test` | Run core package tests |
+| `pnpm lint` | Lint TypeScript files |
+| `pnpm typecheck` | Type-check all packages |
+| `pnpm check` | Run type checks, lint, tests, and build |
 
-```bash
-npm run dev
-```
+## Packages
 
-Build for production:
+### `@paste-to-markdown/core`
 
-```bash
-npm run build
-```
+The shared runtime-agnostic conversion package provides `convertHtmlToMarkdown(html, options?)` and `convertClipboardData(clipboardData, options?)`.
 
-Preview the production build:
+### `apps/web`
 
-```bash
-npm run preview
-```
-
-Run the baseline checks:
-
-```bash
-npm run typecheck
-npm run lint
-npm run build
-npm run audit:prod
-```
+The Vite and TypeScript website consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, display, and copy behavior.
 
 ## Release
 
 - Pull request titles must follow Conventional Commits so squash merges produce release-ready commits.
-- `fix:` creates a patch release.
-- `feat:` creates a minor release.
-- `feat!:` or `BREAKING CHANGE:` creates a major release.
-- Releases and GitHub tags are created automatically after merges to `main`.
-- npm publishing is disabled; releases are GitHub-only.
-
-## Project Notes
-
-This app is built with React, TypeScript, and Vite. Markdown conversion uses
-Turndown and GitHub Flavored Markdown helpers. Markdown preview HTML is
-sanitized before rendering.
-
-## Feedback Wanted
-
-Feedback is welcome on conversion quality, pasted-content edge cases, and README
-clarity. Please open an issue with a small reproduction if something converts
-poorly or behaves unexpectedly.
+- `fix:` creates a patch release; `feat:` creates a minor release; `feat!:` or `BREAKING CHANGE:` creates a major release.
+- Releases and GitHub tags are created automatically after merges to `main`; npm publishing is disabled.
+- `pnpm release:check` loads the configured plugins and previews commit analysis and release-note rendering without credentials. It does not publish or verify release permissions.
+- The CI/CD workflow validates the pnpm workspace and production dependency audit before release and Pages deployment. Its manual trigger follows the same gates.
 
 ## Project Docs
 

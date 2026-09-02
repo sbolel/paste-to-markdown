@@ -1,37 +1,34 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+import js from "@eslint/js";
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 
-export default tseslint.config(
+const workspaceFiles = [
+  "apps/web/**/*.{ts,tsx}",
+  "packages/core/**/*.{ts,tsx}",
+];
+
+export default [
   {
-    ignores: ['dist', 'node_modules', 'coverage'],
+    ignores: ["**/dist/**", "**/node_modules/**"],
   },
   {
-    files: ['*.config.js'],
+    files: workspaceFiles,
     languageOptions: {
-      globals: globals.node,
-    },
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      parser: tsParser,
+      globals: {
+        clearTimeout: "readonly",
+        document: "readonly",
+        navigator: "readonly",
+        setTimeout: "readonly",
+      },
     },
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      "@typescript-eslint": tseslint,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      'no-unused-vars': 'off',
-      'react-refresh/only-export-components': 'off',
+      ...js.configs.recommended.rules,
+      ...tseslint.configs.recommended.rules,
+      "no-undef": "off",
     },
   },
-)
+];
