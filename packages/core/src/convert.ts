@@ -1,13 +1,28 @@
 import TurndownService from "turndown";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
-/** Minimal structural type matching Turndown's internal node interface for blankReplacement. */
+/** Minimal structural type matching the Turndown node properties used here. */
 interface TurndownNode {
   isBlock: boolean;
   nodeName: string;
   parentNode?: { nodeName: string } | null;
   type?: string;
   checked?: boolean;
+  getAttribute?(name: string): string | null;
+}
+
+function normalizeInlineLinkContent(content: string): string {
+  return content.replace(/[ \t]*\r?\n+[ \t]*/g, " ").trim();
+}
+
+function escapeInlineLinkHref(href: string): string {
+  return href.replace(/([()])/g, "\\$1");
+}
+
+function formatInlineLinkTitle(title: string | null): string {
+  const cleaned = title ? title.replace(/(\n+\s*)+/g, "\n") : "";
+  if (!cleaned) return "";
+  return ` "${cleaned.replace(/"/g, '\\"')}"`;
 }
 
 function createTurndownService(
@@ -49,6 +64,20 @@ function createTurndownService(
       },
     });
   }
+
+  td.addRule("normalizedInlineLink", {
+    filter: (node) => {
+      const n = node as unknown as TurndownNode;
+      return n.nodeName === "A" && Boolean(n.getAttribute?.("href"));
+    },
+    replacement: (content, node) => {
+      const n = node as unknown as TurndownNode;
+      const href = n.getAttribute?.("href") ?? "";
+      const title = n.getAttribute?.("title") ?? null;
+
+      return `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`;
+    },
+  });
 
   return td;
 }

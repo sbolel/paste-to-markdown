@@ -27,6 +27,45 @@ describe("convertHtmlToMarkdown", () => {
     expect(result).toBe("[Example](https://example.com)");
   });
 
+  it("flattens block content inside an inline link label", () => {
+    const html =
+      '<a href="https://example.invalid/items/alpha"><p>Item Alpha</p><span>Short description</span></a>';
+
+    expect(convertHtmlToMarkdown(html)).toBe(
+      "[Item Alpha Short description](https://example.invalid/items/alpha)",
+    );
+  });
+
+  it("keeps adjacent block-backed links as separate Markdown blocks", () => {
+    const html = [
+      '<div><a href="https://example.invalid/items/alpha"><p>Item Alpha</p><span>Short description</span></a></div>',
+      '<div><a href="https://example.invalid/items/beta"><p>Item Beta</p><span>Another description</span></a></div>',
+    ].join("");
+
+    expect(convertHtmlToMarkdown(html)).toBe(
+      "[Item Alpha Short description](https://example.invalid/items/alpha)\n\n" +
+        "[Item Beta Another description](https://example.invalid/items/beta)",
+    );
+  });
+
+  it("preserves inline Markdown while flattening a link label", () => {
+    const html =
+      '<a href="https://example.invalid/items/gamma"><p><strong>Item Gamma</strong></p><span>A <em>short</em> description</span></a>';
+
+    expect(convertHtmlToMarkdown(html)).toBe(
+      "[**Item Gamma** A _short_ description](https://example.invalid/items/gamma)",
+    );
+  });
+
+  it("preserves inline-link destination and title escaping", () => {
+    const html =
+      '<a href="https://example.invalid/a_(b)" title="A &quot;quoted&quot; title">Example</a>';
+
+    expect(convertHtmlToMarkdown(html)).toBe(
+      '[Example](https://example.invalid/a_\\(b\\) "A \\"quoted\\" title")',
+    );
+  });
+
   it("converts unordered lists", () => {
     const html = "<ul><li>Item 1</li><li>Item 2</li></ul>";
     const result = convertHtmlToMarkdown(html);
@@ -107,6 +146,18 @@ describe("convertClipboardData", () => {
     const cd = makeClipboardData({ "text/html": "<p>Hello</p>" });
     const result = convertClipboardData(cd);
     expect(result).toBe("Hello");
+  });
+
+  it("normalizes block content in links from clipboard HTML", () => {
+    const cd = makeClipboardData({
+      "text/html":
+        '<a href="https://example.invalid/items/alpha"><p>Item Alpha</p><span>Short description</span></a>',
+      "text/plain": "Item AlphaShort description",
+    });
+
+    expect(convertClipboardData(cd)).toBe(
+      "[Item Alpha Short description](https://example.invalid/items/alpha)",
+    );
   });
 
   it("falls back to plain text when no HTML", () => {
