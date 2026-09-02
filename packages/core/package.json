@@ -3,6 +3,23 @@
   "version": "0.1.0",
   "description": "Core HTML-to-Markdown conversion logic for paste-to-markdown",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbolel/paste-to-markdown.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/sbolel/paste-to-markdown/issues"
+  },
+  "homepage": "https://github.com/sbolel/paste-to-markdown#readme",
+  "keywords": [
+    "markdown",
+    "html",
+    "clipboard",
+    "converter",
+    "turndown"
+  ],
+  "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

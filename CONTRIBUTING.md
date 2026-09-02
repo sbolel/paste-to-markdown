@@ -15,17 +15,21 @@ Focused contributions are especially welcome around:
 
 ## Local Setup
 
-The supported Node.js version is defined by `.nvmrc` and the `engines` field in
-`package.json`.
+Workspace development requires Node.js `>=24.15.0`, as declared in the root
+`package.json`. Use the Node 24 release selected by `.nvmrc`; CI also selects
+Node through that file. This requirement covers the private web app's tooling
+and building, testing, and maintaining the core package. Standalone core consumer
+compatibility is documented separately in the [core package README](packages/core/README.md#runtime-compatibility).
 
 ```bash
 nvm use
-npm install
-npm run dev
+corepack enable
+pnpm install
+pnpm dev
 ```
 
-Use `npm install` for normal local setup. Use `npm ci` when you need a clean,
-lockfile-driven install in CI or when reproducing issues from a known state.
+Use `pnpm install` for normal local setup. Keep the workspace lockfile in sync
+when dependency changes are intentional.
 
 ## Development Workflow
 
@@ -54,16 +58,14 @@ Examples:
 Before opening a pull request for code changes, run:
 
 ```bash
-npm run typecheck
-npm run lint
-npm run build
-npm run audit:prod
+pnpm check
+pnpm audit:prod
 ```
 
 For docs-only changes, run:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Accessibility

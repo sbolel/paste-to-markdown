@@ -3,6 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbolel/paste-to-markdown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sbolel/paste-to-markdown/issues"
+  },
+  "homepage": "https://github.com/sbolel/paste-to-markdown#readme",
   "engines": {
     "node": ">=24.15.0",
     "pnpm": ">=10"
@@ -13,7 +21,7 @@
     "test": "pnpm --filter @paste-to-markdown/core test",
     "lint": "eslint .",
     "typecheck": "pnpm --filter @paste-to-markdown/core typecheck && pnpm --filter @paste-to-markdown/web typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,html,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,html,md,yml}\"",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "audit:prod": "pnpm audit --prod",
     "semantic-release": "semantic-release",
