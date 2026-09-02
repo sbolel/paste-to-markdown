@@ -66,6 +66,52 @@ describe("convertHtmlToMarkdown", () => {
     );
   });
 
+  it.each([
+    ["before parentheses", String.raw`a\(b\)`, String.raw`a\\\(b\\\)`],
+    [
+      "repeated before parentheses",
+      String.raw`a\\(b\\)`,
+      String.raw`a\\\\\(b\\\\\)`,
+    ],
+    ["repeated within a path", String.raw`a\\b`, String.raw`a\\\\b`],
+    ["trailing", "a\\", String.raw`a\\`],
+    ["repeated trailing", String.raw`a\\`, String.raw`a\\\\`],
+  ])(
+    "escapes literal backslashes in inline-link destinations: %s",
+    (_name, path, expectedPath) => {
+      const html = `<a href="https://example.invalid/${path}">Example</a>`;
+
+      expect(convertHtmlToMarkdown(html)).toBe(
+        `[Example](https://example.invalid/${expectedPath})`,
+      );
+    },
+  );
+
+  it.each([
+    [
+      "before quotes",
+      String.raw`A \&quot;quoted\&quot; title`,
+      String.raw`A \\\"quoted\\\" title`,
+    ],
+    [
+      "repeated before quotes",
+      String.raw`A \\&quot;quoted\\&quot; title`,
+      String.raw`A \\\\\"quoted\\\\\" title`,
+    ],
+    ["repeated within a title", String.raw`A\\B`, String.raw`A\\\\B`],
+    ["trailing", "Title\\", String.raw`Title\\`],
+    ["repeated trailing", String.raw`Title\\`, String.raw`Title\\\\`],
+  ])(
+    "escapes literal backslashes in inline-link titles: %s",
+    (_name, title, expectedTitle) => {
+      const html = `<a href="https://example.invalid/" title="${title}">Example</a>`;
+
+      expect(convertHtmlToMarkdown(html)).toBe(
+        `[Example](https://example.invalid/ "${expectedTitle}")`,
+      );
+    },
+  );
+
   it("converts unordered lists", () => {
     const html = "<ul><li>Item 1</li><li>Item 2</li></ul>";
     const result = convertHtmlToMarkdown(html);

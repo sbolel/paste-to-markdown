@@ -16,13 +16,13 @@ function normalizeInlineLinkContent(content: string): string {
 }
 
 function escapeInlineLinkHref(href: string): string {
-  return href.replace(/([()])/g, "\\$1");
+  return href.replace(/([\\()])/g, "\\$1");
 }
 
 function formatInlineLinkTitle(title: string | null): string {
   const cleaned = title ? title.replace(/(\n+\s*)+/g, "\n") : "";
   if (!cleaned) return "";
-  return ` "${cleaned.replace(/"/g, '\\"')}"`;
+  return ` "${cleaned.replace(/([\\"])/g, "\\$1")}"`;
 }
 
 function createTurndownService(
