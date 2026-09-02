@@ -33,7 +33,7 @@ paste-to-markdown/
 
 ## Quick Start
 
-The checked-in `.nvmrc` pins Node 24. With `nvm`, run `nvm use`, then install and start the workspace:
+The checked-in `.nvmrc` selects Node 24; workspace tooling requires Node 24.15 or newer. With `nvm`, run `nvm use`, then install and start the workspace:
 
 ```bash
 pnpm install
@@ -68,6 +68,8 @@ The Vite and TypeScript website consumes `@paste-to-markdown/core` for conversio
 - Pull request titles must follow Conventional Commits so squash merges produce release-ready commits.
 - `fix:` creates a patch release; `feat:` creates a minor release; `feat!:` or `BREAKING CHANGE:` creates a major release.
 - Releases and GitHub tags are created automatically after merges to `main`; npm publishing is disabled.
+- `pnpm release:check` loads the configured plugins and previews commit analysis and release-note rendering without credentials. It does not publish or verify release permissions.
+- The CI/CD workflow validates the pnpm workspace and production dependency audit before release and Pages deployment. Its manual trigger follows the same gates.
 
 ## Project Docs
 

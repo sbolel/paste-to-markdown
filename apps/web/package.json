@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@paste-to-markdown/core": "workspace:*",
-    "dompurify": "^3.3.3"
+    "dompurify": "^3.4.14"
   },
   "devDependencies": {
     "typescript": "^6.0.2",
