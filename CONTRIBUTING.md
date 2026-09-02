@@ -15,8 +15,11 @@ Focused contributions are especially welcome around:
 
 ## Local Setup
 
-The supported Node.js version is defined by `.nvmrc` and the `engines` field in
-`package.json`.
+Workspace development requires Node.js `>=24.15.0`, as declared in the root
+`package.json`. Use the Node 24 release selected by `.nvmrc`; CI also selects
+Node through that file. This requirement covers the private web app's tooling
+and building, testing, and maintaining the core package. Standalone core consumer
+compatibility is documented separately in the [core package README](packages/core/README.md#runtime-compatibility).
 
 ```bash
 nvm use

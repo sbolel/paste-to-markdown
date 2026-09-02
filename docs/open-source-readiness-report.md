@@ -1,12 +1,21 @@
-# Open Source Readiness Report
+# Open Source Readiness Report (Historical Snapshot)
 
 Date: 2026-04-15
+
+> **Historical snapshot:** Runtime versions, audit results, license gaps, workflow
+> references, and recommendations below describe the 2026-04-15 review only.
+> For current contributor and runtime guidance, see [CONTRIBUTING.md](../CONTRIBUTING.md#local-setup)
+> and the [README](../README.md#getting-started). Use the current
+> [validation guidance](../CONTRIBUTING.md#validation), [script reference](../README.md#scripts),
+> and [CI/CD workflow](../.github/workflows/cicd.yml) for verification; the results
+> recorded here are not current checks. See [LICENSE.md](../LICENSE.md) for the
+> current license.
 
 ## Executive Summary
 
 The repository is in good technical shape for a public launch after this hardening pass. It now has a pinned local runtime, a CI gate, contributor and security documentation, issue and pull request templates, tighter package metadata, a basic static-site CSP/referrer policy, and a fixed favicon asset path.
 
-Current validation status:
+Validation recorded on 2026-04-15:
 
 - `pnpm check`: passed on Node `22.21.1`
 - `pnpm audit --prod`: no known vulnerabilities found

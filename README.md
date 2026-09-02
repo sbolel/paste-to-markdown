@@ -61,9 +61,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 The shared runtime-agnostic conversion package provides `convertHtmlToMarkdown(html, options?)` and `convertClipboardData(clipboardData, options?)`.
 
+See the [core package's runtime compatibility policy](packages/core/README.md#runtime-compatibility) for the distinction between standalone consumers and workspace tooling.
+
 ### `apps/web`
 
 The Vite and TypeScript website consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, display, and copy behavior.
+
+This private package uses the workspace's Node.js `>=24.15.0` requirement for development and build tooling. The deployed application runs in the browser.
 
 ## Architecture Notes
 
