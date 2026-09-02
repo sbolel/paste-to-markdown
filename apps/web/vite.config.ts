@@ -9,7 +9,7 @@ const workspaceRoot = new URL("../../", import.meta.url);
 
 export default defineConfig(({ command }) => ({
   base: siteBase,
-  publicDir: new URL("public", workspaceRoot).pathname,
+  publicDir: fileURLToPath(new URL("public", workspaceRoot)),
   plugins: [
     ...(command === "build"
       ? [

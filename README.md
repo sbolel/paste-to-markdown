@@ -48,7 +48,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | Command | Description |
 | --- | --- |
 | `pnpm dev` | Start the website application |
-| `pnpm build` | Build the core package and web app |
+| `pnpm build` | Build the core package and web app, then validate the Pages artifact |
 | `pnpm test` | Run core package tests |
 | `pnpm lint` | Lint TypeScript files |
 | `pnpm typecheck` | Type-check all packages |

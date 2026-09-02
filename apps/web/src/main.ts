@@ -81,9 +81,17 @@ async function handleCopy(): Promise<void> {
     showStatus("Copied to clipboard!", "success");
   } catch {
     outputEl.select();
-    const copied = document.execCommand("copy");
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch {
+      // Some browser security policies throw instead of returning false.
+    }
     if (!copied) {
-      showStatus("Unable to copy automatically. Select the text and copy it manually.", "error");
+      showStatus(
+        "Unable to copy automatically. Select the text and copy it manually.",
+        "error",
+      );
       return;
     }
     showStatus("Copied!", "success");
