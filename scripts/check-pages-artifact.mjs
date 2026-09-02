@@ -1,7 +1,8 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const artifactDir = resolve("apps/web/dist");
+const artifactDir = fileURLToPath(new URL("../apps/web/dist/", import.meta.url));
 const requiredFiles = [
   "index.html",
   "about/index.html",
