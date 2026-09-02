@@ -1,5 +1,5 @@
-import TurndownService from 'turndown';
-import type { ClipboardDataLike, ConversionOptions } from './types.js';
+import TurndownService from "turndown";
+import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
 /** Minimal structural type matching Turndown's internal node interface for blankReplacement. */
 interface TurndownNode {
@@ -10,36 +10,42 @@ interface TurndownNode {
   checked?: boolean;
 }
 
-function createTurndownService(options: ConversionOptions = {}): TurndownService {
+function createTurndownService(
+  options: ConversionOptions = {},
+): TurndownService {
   const td = new TurndownService({
-    headingStyle: 'atx',
-    hr: '---',
-    bulletListMarker: '-',
-    codeBlockStyle: 'fenced',
-    fence: '```',
-    emDelimiter: '_',
-    strongDelimiter: '**',
-    linkStyle: 'inlined',
+    headingStyle: "atx",
+    hr: "---",
+    bulletListMarker: "-",
+    codeBlockStyle: "fenced",
+    fence: "```",
+    emDelimiter: "_",
+    strongDelimiter: "**",
+    linkStyle: "inlined",
     preformattedCode: false,
     blankReplacement: (content, node) => {
       // Turndown attaches `isBlock` to nodes internally to indicate block-level elements.
-      return (node as unknown as TurndownNode).isBlock ? '\n\n' : '';
+      return (node as unknown as TurndownNode).isBlock ? "\n\n" : "";
     },
   });
 
   if (options.gfm !== false) {
-    td.addRule('strikethrough', {
-      filter: ['del', 's'],
+    td.addRule("strikethrough", {
+      filter: ["del", "s"],
       replacement: (content) => `~~${content}~~`,
     });
 
-    td.addRule('taskListItems', {
+    td.addRule("taskListItems", {
       filter: (node) => {
         const n = node as unknown as TurndownNode;
-        return n.nodeName === 'INPUT' && n.type === 'checkbox' && n.parentNode?.nodeName === 'LI';
+        return (
+          n.nodeName === "INPUT" &&
+          n.type === "checkbox" &&
+          n.parentNode?.nodeName === "LI"
+        );
       },
       replacement: (_content, node) => {
-        return (node as unknown as TurndownNode).checked ? '[x] ' : '[ ] ';
+        return (node as unknown as TurndownNode).checked ? "[x] " : "[ ] ";
       },
     });
   }
@@ -50,9 +56,12 @@ function createTurndownService(options: ConversionOptions = {}): TurndownService
 /**
  * Converts an HTML string to Markdown.
  */
-export function convertHtmlToMarkdown(html: string, options: ConversionOptions = {}): string {
+export function convertHtmlToMarkdown(
+  html: string,
+  options: ConversionOptions = {},
+): string {
   if (!html || !html.trim()) {
-    return '';
+    return "";
   }
   const td = createTurndownService(options);
   return td.turndown(html);
@@ -64,12 +73,12 @@ export function convertHtmlToMarkdown(html: string, options: ConversionOptions =
  */
 export function convertClipboardData(
   clipboardData: ClipboardDataLike,
-  options: ConversionOptions = {}
+  options: ConversionOptions = {},
 ): string {
-  const html = clipboardData.getData('text/html');
+  const html = clipboardData.getData("text/html");
   if (html && html.trim()) {
     return convertHtmlToMarkdown(html, options);
   }
-  const text = clipboardData.getData('text/plain');
-  return text || '';
+  const text = clipboardData.getData("text/plain");
+  return text || "";
 }
