@@ -11,7 +11,7 @@
     "dev": "pnpm --filter @paste-to-markdown/web dev",
     "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build",
     "test": "pnpm --filter @paste-to-markdown/core test",
-    "lint": "eslint --config eslint.workspace.config.js \"apps/web/**/*.{ts,tsx}\" \"packages/core/**/*.{ts,tsx}\"",
+    "lint": "eslint .",
     "typecheck": "pnpm --filter @paste-to-markdown/core typecheck && pnpm --filter @paste-to-markdown/web typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,html,md}\"",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",

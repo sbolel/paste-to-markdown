@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { convertClipboardData, convertHtmlToMarkdown } from '../src/index.js';
+import type { ClipboardDataLike } from '../src/index.js';
 
 describe('convertHtmlToMarkdown', () => {
   it('converts a simple paragraph', () => {
@@ -77,7 +78,7 @@ describe('convertHtmlToMarkdown', () => {
 });
 
 describe('convertClipboardData', () => {
-  function makeClipboardData(data: Record<string, string>): Pick<DataTransfer, 'getData'> {
+  function makeClipboardData(data: Record<string, string>): ClipboardDataLike {
     return {
       getData: (type: string) => data[type] ?? '',
     };
