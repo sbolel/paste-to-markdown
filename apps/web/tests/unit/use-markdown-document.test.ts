@@ -4,6 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { convertClipboardData } from "@paste-to-markdown/core";
 import { useMarkdownDocument } from "../../src/hooks/use-markdown-document";
 import { readClipboard } from "../../src/lib/clipboard";
+import { sanitizedPreview } from "../../src/lib/markdown";
+
+vi.mock("../../src/lib/markdown", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../src/lib/markdown")>();
+  return { ...actual, sanitizedPreview: vi.fn(actual.sanitizedPreview) };
+});
 
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock("@paste-to-markdown/core", async (importOriginal) => {
@@ -46,6 +53,44 @@ afterEach(() => {
 });
 
 describe("Markdown document state", () => {
+  it("defers parsing and sanitization until Preview displays the latest edits", () => {
+    mount();
+    act(() => api.importClipboard({ html: "", text: "# Initial" }));
+    act(() => api.setMarkdownOutput("# Edited"));
+    expect(sanitizedPreview).not.toHaveBeenCalled();
+    expect(api.sanitizedPreviewHtml).toBe("");
+    act(() => api.setPreviewMode("preview"));
+    expect(sanitizedPreview).toHaveBeenCalledExactlyOnceWith("# Edited");
+    expect(api.sanitizedPreviewHtml).toContain("<h1>Edited</h1>");
+    act(() => api.setPreviewMode("raw"));
+    act(() => api.setMarkdownOutput("**Latest**"));
+    expect(sanitizedPreview).toHaveBeenCalledTimes(1);
+    act(() => api.setPreviewMode("preview"));
+    expect(sanitizedPreview).toHaveBeenLastCalledWith("**Latest**");
+    expect(api.sanitizedPreviewHtml).toContain("<strong>Latest</strong>");
+  });
+
+  it("refreshes an active Preview after imports, reconversion, edits, and restore without stale content", () => {
+    mount();
+    act(() => api.importClipboard({ html: "<h1>Initial</h1>", text: "" }));
+    act(() => api.setPreviewMode("preview"));
+    act(() => api.importClipboard({ html: "<h1>New source</h1>", text: "" }));
+    expect(api.sanitizedPreviewHtml).toContain("<h1>New source</h1>");
+    act(() => api.handleFlavorChange("custom"));
+    expect(sanitizedPreview).toHaveBeenLastCalledWith("New source\n==========");
+    act(() => api.setMarkdownOutput("**Restorable**"));
+    expect(api.sanitizedPreviewHtml).toContain("<strong>Restorable</strong>");
+    const calls = vi.mocked(sanitizedPreview).mock.calls.length;
+    act(() => api.clear());
+    expect(api.sanitizedPreviewHtml).toBe("");
+    expect(sanitizedPreview).toHaveBeenCalledTimes(calls);
+    act(() => api.setPreviewMode("preview"));
+    expect(sanitizedPreview).toHaveBeenCalledTimes(calls);
+    act(() => api.restore());
+    expect(api.previewMode).toBe("preview");
+    expect(api.sanitizedPreviewHtml).toContain("<strong>Restorable</strong>");
+  });
+
   it("converts HTML first and keeps the clipboard source separate from edited output", () => {
     mount();
     act(() => {

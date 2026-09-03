@@ -104,9 +104,13 @@ export function useMarkdownDocument() {
     () => detectMarkdownExtensions(markdownOutput),
     [markdownOutput],
   );
+  const hasDocument = source !== null;
   const sanitizedPreviewHtml = useMemo(
-    () => sanitizedPreview(markdownOutput),
-    [markdownOutput],
+    () =>
+      hasDocument && previewMode === "preview"
+        ? sanitizedPreview(markdownOutput)
+        : "",
+    [hasDocument, markdownOutput, previewMode],
   );
 
   function setMarkdownOutput(value: string) {
