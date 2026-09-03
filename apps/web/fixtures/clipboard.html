@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>Synthetic clipboard acceptance</title>
+  <style>
+    body {
+      font: 16px sans-serif;
+    }
+    button {
+      margin: 4px;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+    }
+    #fixtures {
+      border: 1px solid;
+      padding: 12px;
+    }
+    pre {
+      white-space: pre-wrap;
+    }
+  </style>
+  <h1>Synthetic clipboard acceptance</h1>
+  <p>
+    Select a fixture, copy using the keyboard, then paste into the application
+    below. Only authored examples belong on this test page.
+  </p>
+  <div id="controls"></div>
+  <button id="narrow">Narrow fixture</button
+  ><button id="wide">Wide fixture</button>
+  <div id="fixtures">
+    <p id="inline">Outside <strong>alpha beta gamma</strong> outside.</p>
+    <ul id="list">
+      <li>First item</li>
+      <li>Second item</li>
+    </ul>
+    <table id="table">
+      <tr>
+        <td>Cell A</td>
+        <td>Cell B</td>
+      </tr>
+    </table>
+    <div id="cards" style="display: grid; gap: 24px">
+      <section style="order: 2">
+        <h3>Alpha</h3>
+        <p>Alpha description</p>
+        <p>Available</p>
+      </section>
+      <section style="order: 1">
+        <h3>Beta</h3>
+        <p>Beta description</p>
+        <p>Pending</p>
+      </section>
+    </div>
+    <div id="styled">
+      <div>
+        <span style="font-size: 24px; font-weight: 700">Project notes</span>
+      </div>
+      <div>• First observation</div>
+      <div>1. Reference number</div>
+    </div>
+    <div id="whitespace">
+      <p>First line<br />Second line<br />Third line</p>
+      <div style="white-space: pre-wrap">
+        First authored line indented second line
+      </div>
+      <p>Unit&nbsp;A</p>
+      <p>
+        Ordinary prose wraps when its container is narrow but has no authored
+        hard break.
+      </p>
+    </div>
+    <div id="integrated">
+      <a href="https://example.invalid/alpha"
+        ><h3>Alpha card</h3>
+        <p>Details</p></a
+      >
+      <a href="https://example.invalid/beta"
+        ><p>Beta card</p>
+        <span>Notes</span></a
+      >
+      <ul>
+        <li>
+          <label><input type="checkbox" checked />Done</label>
+        </li>
+        <li>
+          <span><input type="checkbox" />Next</span>
+        </li>
+      </ul>
+      <table>
+        <tr>
+          <th>Plain</th>
+          <th>Emphasis</th>
+          <th>Code</th>
+        </tr>
+        <tr>
+          <td>A | B</td>
+          <td><em>C | D</em></td>
+          <td><code>E | F</code></td>
+        </tr>
+      </table>
+      <div>
+        <div class="gutter" aria-hidden="true">1<br />2<br />3</div>
+        <pre><code class="language-js"><span>if</span> (ready) {<br>  run(42);<br>}</code></pre>
+      </div>
+      <p>Value: <code> x </code>.</p>
+      <p>After code.</p>
+    </div>
+  </div>
+  <p id="selection" aria-live="polite"></p>
+  <iframe id="app" title="Converter under test" src="../"></iframe>
+  <h2>Observed native clipboard and result</h2>
+  <pre id="evidence"></pre>
+  <script type="module" src="./clipboard.js"></script>
+</html>

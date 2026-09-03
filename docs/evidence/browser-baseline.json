@@ -1,0 +1,90 @@
+[
+  {
+    "case": "beta",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "beta",
+    "plain": "beta",
+    "markdown": "beta",
+    "status": "Converted!",
+    "renderedHtml": "<p>beta</p>\n"
+  },
+  {
+    "case": "partial item",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "cond item",
+    "plain": "cond item",
+    "markdown": "cond item",
+    "status": "Converted!",
+    "renderedHtml": "<p>cond item</p>\n"
+  },
+  {
+    "case": "cell B",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "Cell B",
+    "plain": "Cell B",
+    "markdown": "Cell B",
+    "status": "Converted!",
+    "renderedHtml": "<p>Cell B</p>\n"
+  },
+  {
+    "case": "across cells",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "<td>A</td><td>Cell B</td>",
+    "plain": "A\tCell B",
+    "markdown": "ACell B",
+    "status": "Converted!",
+    "renderedHtml": "<p>ACell B</p>\n"
+  },
+  {
+    "case": "cards",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "<section style=\"order:2\"><h3>Alpha</h3><p>Alpha description</p><p>Available</p></section><section style=\"order:1\"><h3>Beta</h3><p>Beta description</p><p>Pending</p></section>",
+    "plain": "Alpha\nAlpha description\n\nAvailable\n\nBeta\nBeta description\n\nPending",
+    "markdown": "### Alpha\n\nAlpha description\n\nAvailable\n\n### Beta\n\nBeta description\n\nPending",
+    "status": "Converted!",
+    "renderedHtml": "<h3>Alpha</h3>\n<p>Alpha description</p>\n<p>Available</p>\n<h3>Beta</h3>\n<p>Beta description</p>\n<p>Pending</p>\n"
+  },
+  {
+    "case": "styled",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "<div><span style=\"font-size:24px;font-weight:700\">Project notes</span></div><div>• First observation</div><div>1. Reference number</div>",
+    "plain": "Project notes\n• First observation\n1. Reference number",
+    "markdown": "Project notes\n\n• First observation\n\n1\\. Reference number",
+    "status": "Converted!",
+    "renderedHtml": "<p>Project notes</p>\n<p>• First observation</p>\n<p>1. Reference number</p>\n"
+  },
+  {
+    "case": "whitespace",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain", "text/html"],
+    "html": "<p>First line<br>Second line<br>Third line</p><div style=\"white-space:pre-wrap\">First authored line\n  indented second line</div><p>Unit&nbsp;A</p><p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>",
+    "plain": "First line\nSecond line\nThird line\n\nFirst authored line\n  indented second line\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "markdown": "First line  \nSecond line  \nThird line\n\nFirst authored line indented second line\n\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "status": "Converted!",
+    "renderedHtml": "<p>First line<br>Second line<br>Third line</p>\n<p>First authored line indented second line</p>\n<p>Unit A</p>\n<p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>\n"
+  },
+  {
+    "case": "plain text",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["text/plain"],
+    "html": "",
+    "plain": "# literal heading?\n*literal emphasis?*\n<strong>literal</strong>\n",
+    "markdown": "# literal heading?\n*literal emphasis?*\n<strong>literal</strong>\n",
+    "status": "Converted!"
+  },
+  {
+    "case": "image only",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": ["Files"],
+    "html": "",
+    "plain": "",
+    "markdown": "# literal heading?\n*literal emphasis?*\n<strong>literal</strong>\n",
+    "status": "Nothing to convert — paste some rich text."
+  }
+]
