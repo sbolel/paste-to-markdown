@@ -1,5 +1,6 @@
 import TurndownService from "turndown";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
+import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
@@ -49,6 +50,7 @@ function createTurndownService(
   });
 
   addCodeRules(td);
+  addTaskListRules(td, options.gfm !== false);
   addTableRules(td, options.gfm !== false);
 
   if (options.gfm !== false) {
@@ -57,19 +59,7 @@ function createTurndownService(
       replacement: (content) => `~~${content}~~`,
     });
 
-    td.addRule("taskListItems", {
-      filter: (node) => {
-        const n = node as unknown as TurndownNode;
-        return (
-          n.nodeName === "INPUT" &&
-          n.type === "checkbox" &&
-          n.parentNode?.nodeName === "LI"
-        );
-      },
-      replacement: (_content, node) => {
-        return (node as unknown as TurndownNode).checked ? "[x] " : "[ ] ";
-      },
-    });
+
   }
 
   td.addRule("normalizedInlineLink", {
