@@ -1,4 +1,5 @@
 import TurndownService from "turndown";
+import { markdownFlavorOptions } from "./flavors.js";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
 import {
   addInlineLayoutRules,
@@ -8,7 +9,7 @@ import {
 import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
 import { withTableContext } from "./table-fragment.js";
-import type { ClipboardDataLike, ConversionOptions, MarkdownFlavor } from "./types.js";
+import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
 /** Minimal structural type matching the Turndown node properties used here. */
 interface TurndownNode {
@@ -19,47 +20,6 @@ interface TurndownNode {
   checked?: boolean;
   getAttribute?(name: string): string | null;
 }
-
-const markdownFlavorOptions: Record<
-  MarkdownFlavor,
-  Pick<
-    TurndownService.Options,
-    | "headingStyle"
-    | "codeBlockStyle"
-    | "bulletListMarker"
-    | "emDelimiter"
-    | "strongDelimiter"
-  >
-> = {
-  github: {
-    headingStyle: "atx",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "-",
-    emDelimiter: "_",
-    strongDelimiter: "**",
-  },
-  commonmark: {
-    headingStyle: "atx",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "-",
-    emDelimiter: "*",
-    strongDelimiter: "**",
-  },
-  strict: {
-    headingStyle: "atx",
-    codeBlockStyle: "indented",
-    bulletListMarker: "*",
-    emDelimiter: "*",
-    strongDelimiter: "**",
-  },
-  custom: {
-    headingStyle: "setext",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "+",
-    emDelimiter: "_",
-    strongDelimiter: "__",
-  },
-};
 
 function normalizeInlineLinkContent(content: string): string {
   return content.replace(/[ \t]*\r?\n+[ \t]*/g, " ").trim();

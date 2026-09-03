@@ -2,7 +2,7 @@ import { test, expect } from "./fixtures";
 
 const shortcuts = [
   { label: "bold", keys: "ControlOrMeta+b", result: "**sample**" },
-  { label: "italic", keys: "ControlOrMeta+i", result: "*sample*" },
+  { label: "italic", keys: "ControlOrMeta+i", result: "_sample_" },
   { label: "strikethrough", keys: "ControlOrMeta+d", result: "~~sample~~" },
   { label: "inline code", keys: "ControlOrMeta+e", result: "`sample`" },
   {
@@ -64,6 +64,133 @@ test("native editor undo and redo survive Preview round-trips", async ({
   await expect(app.editor).toHaveValue("**sample**");
 });
 
+for (const preset of [
+  {
+    name: "GitHub Flavored",
+    bold: "**sample**",
+    italic: "_sample_",
+    bullet: "- sample",
+    heading: "# sample",
+    block: "```\nsample\n```",
+  },
+  {
+    name: "CommonMark",
+    bold: "**sample**",
+    italic: "*sample*",
+    bullet: "- sample",
+    heading: "# sample",
+    block: "```\nsample\n```",
+  },
+  {
+    name: "Strict Markdown",
+    bold: "**sample**",
+    italic: "*sample*",
+    bullet: "* sample",
+    heading: "# sample",
+    block: "    sample",
+  },
+  {
+    name: "Custom Style",
+    bold: "__sample__",
+    italic: "_sample_",
+    bullet: "+ sample",
+    heading: "sample\n======",
+    block: "```\nsample\n```",
+  },
+]) {
+  test(`shortcuts use the effective ${preset.name} preset`, async ({ app }) => {
+    await app.open();
+    await app.paste({ text: "sample" });
+    await app.flavor(preset.name);
+    for (const [keys, expected] of [
+      ["ControlOrMeta+b", preset.bold],
+      ["ControlOrMeta+i", preset.italic],
+      ["ControlOrMeta+Shift+l", preset.bullet],
+      ["ControlOrMeta+1", preset.heading],
+      ["ControlOrMeta+Shift+c", preset.block],
+      ["ControlOrMeta+d", "~~sample~~"],
+    ]) {
+      await app.editor.fill("sample");
+      await app.selectAll();
+      await app.editor.press(keys);
+      await expect(app.editor).toHaveValue(expected);
+    }
+  });
+}
+
+test("shortcuts keep the original flavor after cancellation and use the confirmed flavor", async ({
+  app,
+  page,
+}) => {
+  await app.open();
+  await app.paste({ text: "sample" });
+  await app.editor.fill("edited");
+  await app.flavor("Custom Style");
+  const dialog = page.getByRole("dialog", {
+    name: "Replace your Markdown edits?",
+  });
+  await dialog.getByRole("button", { name: "Keep my edits" }).click();
+  await app.selectAll();
+  await app.editor.press("ControlOrMeta+b");
+  await expect(app.editor).toHaveValue("**edited**");
+  await app.flavor("Custom Style");
+  await dialog.getByRole("button", { name: "Reconvert", exact: true }).click();
+  await app.selectAll();
+  await app.editor.press("ControlOrMeta+b");
+  await expect(app.editor).toHaveValue("__sample__");
+});
+
+test("link shortcuts put the caret at the URL for selected and empty labels", async ({
+  app,
+}) => {
+  await app.open();
+  await app.paste({ text: "sample" });
+  for (const label of ["", "label"]) {
+    await app.editor.fill(`before ${label} after`);
+    await app.editor.focus();
+    await app.editor.evaluate(
+      (element: HTMLTextAreaElement, length) =>
+        element.setSelectionRange(7, 7 + length),
+      label.length,
+    );
+    await app.editor.press("ControlOrMeta+k");
+    expect(
+      await app.editor.evaluate((element: HTMLTextAreaElement) => ({
+        start: element.selectionStart,
+        end: element.selectionEnd,
+      })),
+    ).toEqual({
+      start: 7 + (label || "link text").length + 3,
+      end: 7 + (label || "link text").length + 3,
+    });
+    await app.editor.pressSequentially("guide-");
+    await expect(app.editor).toHaveValue(
+      `before [${label || "link text"}](guide-url) after`,
+    );
+  }
+});
+
+test("the code-block shortcut preserves embedded Markdown fences in Preview", async ({
+  app,
+  page,
+}) => {
+  const source = "before\n````\n```nested```\n````\nafter";
+  await app.open();
+  await app.paste({ text: source });
+  await app.selectAll();
+  await app.editor.press("ControlOrMeta+Shift+c");
+  await expect(app.editor).toHaveValue(`\`\`\`\`\`\n${source}\n\`\`\`\`\``);
+  await page.getByRole("tab", { name: "Preview", exact: true }).click();
+  await expect(app.preview.locator("pre > code")).toHaveCount(1);
+  expect(await app.preview.locator("pre > code").textContent()).toBe(
+    `${source}\n`,
+  );
+  await expect(app.preview.locator("p")).toHaveCount(0);
+  await page.getByRole("tab", { name: "Raw Markdown" }).click();
+  await app.editor.press("ControlOrMeta+z");
+  await expect(app.editor).toHaveValue(source);
+});
+
 test("formatting and help shortcuts leave the focused filename unchanged", async ({
   app,
   page,
@@ -108,6 +235,9 @@ test("cheatsheet and shortcut help open and close accessibly", async ({
     .click();
   const help = page.getByRole("dialog", { name: "Keyboard Shortcuts" });
   await expect(help.getByText("Bold", { exact: true })).toBeVisible();
+  await expect(
+    help.getByText(/Strikethrough remains available in every flavor/),
+  ).toBeVisible();
   await app.capture("shortcut-help", info);
   await help.getByRole("button", { name: "Got it" }).click();
   await app.editor.press("ControlOrMeta+/");

@@ -996,6 +996,7 @@ function App() {
                         const result = applyMarkdownFormatToTextarea(
                           event.currentTarget,
                           format,
+                          markdownFlavor,
                         );
                         setMarkdownOutput(event.currentTarget.value);
                         event.currentTarget.setSelectionRange(
@@ -1091,7 +1092,9 @@ function App() {
               <p className="text-sm text-muted-foreground">
                 Use these keyboard shortcuts to quickly format your markdown
                 text. Select text in the Raw Markdown view and press the
-                shortcut.
+                shortcut. Formatting follows the selected flavor. Strikethrough
+                remains available in every flavor as an optional Markdown
+                extension.
               </p>
               <div className="grid gap-3">
                 <div className="grid grid-cols-2 gap-4">

@@ -1,3 +1,8 @@
+import {
+  markdownFlavorOptions,
+  type MarkdownFlavor,
+} from "@paste-to-markdown/core";
+
 export type MarkdownFormatType =
   | "bold"
   | "italic"
@@ -15,6 +20,7 @@ export type MarkdownFormatType =
 interface MarkdownFormatEdit {
   replacement: string;
   cursorOffset: number;
+  useCursorOffsetWithSelection?: boolean;
   successMessage: string;
 }
 
@@ -51,18 +57,20 @@ export function getMarkdownShortcut(
 export const getMarkdownFormatEdit = (
   formatType: MarkdownFormatType,
   selectedText: string,
+  flavor: MarkdownFlavor = "github",
 ): MarkdownFormatEdit => {
+  const preset = markdownFlavorOptions[flavor];
   switch (formatType) {
     case "bold":
       return {
-        replacement: `**${selectedText}**`,
-        cursorOffset: 2,
+        replacement: `${preset.strongDelimiter}${selectedText}${preset.strongDelimiter}`,
+        cursorOffset: preset.strongDelimiter.length,
         successMessage: "Applied bold formatting",
       };
     case "italic":
       return {
-        replacement: `*${selectedText}*`,
-        cursorOffset: 1,
+        replacement: `${preset.emDelimiter}${selectedText}${preset.emDelimiter}`,
+        cursorOffset: preset.emDelimiter.length,
         successMessage: "Applied italic formatting",
       };
     case "strikethrough":
@@ -77,30 +85,53 @@ export const getMarkdownFormatEdit = (
         cursorOffset: 1,
         successMessage: "Applied inline code formatting",
       };
-    case "code-block":
+    case "code-block": {
+      if (preset.codeBlockStyle === "indented") {
+        return {
+          replacement: `    ${selectedText.replace(/\n/g, "\n    ")}`,
+          cursorOffset: 4,
+          successMessage: "Applied code block formatting",
+        };
+      }
+      const longestRun = Array.from(selectedText.matchAll(/`+/g)).reduce(
+        (longest, match) => Math.max(longest, match[0].length),
+        0,
+      );
+      const fence = "`".repeat(Math.max(3, longestRun + 1));
       return {
-        replacement: `\`\`\`\n${selectedText}\n\`\`\``,
-        cursorOffset: 4,
+        replacement: `${fence}\n${selectedText}\n${fence}`,
+        cursorOffset: fence.length + 1,
         successMessage: "Applied code block formatting",
       };
-    case "link":
+    }
+    case "link": {
+      const label = selectedText || "link text";
       return {
-        replacement: `[${selectedText || "link text"}](url)`,
-        cursorOffset: selectedText ? selectedText.length + 3 : 11,
+        replacement: `[${label}](url)`,
+        cursorOffset: label.length + 3,
+        useCursorOffsetWithSelection: true,
         successMessage: "Applied link formatting",
       };
+    }
     case "heading1":
+    case "heading2": {
+      const level = formatType === "heading1" ? 1 : 2;
+      if (preset.headingStyle === "setext") {
+        const underline = (level === 1 ? "=" : "-").repeat(
+          Math.max(3, selectedText.length),
+        );
+        return {
+          replacement: `${selectedText}\n${underline}`,
+          cursorOffset: 0,
+          successMessage: `Applied heading ${level} formatting`,
+        };
+      }
       return {
-        replacement: `# ${selectedText}`,
-        cursorOffset: 2,
-        successMessage: "Applied heading 1 formatting",
+        replacement: `${"#".repeat(level)} ${selectedText}`,
+        cursorOffset: level + 1,
+        successMessage: `Applied heading ${level} formatting`,
       };
-    case "heading2":
-      return {
-        replacement: `## ${selectedText}`,
-        cursorOffset: 3,
-        successMessage: "Applied heading 2 formatting",
-      };
+    }
     case "heading3":
       return {
         replacement: `### ${selectedText}`,
@@ -109,7 +140,7 @@ export const getMarkdownFormatEdit = (
       };
     case "list":
       return {
-        replacement: `- ${selectedText}`,
+        replacement: `${preset.bulletListMarker} ${selectedText}`,
         cursorOffset: 2,
         successMessage: "Applied list formatting",
       };
@@ -131,14 +162,16 @@ export const getMarkdownFormatEdit = (
 export const applyMarkdownFormatToTextarea = (
   textarea: HTMLTextAreaElement,
   formatType: MarkdownFormatType,
+  flavor: MarkdownFlavor = "github",
 ): AppliedMarkdownFormat => {
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
   const selectedText = textarea.value.slice(start, end);
-  const edit = getMarkdownFormatEdit(formatType, selectedText);
-  const selectionPosition = selectedText
-    ? start + edit.replacement.length
-    : start + edit.cursorOffset;
+  const edit = getMarkdownFormatEdit(formatType, selectedText, flavor);
+  const selectionPosition =
+    selectedText && !edit.useCursorOffsetWithSelection
+      ? start + edit.replacement.length
+      : start + edit.cursorOffset;
   const ownerDocument = textarea.ownerDocument;
   const supportsNativeInsertText =
     typeof ownerDocument.execCommand === "function";

@@ -4,3 +4,4 @@ export type {
   ConversionOptions,
   MarkdownFlavor,
 } from "./types.js";
+export { markdownFlavorOptions } from "./flavors.js";
