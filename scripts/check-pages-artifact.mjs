@@ -2,7 +2,9 @@ import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const artifactDir = fileURLToPath(new URL("../apps/web/dist/", import.meta.url));
+const artifactDir = fileURLToPath(
+  new URL("../apps/web/dist/", import.meta.url),
+);
 const requiredFiles = [
   "index.html",
   "about/index.html",
@@ -32,12 +34,12 @@ const personId = "https://sinanbolel.com/#person";
 const aboutPageId = "https://sbolel.github.io/paste-to-markdown/about/#webpage";
 const supportedFeatures = [
   "Convert pasted HTML from documents, web pages, email clients, and editors into Markdown.",
-  "Display the converted Markdown as raw text.",
-  "Copy converted Markdown to the clipboard.",
-  "Clear the current pasted content and Markdown output.",
+  "Edit raw Markdown and display a sanitized rendered preview.",
+  "Copy Markdown to the clipboard or download a Markdown file.",
+  "Clear and restore the current document during the browser session.",
+  "Choose GitHub Flavored Markdown, CommonMark, Strict Markdown, or Custom Style and remember formatting preferences in this browser.",
   "Run conversion locally in the browser without sending pasted content to an application server.",
 ];
-const legacyFeaturePattern = /preview|download|preference/i;
 
 function structuredDataEntities(page) {
   return [
@@ -80,14 +82,6 @@ function assertFeatureList(entity, pageName) {
         `${pageName} WebApplication JSON-LD is missing: ${feature}`,
       );
     }
-  }
-
-  if (
-    entity.featureList.some((feature) => legacyFeaturePattern.test(feature))
-  ) {
-    throw new Error(
-      `${pageName} WebApplication JSON-LD includes a legacy-only feature claim.`,
-    );
   }
 }
 

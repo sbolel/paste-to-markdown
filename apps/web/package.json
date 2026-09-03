@@ -11,14 +11,46 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@paste-to-markdown/core": "workspace:*",
-    "dompurify": "^3.4.14"
+    "dompurify": "^3.4.14",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-error-boundary": "^6.1.1",
+    "@phosphor-icons/react": "^2.1.7",
+    "framer-motion": "^12.6.2",
+    "sonner": "^2.0.1",
+    "marked": "^15.0.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.0.2",
+    "tw-animate-css": "^1.2.4",
+    "lucide-react": "^0.484.0",
+    "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tooltip": "^1.1.8",
+    "@radix-ui/react-collapsible": "^1.1.3",
+    "@fontsource-variable/inter": "^5.2.0",
+    "@fontsource-variable/space-grotesk": "^5.2.0",
+    "@fontsource-variable/jetbrains-mono": "^5.2.0"
   },
   "devDependencies": {
     "typescript": "^6.0.2",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "tailwindcss": "^4.1.11",
+    "@tailwindcss/vite": "^4.1.11",
+    "vitest": "^4.1.2",
+    "jsdom": "^28.1.0"
   }
 }

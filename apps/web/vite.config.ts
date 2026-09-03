@@ -1,5 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
 
 const contentSecurityPolicy =
   "default-src 'self'; base-uri 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; form-action 'self'";
@@ -11,6 +13,8 @@ export default defineConfig(({ command }) => ({
   base: siteBase,
   publicDir: fileURLToPath(new URL("public", workspaceRoot)),
   plugins: [
+    react(),
+    tailwindcss(),
     ...(command === "build"
       ? [
           {
@@ -36,12 +40,15 @@ export default defineConfig(({ command }) => ({
   ],
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@paste-to-markdown/core": fileURLToPath(
         new URL("../../packages/core/src/index.ts", import.meta.url),
       ),
     },
   },
   build: {
+    // Keep even small font subsets on-origin under the production CSP.
+    assetsInlineLimit: 0,
     outDir: "dist",
     rollupOptions: {
       input: {

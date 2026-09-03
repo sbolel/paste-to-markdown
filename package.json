@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "pnpm --filter @paste-to-markdown/web dev",
     "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build && pnpm artifact:check",
-    "test": "pnpm --filter @paste-to-markdown/core test",
+    "test": "pnpm --filter @paste-to-markdown/core test && pnpm --filter @paste-to-markdown/web test",
     "lint": "eslint .",
     "typecheck": "pnpm --filter @paste-to-markdown/core typecheck && pnpm --filter @paste-to-markdown/web typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,html,md,yml}\"",
