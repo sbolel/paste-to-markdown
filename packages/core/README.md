@@ -6,13 +6,26 @@ Shared HTML-to-Markdown conversion logic used by the web app.
 
 `convertHtmlToMarkdown(html, options?)` converts semantic HTML in DOM order.
 `convertClipboardData(data, options?)` prefers nonblank `text/html`, then returns
-`text/plain` unchanged, including Markdown-looking characters. The browser app
-uses the default options through native paste; it has no mode selector or
-clipboard-read button.
+`text/plain` unchanged, including Markdown-looking characters. The React app uses this interface for both keyboard paste and its clipboard-read
+button, with an explicit preset from the flavor selector.
 
-Default GFM output supports strikethrough, task checkboxes, and simple rectangular
-tables with a genuine header row. `{ gfm: false }` retains checkbox states as
-readable `(checked)` / `(unchecked)` text and uses the table fallback below.
+The optional `flavor` is `github`, `commonmark`, `strict`, or `custom`; an explicit
+flavor takes precedence over the legacy `gfm` option. Omitting `flavor` preserves
+the default GFM behavior, including `{ gfm: false }` support. The readonly
+`markdownFlavorOptions` export shares formatting markers with the editor.
+
+| Flavor     | Headings | Code blocks | Bullets | Emphasis / strong |
+| ---------- | -------- | ----------- | ------- | ----------------- |
+| GitHub     | ATX      | Fenced      | `-`     | `_` / `**`        |
+| CommonMark | ATX      | Fenced      | `-`     | `*` / `**`        |
+| Strict     | ATX      | Indented    | `*`     | `*` / `**`        |
+| Custom     | Setext   | Fenced      | `+`     | `_` / `__`        |
+
+Default/GitHub output supports strikethrough, task checkboxes, and simple
+rectangular tables with a genuine header row. Other presets and `{ gfm: false }`
+retain checkbox states as readable `(checked)` / `(unchecked)` text and use the
+table fallback below. The editor's strikethrough shortcut remains available in
+every flavor.
 
 - Linked cards retain readable labels, inline emphasis/images, and separate block
   boundaries. Explicit line breaks within links use `<br>`.
@@ -25,10 +38,13 @@ readable `(checked)` / `(unchecked)` text and uses the table fallback below.
   safely expressed as GFM pipe tables use nested Markdown lists of row/column
   coordinates. Coordinates refer only to the supplied fragment; no missing
   values or headers are invented. Spans and cell-owned blocks remain explicit.
+  Coordinate lists use the selected preset's bullet marker.
 - Fenced and highlighted code retain source characters, indentation, authored
   line boundaries, and safe delimiters. Inline-code boundary/all-space content
   is preserved; CommonMark normalizes inline newlines to spaces. Only explicitly
   hidden `gutter` elements adjacent to or inside code are treated as decorative.
+  Strict uses indented blocks; when indentation cannot preserve whitespace-only
+  code or boundary blank lines, escaped `<pre><code>` HTML retains the source.
 - Absolute HTTP(S) links/images are retained; links also support `mailto:` and
   `tel:`. Relative, protocol-relative, data, file and other unsupported references
   become useful label/alt text plus an unresolved marker. Blob references receive

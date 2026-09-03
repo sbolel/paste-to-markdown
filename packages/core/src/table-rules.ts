@@ -56,7 +56,8 @@ export function addTableRules(service: TurndownService, gfm: boolean): void {
   });
   service.addRule("structuredTable", {
     filter: "table",
-    replacement: (_content, table) => {
+    replacement: (_content, table, options) => {
+      const bullet = options.bulletListMarker ?? "-";
       const rows = tableRows(table);
       const groupSize = new Map<Node | null, number>();
       for (const row of rows) {
@@ -157,9 +158,9 @@ export function addTableRules(service: TurndownService, gfm: boolean): void {
               : []),
           ];
           const label = `${columnLabel}${qualifiers.length ? ` (${qualifiers.join("; ")})` : ""}`;
-          return `  - ${label}${cell.content ? `\n\n${indent(cell.content, 4)}` : ""}`;
+          return `  ${bullet} ${label}${cell.content ? `\n\n${indent(cell.content, 4)}` : ""}`;
         });
-        return `- Row ${rowIndex + 1}${entries.length ? `\n\n${entries.join("\n\n")}` : ""}`;
+        return `${bullet} Row ${rowIndex + 1}${entries.length ? `\n\n${entries.join("\n\n")}` : ""}`;
       });
       return `\n\nTable (cell coordinates refer to the supplied fragment):\n\n${captionMarkdown ? `${captionMarkdown}\n\n` : ""}${lines.join("\n\n")}\n\n`;
     },

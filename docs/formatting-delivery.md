@@ -2,6 +2,11 @@
 
 ## Scope and baseline
 
+This report records the original formatting stack. The purple React integration
+is tracked separately in [PR #71](https://github.com/sbolel/paste-to-markdown/pull/71).
+Its current UI and conversion options are documented in the
+[root README](../README.md) and [core README](../packages/core/README.md).
+
 The source baseline is `b142f18561163edd9f9ad9ed37aa0a02e115947a`.
 The reviewed combined working-tree implementation was divided into fifteen child
 PR layers and one parent documentation layer. Production conversion belongs to
@@ -80,7 +85,8 @@ Prefixes 01–10 passed with 36, 38, 66, 108, 139, 141, 159, 175,
 189 and 209 tests respectively. Checks for prefixes 11–16 were not rerun at the
 user's request. The historical 277-test combined development run, browser
 captures and audit observations are development evidence, not a new final-layer
-pass. No new browser or audit run is required for this publication.
+pass. The original publication did not require a new browser or audit run. This
+historical check override does not apply to the subsequent React integration.
 
 The historical combined native-copy check covered linked-card boundaries,
 wrapped task states, three-column pipe preservation, highlighted code and inline
@@ -143,9 +149,11 @@ historical report.
   useful unresolved markers, and blob references receive temporary markers. The
   API has no trusted-base parameter and does not infer an origin from the app or
   an embedded base tag. Asset import and persistence are outside this contract.
-- The app exposes native paste, Copy Markdown and Clear. It has no mode selector,
-  clipboard-read/Paste button, list-cleanup setting or rendered preview. API tests
-  cover both GFM configurations; unavailable UI controls are N/A. Image-only
+- At the recorded baseline, the app exposed native paste, Copy Markdown and Clear.
+  It had no mode selector,
+  clipboard-read/Paste button, list-cleanup setting or rendered preview. Those
+  features are restored by PR #71. The historical API tests covered both GFM
+  configurations; controls absent in that baseline were N/A. Image-only
   paste preserves existing work with explicit feedback. Native platform clipboard
   headers and RTF are outside the browser text/html contract.
 - Historical browser observations cover in-app Chromium on macOS. They do not

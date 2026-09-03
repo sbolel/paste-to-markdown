@@ -15,6 +15,60 @@ describe("convertHtmlToMarkdown", () => {
     expect(convertHtmlToMarkdown("<h3>Section</h3>")).toBe("### Section");
   });
 
+  it.each([
+    [
+      "github",
+      "# Title",
+      "_italic_",
+      "**bold**",
+      "-   Item",
+      "```\nconst x = 1;\n```",
+    ],
+    [
+      "commonmark",
+      "# Title",
+      "*italic*",
+      "**bold**",
+      "-   Item",
+      "```\nconst x = 1;\n```",
+    ],
+    [
+      "strict",
+      "# Title",
+      "*italic*",
+      "**bold**",
+      "*   Item",
+      "    const x = 1;",
+    ],
+    [
+      "custom",
+      "Title\n=====",
+      "_italic_",
+      "__bold__",
+      "+   Item",
+      "```\nconst x = 1;\n```",
+    ],
+  ] as const)(
+    "applies the %s Markdown preset",
+    (flavor, heading, emphasis, strong, listItem, codeBlock) => {
+      expect(convertHtmlToMarkdown("<h1>Title</h1>", { flavor })).toBe(heading);
+      expect(convertHtmlToMarkdown("<em>italic</em>", { flavor })).toBe(
+        emphasis,
+      );
+      expect(convertHtmlToMarkdown("<strong>bold</strong>", { flavor })).toBe(
+        strong,
+      );
+      expect(convertHtmlToMarkdown("<ul><li>Item</li></ul>", { flavor })).toBe(
+        listItem,
+      );
+      expect(
+        convertHtmlToMarkdown("<pre><code>const x = 1;</code></pre>", {
+          flavor,
+        }),
+      ).toBe(codeBlock);
+    },
+  );
+
   it("converts bold and italic", () => {
     expect(convertHtmlToMarkdown("<strong>bold</strong>")).toBe("**bold**");
     expect(convertHtmlToMarkdown("<em>italic</em>")).toBe("_italic_");
@@ -165,6 +219,45 @@ describe("convertHtmlToMarkdown", () => {
     expect(result).toMatch(/\[ \]\s+Next/);
   });
 
+  it("uses explicit flavors instead of the legacy gfm toggle", () => {
+    expect(
+      convertHtmlToMarkdown("<del>deleted</del>", {
+        flavor: "commonmark",
+        gfm: true,
+      }),
+    ).toBe("deleted");
+    expect(
+      convertHtmlToMarkdown(
+        "<table><thead><tr><th>Item</th></tr></thead><tbody><tr><td>Alpha</td></tr></tbody></table>",
+        { flavor: "github", gfm: false },
+      ),
+    ).toBe("| Item |\n| --- |\n| Alpha |");
+  });
+
+  it("adds tables and highlighted code blocks for the explicit GitHub flavor", () => {
+    expect(
+      convertHtmlToMarkdown(
+        "<table><thead><tr><th>Item</th><th>State</th></tr></thead><tbody><tr><td>Alpha</td><td>Done</td></tr></tbody></table>",
+        { flavor: "github" },
+      ),
+    ).toBe("| Item | State |\n| --- | --- |\n| Alpha | Done |");
+    expect(
+      convertHtmlToMarkdown(
+        '<div class="highlight"><pre><code class="language-ts">const x = 1;</code></pre></div>',
+        { flavor: "github" },
+      ),
+    ).toBe("```ts\nconst x = 1;\n```");
+  });
+
+  it("retains escaped block-link labels and normalized task markers by default", () => {
+    const html =
+      '<a href="https://example.invalid/a_(b)"><p><strong>Item</strong></p><span>A <em>short</em> description</span></a><ul><li><input type="checkbox" checked> Done</li></ul>';
+
+    expect(convertHtmlToMarkdown(html)).toBe(
+      "[**Item** A _short_ description](https://example.invalid/a_\\(b\\))\n\n-   [x] Done",
+    );
+  });
+
   it("can disable the workspace GFM helpers", () => {
     expect(convertHtmlToMarkdown("<del>deleted</del>", { gfm: false })).toBe(
       "deleted",
@@ -210,6 +303,13 @@ describe("convertClipboardData", () => {
     const cd = makeClipboardData({ "text/plain": "plain text" });
     const result = convertClipboardData(cd);
     expect(result).toBe("plain text");
+  });
+
+  it("preserves plain-text clipboard bytes without HTML", () => {
+    const text = "  plain\r\ntext \n";
+    const cd = makeClipboardData({ "text/plain": text });
+
+    expect(convertClipboardData(cd)).toBe(text);
   });
 
   it("prefers HTML over plain text", () => {

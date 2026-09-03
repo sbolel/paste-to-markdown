@@ -75,9 +75,13 @@ app.addEventListener("load", () => {
       plain: event.clipboardData.getData("text/plain"),
     };
     setTimeout(() => {
-      captured.markdown = app.contentDocument.getElementById("output").value;
-      captured.status =
-        app.contentDocument.getElementById("status").textContent;
+      captured.markdown =
+        app.contentDocument.getElementById("markdown-output")?.value ?? "";
+      captured.status = Array.from(
+        app.contentDocument.querySelectorAll("[data-sonner-toast]"),
+      )
+        .map((toast) => toast.textContent)
+        .join("\n");
       evidence.textContent = JSON.stringify(captured, null, 2);
     }, 0);
   });

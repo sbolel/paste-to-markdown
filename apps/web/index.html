@@ -56,7 +56,6 @@
       name="twitter:image:alt"
       content="Paste to Markdown social preview card"
     />
-    <link rel="stylesheet" href="/src/style.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -73,9 +72,10 @@
             "isAccessibleForFree": true,
             "featureList": [
               "Convert pasted HTML from documents, web pages, email clients, and editors into Markdown.",
-              "Display the converted Markdown as raw text.",
-              "Copy converted Markdown to the clipboard.",
-              "Clear the current pasted content and Markdown output.",
+              "Edit raw Markdown and display a sanitized rendered preview.",
+              "Copy Markdown to the clipboard or download a Markdown file.",
+              "Clear and restore the current document during the browser session.",
+              "Choose GitHub Flavored Markdown, CommonMark, Strict Markdown, or Custom Style and remember formatting preferences in this browser.",
               "Run conversion locally in the browser without sending pasted content to an application server."
             ],
             "offers": {
@@ -123,64 +123,7 @@
     </script>
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <h1>Paste to Markdown</h1>
-        <p class="subtitle">Paste rich text, get clean Markdown.</p>
-      </header>
-
-      <div class="instructions">
-        <p>
-          Copy any rich text (from a webpage, document, or editor) and paste it
-          below (<kbd>Ctrl+V</kbd> or <kbd>⌘V</kbd>).
-        </p>
-      </div>
-
-      <div class="panels">
-        <div class="panel">
-          <div class="panel-header">
-            <h2 id="source-label">Pasted Content</h2>
-            <button
-              id="clear-btn"
-              class="btn btn-secondary"
-              title="Clear content"
-            >
-              Clear
-            </button>
-          </div>
-          <div
-            id="source"
-            class="panel-content source-panel"
-            contenteditable="true"
-            role="textbox"
-            aria-multiline="true"
-            aria-labelledby="source-label"
-            spellcheck="false"
-            data-placeholder="Paste rich text here..."
-          ></div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-header">
-            <h2>Markdown Output</h2>
-            <button id="copy-btn" class="btn btn-primary" title="Copy markdown">
-              Copy
-            </button>
-          </div>
-          <textarea
-            id="output"
-            class="panel-content output-panel"
-            readonly
-            placeholder="Markdown will appear here..."
-            spellcheck="false"
-            aria-label="Markdown output"
-          ></textarea>
-        </div>
-      </div>
-
-      <div id="status" class="status" aria-live="polite"></div>
-    </div>
-
-    <script type="module" src="/src/main.ts"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

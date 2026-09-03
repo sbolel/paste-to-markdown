@@ -1,4 +1,5 @@
 import TurndownService from "turndown";
+import { markdownFlavorOptions } from "./flavors.js";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
 import {
   addInlineLayoutRules,
@@ -49,18 +50,19 @@ function referenceKind(
 function createTurndownService(
   options: ConversionOptions = {},
 ): TurndownService {
+  const flavorOptions = markdownFlavorOptions[options.flavor ?? "github"];
   const td = new TurndownService({
-    headingStyle: "atx",
     hr: "---",
-    bulletListMarker: "-",
-    codeBlockStyle: "fenced",
     fence: "```",
-    emDelimiter: "_",
-    strongDelimiter: "**",
     linkStyle: "inlined",
     preformattedCode: true,
+    ...flavorOptions,
     blankReplacement: (content, node) => {
-      const code = preserveBlankCode(content, node);
+      const code = preserveBlankCode(
+        content,
+        node,
+        flavorOptions.codeBlockStyle,
+      );
       if (code !== undefined) return code;
       // Turndown attaches `isBlock` to nodes internally to indicate block-level elements.
       return (node as unknown as TurndownNode).isBlock ||
@@ -70,12 +72,16 @@ function createTurndownService(
     },
   });
 
-  addInlineLayoutRules(td);
-  addCodeRules(td);
-  addTaskListRules(td, options.gfm !== false);
-  addTableRules(td, options.gfm !== false);
+  const useGfmHelpers = options.flavor
+    ? options.flavor === "github"
+    : options.gfm !== false;
 
-  if (options.gfm !== false) {
+  addInlineLayoutRules(td);
+  addCodeRules(td, flavorOptions.codeBlockStyle);
+  addTaskListRules(td, useGfmHelpers);
+  addTableRules(td, useGfmHelpers);
+
+  if (useGfmHelpers) {
     td.addRule("strikethrough", {
       filter: ["del", "s"],
       replacement: (content) => `~~${content}~~`,

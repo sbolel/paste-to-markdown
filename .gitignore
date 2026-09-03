@@ -35,3 +35,7 @@ pids
 
 .spark-workbench-id
 .cache
+
+# Browser test artifacts
+playwright-report/
+test-results/
