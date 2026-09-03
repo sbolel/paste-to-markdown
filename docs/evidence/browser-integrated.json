@@ -1,0 +1,259 @@
+[
+  {
+    "case": "HTML preference",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html",
+      "text/plain"
+    ],
+    "html": "<strong>Sample</strong>",
+    "plain": "Sample",
+    "markdown": "**Sample**",
+    "status": "Converted!",
+    "renderedHtml": "<p><strong>Sample</strong></p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "blank HTML fallback",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html",
+      "text/plain"
+    ],
+    "html": " \n",
+    "plain": "Kept work",
+    "markdown": "Kept work",
+    "status": "Converted!",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "image only",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "Files"
+    ],
+    "html": "",
+    "plain": "",
+    "markdown": "Kept work",
+    "status": "Image-only input is not supported. Copy text or a linked image instead.",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "revoked temporary image",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html"
+    ],
+    "html": "<a href=\"https://example.invalid/details\"><img src=\"blob:https://example.invalid/generated\" alt=\"Sample diagram\"></a>",
+    "plain": "",
+    "markdown": "[Sample diagram (temporary image)](https://example.invalid/details)",
+    "status": "Converted!",
+    "renderedHtml": "<p><a href=\"https://example.invalid/details\">Sample diagram (temporary image)</a></p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "Narrow whitespace",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "<p>First line<br>Second line<br>Third line</p><div style=\"white-space:pre-wrap\">First authored line\n  indented second line</div><p>Unit&nbsp;A</p><p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>",
+    "plain": "First line\nSecond line\nThird line\n\nFirst authored line\n  indented second line\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "markdown": "First line  \nSecond line  \nThird line\n\nFirst authored line indented second line\n\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "status": "Converted!",
+    "renderedHtml": "<p>First line<br>Second line<br>Third line</p>\n<p>First authored line indented second line</p>\n<p>Unit A</p>\n<p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "Wide whitespace",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "<p>First line<br>Second line<br>Third line</p><div style=\"white-space:pre-wrap\">First authored line\n  indented second line</div><p>Unit&nbsp;A</p><p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>",
+    "plain": "First line\nSecond line\nThird line\n\nFirst authored line\n  indented second line\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "markdown": "First line  \nSecond line  \nThird line\n\nFirst authored line indented second line\n\nUnit A\n\nOrdinary prose wraps when its container is narrow but has no authored hard break.",
+    "status": "Converted!",
+    "renderedHtml": "<p>First line<br>Second line<br>Third line</p>\n<p>First authored line indented second line</p>\n<p>Unit A</p>\n<p>Ordinary prose wraps when its container is narrow but has no authored hard break.</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "relative preview references",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html"
+    ],
+    "html": "<a href=\"../guide\">Read the guide</a><a href=\"https://example.invalid/details\"><img src=\"/media/sample.png\" srcset=\"/media/other.png 2x\" alt=\"Sample diagram\"></a>",
+    "plain": "",
+    "markdown": "Read the guide (unresolved link)[Sample diagram (unresolved image)](https://example.invalid/details)",
+    "status": "Converted!",
+    "preview": {
+      "images": [
+        {
+          "alt": "Sample diagram",
+          "src": null,
+          "srcset": null
+        }
+      ],
+      "links": [
+        null,
+        "https://example.invalid/details"
+      ]
+    },
+    "renderedHtml": "<p>Read the guide (unresolved link)<a href=\"https://example.invalid/details\">Sample diagram (unresolved image)</a></p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated beta",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "beta",
+    "plain": "beta",
+    "markdown": "beta",
+    "status": "Converted!",
+    "renderedHtml": "<p>beta</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated partial item",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "cond item",
+    "plain": "cond item",
+    "markdown": "cond item",
+    "status": "Converted!",
+    "renderedHtml": "<p>cond item</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated cell B",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "Cell B",
+    "plain": "Cell B",
+    "markdown": "Cell B",
+    "status": "Converted!",
+    "renderedHtml": "<p>Cell B</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated across cells",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "<td>A</td>\n        <td>Cell B</td>",
+    "plain": "A\tCell B",
+    "markdown": "Table (cell coordinates refer to the supplied fragment):\n\n- Row 1\n\n  - Column 1\n\n    A\n\n  - Column 2\n\n    Cell B",
+    "status": "Converted!",
+    "renderedHtml": "<p>Table (cell coordinates refer to the supplied fragment):</p>\n<ul>\n<li><p>Row 1</p>\n<ul>\n<li><p>Column 1</p>\n<p>A</p>\n</li>\n<li><p>Column 2</p>\n<p>Cell B</p>\n</li>\n</ul>\n</li>\n</ul>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated cards",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "\n      <section style=\"order: 2\">\n        <h3>Alpha</h3>\n        <p>Alpha description</p>\n        <p>Available</p>\n      </section>\n      <section style=\"order: 1\">\n        <h3>Beta</h3>\n        <p>Beta description</p>\n        <p>Pending</p>\n      </section>\n    ",
+    "plain": "Alpha\nAlpha description\n\nAvailable\n\nBeta\nBeta description\n\nPending",
+    "markdown": "### Alpha\n\nAlpha description\n\nAvailable\n\n### Beta\n\nBeta description\n\nPending",
+    "status": "Converted!",
+    "renderedHtml": "<h3>Alpha</h3>\n<p>Alpha description</p>\n<p>Available</p>\n<h3>Beta</h3>\n<p>Beta description</p>\n<p>Pending</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "integrated styled",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "\n      <div>\n        <span style=\"font-size: 24px; font-weight: 700\">Project notes</span>\n      </div>\n      <div>• First observation</div>\n      <div>1. Reference number</div>\n    ",
+    "plain": "Project notes\n• First observation\n1. Reference number",
+    "markdown": "Project notes\n\n• First observation\n\n1\\. Reference number",
+    "status": "Converted!",
+    "renderedHtml": "<p>Project notes</p>\n<p>• First observation</p>\n<p>1. Reference number</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "combined native rich copy",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "\n        <a href=\"https://example.invalid/alpha\"><h3>Alpha card</h3><p>Details</p></a>\n        <a href=\"https://example.invalid/beta\"><p>Beta card</p><span>Notes</span></a>\n        <ul><li><label><input type=\"checkbox\" checked=\"\">Done</label></li><li><span><input type=\"checkbox\">Next</span></li></ul>\n        <table><tbody><tr><th>Plain</th><th>Emphasis</th><th>Code</th></tr><tr><td>A | B</td><td><em>C | D</em></td><td><code>E | F</code></td></tr></tbody></table>\n        <div><div class=\"gutter\" aria-hidden=\"true\">1<br>2<br>3</div><pre><code class=\"language-js\"><span>if</span> (ready) {<br>  run(42);<br>}</code></pre></div>\n        <p>Value: <code> x </code>.</p>\n        <p>After code.</p>\n      ",
+    "plain": "Alpha card\nDetails\n\nBeta card\n\nNotes\nDone\nNext\nPlain\tEmphasis\tCode\nA | B\tC | D\tE | F\n1\n2\n3\nif (ready) {\n  run(42);\n}\nValue: x .\n\nAfter code.",
+    "markdown": "[Alpha card Details](https://example.invalid/alpha)\n\n[Beta card Notes](https://example.invalid/beta)\n\n-   [x] Done\n-   [ ] Next\n\n| Plain | Emphasis | Code |\n| --- | --- | --- |\n| A \\| B | _C \\| D_ | `E \\| F` |\n\n```js\nif (ready) {\n  run(42);\n}\n```\n\nValue: `  x  `.\n\nAfter code.",
+    "status": "Converted!",
+    "renderedHtml": "<p><a href=\"https://example.invalid/alpha\">Alpha card Details</a></p>\n<p><a href=\"https://example.invalid/beta\">Beta card Notes</a></p>\n<ul>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> Done</li>\n<li><input disabled=\"\" type=\"checkbox\"> Next</li>\n</ul>\n<table>\n<thead>\n<tr>\n<th>Plain</th>\n<th>Emphasis</th>\n<th>Code</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>A | B</td>\n<td><em>C | D</em></td>\n<td><code>E | F</code></td>\n</tr>\n</tbody></table>\n<pre><code class=\"language-js\">if (ready) {\n  run(42);\n}\n</code></pre>\n<p>Value: <code> x </code>.</p>\n<p>After code.</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "final metadata cells and trailing prose",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html"
+    ],
+    "html": "<meta charset=\"utf-8\"><td>A</td><td>Cell B</td><p>After</p>",
+    "plain": "",
+    "markdown": "Table (cell coordinates refer to the supplied fragment):\n\n- Row 1\n\n  - Column 1\n\n    A\n\n  - Column 2\n\n    Cell B\n\nAfter",
+    "status": "Converted!",
+    "renderedHtml": "<p>Table (cell coordinates refer to the supplied fragment):</p>\n<ul>\n<li><p>Row 1</p>\n<ul>\n<li><p>Column 1</p>\n<p>A</p>\n</li>\n<li><p>Column 2</p>\n<p>Cell B</p>\n</li>\n</ul>\n</li>\n</ul>\n<p>After</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "final nested-only task",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html"
+    ],
+    "html": "<ul><li><input type=\"checkbox\" checked><ul><li>Child</li></ul></li></ul>",
+    "plain": "",
+    "markdown": "-   (checked) \n    \n    -   Child",
+    "status": "Converted!",
+    "renderedHtml": "<ul>\n<li><p>(checked) </p>\n<ul>\n<li>Child</li>\n</ul>\n</li>\n</ul>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "final code siblings and inline break",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/html"
+    ],
+    "html": "<pre><code><span class=\"line\">alpha</span></code><code><span class=\"line\">beta</span></code></pre><p>Use <code>a<br>b</code> here.</p>",
+    "plain": "",
+    "markdown": "```\nalpha\nbeta\n```\n\nUse `a b` here.",
+    "status": "Converted!",
+    "renderedHtml": "<pre><code>alpha\nbeta\n</code></pre>\n<p>Use <code>a b</code> here.</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  },
+  {
+    "case": "final combined native copy",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "types": [
+      "text/plain",
+      "text/html"
+    ],
+    "html": "\n      <a href=\"https://example.invalid/alpha\"><h3>Alpha card</h3>\n        <p>Details</p></a>\n      <a href=\"https://example.invalid/beta\"><p>Beta card</p>\n        <span>Notes</span></a>\n      <ul>\n        <li>\n          <label><input type=\"checkbox\" checked=\"\">Done</label>\n        </li>\n        <li>\n          <span><input type=\"checkbox\">Next</span>\n        </li>\n      </ul>\n      <table>\n        <tbody><tr>\n          <th>Plain</th>\n          <th>Emphasis</th>\n          <th>Code</th>\n        </tr>\n        <tr>\n          <td>A | B</td>\n          <td><em>C | D</em></td>\n          <td><code>E | F</code></td>\n        </tr>\n      </tbody></table>\n      <div>\n        <div class=\"gutter\" aria-hidden=\"true\">1<br>2<br>3</div>\n        <pre><code class=\"language-js\"><span>if</span> (ready) {<br>  run(42);<br>}</code></pre>\n      </div>\n      <p>Value: <code> x </code>.</p>\n      <p>After code.</p>\n    ",
+    "plain": "Alpha card\nDetails\n\nBeta card\n\nNotes\nDone\nNext\nPlain\tEmphasis\tCode\nA | B\tC | D\tE | F\n1\n2\n3\nif (ready) {\n  run(42);\n}\nValue: x .\n\nAfter code.",
+    "markdown": "[Alpha card Details](https://example.invalid/alpha)\n\n[Beta card Notes](https://example.invalid/beta)\n\n-   [x] Done\n-   [ ] Next\n\n| Plain | Emphasis | Code |\n| --- | --- | --- |\n| A \\| B | _C \\| D_ | `E \\| F` |\n\n```js\nif (ready) {\n  run(42);\n}\n```\n\nValue: `  x  `.\n\nAfter code.",
+    "status": "Converted!",
+    "renderedHtml": "<p><a href=\"https://example.invalid/alpha\">Alpha card Details</a></p>\n<p><a href=\"https://example.invalid/beta\">Beta card Notes</a></p>\n<ul>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> Done</li>\n<li><input disabled=\"\" type=\"checkbox\"> Next</li>\n</ul>\n<table>\n<thead>\n<tr>\n<th>Plain</th>\n<th>Emphasis</th>\n<th>Code</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>A | B</td>\n<td><em>C | D</em></td>\n<td><code>E | F</code></td>\n</tr>\n</tbody></table>\n<pre><code class=\"language-js\">if (ready) {\n  run(42);\n}\n</code></pre>\n<p>Value: <code> x </code>.</p>\n<p>After code.</p>\n",
+    "evidencePhase": "historical pre-stack combined working-tree verification"
+  }
+]
