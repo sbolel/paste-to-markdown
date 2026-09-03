@@ -8,7 +8,7 @@ import {
 import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
 import { withTableContext } from "./table-fragment.js";
-import type { ClipboardDataLike, ConversionOptions } from "./types.js";
+import type { ClipboardDataLike, ConversionOptions, MarkdownFlavor } from "./types.js";
 
 /** Minimal structural type matching the Turndown node properties used here. */
 interface TurndownNode {
@@ -19,6 +19,47 @@ interface TurndownNode {
   checked?: boolean;
   getAttribute?(name: string): string | null;
 }
+
+const markdownFlavorOptions: Record<
+  MarkdownFlavor,
+  Pick<
+    TurndownService.Options,
+    | "headingStyle"
+    | "codeBlockStyle"
+    | "bulletListMarker"
+    | "emDelimiter"
+    | "strongDelimiter"
+  >
+> = {
+  github: {
+    headingStyle: "atx",
+    codeBlockStyle: "fenced",
+    bulletListMarker: "-",
+    emDelimiter: "_",
+    strongDelimiter: "**",
+  },
+  commonmark: {
+    headingStyle: "atx",
+    codeBlockStyle: "fenced",
+    bulletListMarker: "-",
+    emDelimiter: "*",
+    strongDelimiter: "**",
+  },
+  strict: {
+    headingStyle: "atx",
+    codeBlockStyle: "indented",
+    bulletListMarker: "*",
+    emDelimiter: "*",
+    strongDelimiter: "**",
+  },
+  custom: {
+    headingStyle: "setext",
+    codeBlockStyle: "fenced",
+    bulletListMarker: "+",
+    emDelimiter: "_",
+    strongDelimiter: "__",
+  },
+};
 
 function normalizeInlineLinkContent(content: string): string {
   return content.replace(/[ \t]*\r?\n+[ \t]*/g, " ").trim();
@@ -49,6 +90,7 @@ function referenceKind(
 function createTurndownService(
   options: ConversionOptions = {},
 ): TurndownService {
+  const flavorOptions = options.flavor ? markdownFlavorOptions[options.flavor] : {};
   const td = new TurndownService({
     headingStyle: "atx",
     hr: "---",
@@ -59,6 +101,7 @@ function createTurndownService(
     strongDelimiter: "**",
     linkStyle: "inlined",
     preformattedCode: true,
+    ...flavorOptions,
     blankReplacement: (content, node) => {
       const code = preserveBlankCode(content, node);
       if (code !== undefined) return code;
@@ -70,12 +113,14 @@ function createTurndownService(
     },
   });
 
+  const useGfmHelpers = options.flavor ? options.flavor === "github" : options.gfm !== false;
+
   addInlineLayoutRules(td);
   addCodeRules(td);
-  addTaskListRules(td, options.gfm !== false);
-  addTableRules(td, options.gfm !== false);
+  addTaskListRules(td, useGfmHelpers);
+  addTableRules(td, useGfmHelpers);
 
-  if (options.gfm !== false) {
+  if (useGfmHelpers) {
     td.addRule("strikethrough", {
       filter: ["del", "s"],
       replacement: (content) => `~~${content}~~`,
