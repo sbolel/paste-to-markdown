@@ -1,4 +1,5 @@
 import TurndownService from "turndown";
+import { addCodeRules, preserveBlankCode } from "./code-rules.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
 /** Minimal structural type matching the Turndown node properties used here. */
@@ -37,12 +38,16 @@ function createTurndownService(
     emDelimiter: "_",
     strongDelimiter: "**",
     linkStyle: "inlined",
-    preformattedCode: false,
+    preformattedCode: true,
     blankReplacement: (content, node) => {
+      const code = preserveBlankCode(content, node);
+      if (code !== undefined) return code;
       // Turndown attaches `isBlock` to nodes internally to indicate block-level elements.
       return (node as unknown as TurndownNode).isBlock ? "\n\n" : "";
     },
   });
+
+  addCodeRules(td);
 
   if (options.gfm !== false) {
     td.addRule("strikethrough", {
