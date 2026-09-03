@@ -28,8 +28,24 @@ function indent(content: string, width: number): string {
   return content.replace(/^/gm, " ".repeat(width));
 }
 
-/** Retain table cell ownership and supplied span extents as Markdown lists. */
-export function addTableRules(service: TurndownService): void {
+function canRenderInline(cell: Element): boolean {
+  return Array.from(cell.getElementsByTagName("*")).every((node) => {
+    // A single list item or paragraph may have no newline after conversion,
+    // yet its block relationship would still be lost in a pipe-table cell.
+    if (
+      (node as Element & { isBlock?: boolean }).isBlock ||
+      node.nodeName === "BR"
+    ) {
+      return false;
+    }
+    // GFM pipe splitting and code-span escaping disagree for a backslash
+    // immediately before a pipe. The coordinate fallback preserves both.
+    return node.nodeName !== "CODE" || !/\\\|/.test(node.textContent ?? "");
+  });
+}
+
+/** Convert simple tables to GFM; retain complex cell ownership as Markdown lists. */
+export function addTableRules(service: TurndownService, gfm: boolean): void {
   const converted = new WeakMap<Element, string>();
   service.addRule("tableCellContent", {
     filter: ["th", "td", "caption"],
@@ -99,6 +115,35 @@ export function addTableRules(service: TurndownService): void {
         (node) => node.nodeName === "CAPTION",
       );
       const captionMarkdown = caption ? converted.get(caption) : "";
+      const header = cells[0] ?? [];
+      const isSimple =
+        gfm &&
+        header.length > 0 &&
+        header.every((cell) => cell.node.nodeName === "TH") &&
+        cells.every(
+          (row, index) =>
+            row.length === header.length &&
+            row.every(
+              (cell) =>
+                cell.columnSpan === 1 &&
+                cell.rowSpan === 1 &&
+                !cell.content.includes("\n") &&
+                canRenderInline(cell.node) &&
+                (index === 0 || cell.node.nodeName === "TD"),
+            ),
+        );
+      if (isSimple) {
+        // GFM splits at pipes even inside code spans, and then removes one
+        // escape. Add that escape after each cell's Markdown conversion.
+        const renderRow = (row: Cell[]) =>
+          `| ${row.map((cell) => cell.content.replace(/\|/g, "\\|")).join(" | ")} |`;
+        const lines = [
+          renderRow(header),
+          `| ${header.map(() => "---").join(" | ")} |`,
+          ...cells.slice(1).map(renderRow),
+        ];
+        return `\n\n${captionMarkdown ? `${captionMarkdown}\n\n` : ""}${lines.join("\n")}\n\n`;
+      }
       const lines = cells.map((row, rowIndex) => {
         const entries = row.map((cell) => {
           const columnLabel =

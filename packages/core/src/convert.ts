@@ -49,7 +49,7 @@ function createTurndownService(
   });
 
   addCodeRules(td);
-  addTableRules(td);
+  addTableRules(td, options.gfm !== false);
 
   if (options.gfm !== false) {
     td.addRule("strikethrough", {

@@ -7,6 +7,45 @@ const pipeTable =
 const complexTable =
   '<table><tr><th rowspan="2">Group</th><th colspan="2">Details</th></tr><tr><td><p>First line</p><p>Second line</p></td><td><ul><li>Choice one</li><li>Choice two</li></ul></td></tr><tr><td>Final group</td><td>Final detail</td><td>Final note</td></tr></table>';
 
+describe("GFM tables", () => {
+  it("preserves literal pipes in plain, emphasized and inline-code cells", () => {
+    const markdown = convertHtmlToMarkdown(pipeTable);
+    const tokens = marked.lexer(markdown);
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0].type).toBe("table");
+    const table = tokens[0] as Tokens.Table;
+    expect(table.header.map((cell) => cell.text)).toEqual([
+      "Plain",
+      "Emphasis",
+      "Code",
+    ]);
+    expect(table.rows.map((row) => row.map((cell) => cell.text))).toEqual([
+      ["alpha | beta", "_gamma | delta_", "`one | two`"],
+    ]);
+    expect(marked.parse(markdown)).toBe(
+      "<table>\n<thead>\n<tr>\n<th>Plain</th>\n<th>Emphasis</th>\n<th>Code</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>alpha | beta</td>\n<td><em>gamma | delta</em></td>\n<td><code>one | two</code></td>\n</tr>\n</tbody></table>\n",
+    );
+  });
+
+  it("falls back without losing code backslashes adjacent to pipes", () => {
+    const markdown = convertHtmlToMarkdown(
+      "<table><tr><th>A</th><th>B</th><th>C</th></tr><tr><td>left \\| right</td><td><em>middle \\| value</em></td><td><code>end \\| value</code></td></tr></table>",
+    );
+    const tokens = marked.lexer(markdown);
+    const table = tokens.find((token) => token.type === "list") as Tokens.List;
+    expect(table.items).toHaveLength(2);
+    const row = table.items[1].tokens.find(
+      (token) => token.type === "list",
+    ) as Tokens.List;
+    expect(row.items).toHaveLength(3);
+    expect(row.items.map((cell) => marked.parser(cell.tokens))).toEqual([
+      "<p>Column 1</p>\n<p>left \\| right</p>\n",
+      "<p>Column 2</p>\n<p><em>middle \\| value</em></p>\n",
+      "<p>Column 3</p>\n<p><code>end \\| value</code></p>\n",
+    ]);
+  });
+});
+
 describe.each([true, false])("table fallback (gfm=%s)", (gfm) => {
   it.each(["9", "65535", "9999999999999999999999999999999999"])(
     "bounds rowspan %s to a one-row supplied fragment",
