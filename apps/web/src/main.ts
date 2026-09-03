@@ -19,7 +19,12 @@ const copyBtn = getRequiredElement<HTMLButtonElement>("copy-btn");
 const statusEl = getRequiredElement<HTMLDivElement>("status");
 
 function sanitizeAndSetHtml(container: HTMLElement, html: string): void {
-  container.innerHTML = DOMPurify.sanitize(html);
+  container.innerHTML = DOMPurify.sanitize(html, {
+    // The clipboard does not identify a trusted source base. Do not let the
+    // source preview resolve relative references against this application.
+    ALLOWED_URI_REGEXP: /^(?:https?:\/\/|mailto:|tel:)/i,
+    FORBID_ATTR: ["srcset"],
+  });
 }
 
 let statusTimeout: ReturnType<typeof setTimeout> | undefined;

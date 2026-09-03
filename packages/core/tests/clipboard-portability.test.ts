@@ -77,5 +77,58 @@ for (const gfm of [true, false]) {
         );
       },
     );
+
+    it("identifies unresolved relative links without guessing an origin", () => {
+      const markdown = convert('<a href="../guide">Read the guide</a>');
+      expect(markdown).toBe("Read the guide (unresolved link)");
+      expect(marked.parse(markdown, { gfm })).toBe(
+        "<p>Read the guide (unresolved link)</p>\n",
+      );
+    });
+
+    it("does not infer a base from source context or protocol-relative paths", () => {
+      expect(
+        convert(
+          '<base href="https://example.invalid/source/"><a href="../guide">Guide</a>',
+        ),
+      ).toBe("Guide (unresolved link)");
+      expect(convert('<a href="//example.invalid/guide">Guide</a>')).toBe(
+        "Guide (unresolved link)",
+      );
+    });
+
+    it("preserves a linked image destination independently from an unresolved image", () => {
+      const markdown = convert(
+        '<a href="https://example.invalid/details"><img src="/media/sample.png" alt="Sample diagram"></a>',
+      );
+      expect(markdown).toBe(
+        "[Sample diagram (unresolved image)](https://example.invalid/details)",
+      );
+      expect(marked.parse(markdown, { gfm })).toBe(
+        '<p><a href="https://example.invalid/details">Sample diagram (unresolved image)</a></p>\n',
+      );
+    });
+
+    it("retains useful text for revoked temporary images and links", () => {
+      expect(
+        convert(
+          '<img src="blob:https://example.invalid/synthetic" alt="Sample diagram">',
+        ),
+      ).toBe("Sample diagram (temporary image)");
+      expect(
+        convert(
+          '<a href="blob:https://example.invalid/synthetic">Attachment</a>',
+        ),
+      ).toBe("Attachment (temporary link)");
+    });
+
+    it("does not turn unsupported schemes or missing alt text into active links", () => {
+      expect(convert('<a href="javascript:alert(1)">Label</a>')).toBe(
+        "Label (unresolved link)",
+      );
+      expect(convert('<img src="file:///sample.png">')).toBe(
+        "Image (unresolved image)",
+      );
+    });
   });
 }
