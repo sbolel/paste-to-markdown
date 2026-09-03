@@ -76,7 +76,7 @@ The richer root-era React implementation in `src/` and its root `vite.config.ts`
 
 - **`packages/core`** is runtime-agnostic: no DOM or browser UI concerns.
 - **`apps/web`** handles all UI interactions.
-- HTML-to-Markdown conversion uses [Turndown](https://github.com/mixmark-io/turndown). The workspace core's supported GFM helpers are strikethrough and checked or unchecked task-list markers.
+- HTML-to-Markdown conversion uses [Turndown](https://github.com/mixmark-io/turndown). The workspace core supports strikethrough, task-list markers, and simple GFM tables. See [conversion behavior and fallbacks](packages/core/README.md#conversion-behavior) for complex tables, code, whitespace, and nonportable references.
 
 ## Release
 

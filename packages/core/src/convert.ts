@@ -36,6 +36,16 @@ function formatInlineLinkTitle(title: string | null): string {
   return ` "${cleaned.replace(/([\\"])/g, "\\$1")}"`;
 }
 
+function referenceKind(
+  value: string,
+  image = false,
+): "portable" | "temporary" | "unresolved" {
+  if (/^blob:/i.test(value)) return "temporary";
+  if (/^https?:\/\/[^\s/]+/i.test(value)) return "portable";
+  if (!image && /^(mailto|tel):\S+/i.test(value)) return "portable";
+  return "unresolved";
+}
+
 function createTurndownService(
   options: ConversionOptions = {},
 ): TurndownService {
@@ -82,7 +92,11 @@ function createTurndownService(
       const href = n.getAttribute?.("href") ?? "";
       const title = n.getAttribute?.("title") ?? null;
 
-      const link = `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`;
+      const kind = referenceKind(href);
+      const link =
+        kind === "portable"
+          ? `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`
+          : `${normalizeInlineLinkContent(content) || "Link"} (${kind} link)`;
       return hasExplicitBlockDisplay(node) || hasBlockLinkContent(node)
         ? `\n\n${link}\n\n`
         : link;
@@ -96,7 +110,8 @@ function createTurndownService(
       const alt = td.escape(
         normalizeInlineLinkContent(node.getAttribute("alt") ?? ""),
       );
-      if (!src) return "";
+      const kind = referenceKind(src, true);
+      if (kind !== "portable") return `${alt || "Image"} (${kind} image)`;
       return `![${alt}](${escapeInlineLinkHref(src)}${formatInlineLinkTitle(node.getAttribute("title"))})`;
     },
   });

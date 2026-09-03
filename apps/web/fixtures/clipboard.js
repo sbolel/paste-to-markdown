@@ -22,7 +22,7 @@ const cases = {
     document.querySelector("#table td:last-child").firstChild,
   ],
 };
-for (const id of ["cards", "styled", "whitespace", "integrated"])
+for (const id of ["cards", "styled", "whitespace", "integrated", "temporary"])
   cases[id] = () => document.getElementById(id);
 for (const [name, makeSelection] of Object.entries(cases)) {
   const button = document.createElement("button");
@@ -45,6 +45,26 @@ document.getElementById("narrow").onclick = () => {
 };
 document.getElementById("wide").onclick = () => {
   fixtures.style.width = "900px";
+};
+let temporaryUrl;
+document.getElementById("blob").onclick = () => {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 2;
+  canvas.getContext("2d").fillRect(0, 0, 2, 2);
+  canvas.toBlob((blob) => {
+    if (temporaryUrl) URL.revokeObjectURL(temporaryUrl);
+    temporaryUrl = URL.createObjectURL(blob);
+    const image = document.createElement("img");
+    image.src = temporaryUrl;
+    image.alt = "Sample diagram";
+    const link = document.createElement("a");
+    link.href = "https://example.invalid/details";
+    link.append(image);
+    document.getElementById("temporary").replaceChildren(link);
+  });
+};
+document.getElementById("revoke").onclick = () => {
+  if (temporaryUrl) URL.revokeObjectURL(temporaryUrl);
 };
 app.addEventListener("load", () => {
   app.contentDocument.addEventListener("paste", (event) => {
