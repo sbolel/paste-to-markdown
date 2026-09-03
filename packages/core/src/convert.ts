@@ -7,6 +7,7 @@ import {
 } from "./inline-layout.js";
 import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
+import { withTableContext } from "./table-fragment.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
 /** Minimal structural type matching the Turndown node properties used here. */
@@ -114,7 +115,7 @@ export function convertHtmlToMarkdown(
     return "";
   }
   const td = createTurndownService(options);
-  return td.turndown(html);
+  return td.turndown(withTableContext(html));
 }
 
 /**
