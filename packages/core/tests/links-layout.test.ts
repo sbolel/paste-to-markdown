@@ -76,16 +76,61 @@ const cases = [
       '<p><a href="https://example.invalid/items/alpha">Alpha First description</a></p>\n<p><a href="https://example.invalid/items/beta">Beta</a></p>\n',
   },
   {
+    name: "preserves heading, strong, unordered, and ordered semantics",
+    html: "<h2>Section</h2><p><strong>Important</strong> detail.</p><ul><li>First</li><li>Second</li></ul><ol><li>Step one</li><li>Step two</li></ol>",
+    markdown:
+      "## Section\n\n**Important** detail.\n\n-   First\n-   Second\n\n1.  Step one\n2.  Step two",
+    rendered:
+      "<h2>Section</h2>\n<p><strong>Important</strong> detail.</p>\n<ul>\n<li>First</li>\n<li>Second</li>\n</ul>\n<ol>\n<li>Step one</li>\n<li>Step two</li>\n</ol>\n",
+  },
+  {
+    name: "does not infer headings or strong markup from font styling",
+    html: '<p style="font-size:32px">Large text</p><p style="font-weight:bold">Styled text</p>',
+    markdown: "Large text\n\nStyled text",
+    rendered: "<p>Large text</p>\n<p>Styled text</p>\n",
+  },
+  {
+    name: "does not fabricate lists from literal prose prefixes",
+    html: "<p>1. Literal numbered prose</p><p>• Literal bullet prose</p>",
+    markdown: "1\\. Literal numbered prose\n\n• Literal bullet prose",
+    rendered:
+      "<p>1. Literal numbered prose</p>\n<p>• Literal bullet prose</p>\n",
+  },
+  {
+    name: "does not fabricate a list from a prefix split across inline spans",
+    html: "<p><span>1</span><span>. Literal numbered prose</span></p>",
+    markdown: "1\\. Literal numbered prose",
+    rendered: "<p>1. Literal numbered prose</p>\n",
+  },
+  {
     name: "uses DOM order without inferring CSS order",
     html: '<span style="display:grid"><span style="display:block;order:2">First</span><span style="display:block;order:1">Second</span></span>',
     markdown: "First\n\nSecond",
     rendered: "<p>First</p>\n<p>Second</p>\n",
   },
   {
+    name: "preserves semantic ordered lists inside styled spans",
+    html: '<span style="display:block"><ol><li>First</li><li>Second</li></ol></span>',
+    markdown: "1.  First\n2.  Second",
+    rendered: "<ol>\n<li>First</li>\n<li>Second</li>\n</ol>\n",
+  },
+  {
+    name: "preserves fenced code inside styled spans",
+    html: '<span style="display:block"><pre><code>1. raw\n  second</code></pre></span>',
+    markdown: "```\n1. raw\n  second\n```",
+    rendered: "<pre><code>1. raw\n  second\n</code></pre>\n",
+  },
+  {
     name: "preserves the boundary of an empty styled block",
     html: '<span>First</span><span style="display:block"></span><span>Second</span>',
     markdown: "First\n\nSecond",
     rendered: "<p>First</p>\n<p>Second</p>\n",
+  },
+  {
+    name: "does not fabricate a list from a split prefix in a div",
+    html: "<div><span>1</span><span>. Literal prose</span></div>",
+    markdown: "1\\. Literal prose",
+    rendered: "<p>1. Literal prose</p>\n",
   },
   {
     name: "respects an inline display override without inventing block boundaries",
