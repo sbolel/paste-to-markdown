@@ -1,6 +1,10 @@
 import TurndownService from "turndown";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
-import { addInlineLayoutRules, hasBlockLinkContent } from "./inline-layout.js";
+import {
+  addInlineLayoutRules,
+  hasBlockLinkContent,
+  hasExplicitBlockDisplay,
+} from "./inline-layout.js";
 import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
@@ -46,7 +50,10 @@ function createTurndownService(
       const code = preserveBlankCode(content, node);
       if (code !== undefined) return code;
       // Turndown attaches `isBlock` to nodes internally to indicate block-level elements.
-      return (node as unknown as TurndownNode).isBlock ? "\n\n" : "";
+      return (node as unknown as TurndownNode).isBlock ||
+        hasExplicitBlockDisplay(node)
+        ? "\n\n"
+        : "";
     },
   });
 
@@ -73,7 +80,9 @@ function createTurndownService(
       const title = n.getAttribute?.("title") ?? null;
 
       const link = `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`;
-      return hasBlockLinkContent(node) ? `\n\n${link}\n\n` : link;
+      return hasExplicitBlockDisplay(node) || hasBlockLinkContent(node)
+        ? `\n\n${link}\n\n`
+        : link;
     },
   });
 

@@ -52,6 +52,54 @@ const cases = [
       '<p><a href="https://example.invalid/items/alpha">Alpha First description</a></p>\n<p><a href="https://example.invalid/items/beta">Beta Second description</a></p>\n',
   },
   {
+    name: "preserves semantic grid card associations in DOM order",
+    html: '<section style="display:grid"><article><h2><a href="https://example.invalid/items/alpha">Alpha</a></h2><p>First description</p></article><article><h2><a href="https://example.invalid/items/beta">Beta</a></h2><p>Second description</p></article></section>',
+    markdown:
+      "## [Alpha](https://example.invalid/items/alpha)\n\nFirst description\n\n## [Beta](https://example.invalid/items/beta)\n\nSecond description",
+    rendered:
+      '<h2><a href="https://example.invalid/items/alpha">Alpha</a></h2>\n<p>First description</p>\n<h2><a href="https://example.invalid/items/beta">Beta</a></h2>\n<p>Second description</p>\n',
+  },
+  {
+    name: "separates explicit block spans in grid cards",
+    html: '<span style="display:grid"><span style="display:block"><a href="https://example.invalid/items/alpha">Alpha</a><span style="display:block">First description</span></span><span style="display:block"><a href="https://example.invalid/items/beta">Beta</a><span style="display:block">Second description</span></span></span>',
+    markdown:
+      "[Alpha](https://example.invalid/items/alpha)\n\nFirst description\n\n[Beta](https://example.invalid/items/beta)\n\nSecond description",
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha">Alpha</a></p>\n<p>First description</p>\n<p><a href="https://example.invalid/items/beta">Beta</a></p>\n<p>Second description</p>\n',
+  },
+  {
+    name: "separates block span labels and block anchors",
+    html: '<a href="https://example.invalid/items/alpha" style="display:block"><span style="display:block">Alpha</span><span style="display:block">First description</span></a><a href="https://example.invalid/items/beta" style="display:block">Beta</a>',
+    markdown:
+      "[Alpha First description](https://example.invalid/items/alpha)\n\n[Beta](https://example.invalid/items/beta)",
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha">Alpha First description</a></p>\n<p><a href="https://example.invalid/items/beta">Beta</a></p>\n',
+  },
+  {
+    name: "uses DOM order without inferring CSS order",
+    html: '<span style="display:grid"><span style="display:block;order:2">First</span><span style="display:block;order:1">Second</span></span>',
+    markdown: "First\n\nSecond",
+    rendered: "<p>First</p>\n<p>Second</p>\n",
+  },
+  {
+    name: "preserves the boundary of an empty styled block",
+    html: '<span>First</span><span style="display:block"></span><span>Second</span>',
+    markdown: "First\n\nSecond",
+    rendered: "<p>First</p>\n<p>Second</p>\n",
+  },
+  {
+    name: "respects an inline display override without inventing block boundaries",
+    html: '<span style="display:block;display:inline">First</span> <span>Second</span>',
+    markdown: "First Second",
+    rendered: "<p>First Second</p>\n",
+  },
+  {
+    name: "does not infer generated content from CSS",
+    html: '<span style="content:attr(data-label)" data-label="Absent">Visible</span>',
+    markdown: "Visible",
+    rendered: "<p>Visible</p>\n",
+  },
+  {
     name: "preserves inline formatting inside nested linked headings",
     html: '<a href="https://example.invalid/items/alpha"><div><h3><strong>Alpha</strong> <em>draft</em></h3><p>Details</p></div></a>',
     markdown:
