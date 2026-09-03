@@ -1,10 +1,39 @@
 import { describe, expect, it } from "vitest";
 import { marked } from "marked";
-import { convertHtmlToMarkdown } from "../src/index.js";
+import { convertClipboardData, convertHtmlToMarkdown } from "../src/index.js";
 
 for (const gfm of [true, false]) {
   describe(`clipboard and portability (gfm=${gfm})`, () => {
     const convert = (html: string) => convertHtmlToMarkdown(html, { gfm });
+
+    it("preserves literal plain text without importing HTML or Markdown", () => {
+      const plain =
+        "# literal heading?\n*literal emphasis?*\n<strong>literal</strong>\n";
+      expect(
+        convertClipboardData(
+          { getData: (type) => (type === "text/plain" ? plain : "") },
+          { gfm },
+        ),
+      ).toBe(plain);
+    });
+
+    it("prefers meaningful HTML and falls back for whitespace-only HTML", () => {
+      expect(
+        convertClipboardData(
+          {
+            getData: (type) =>
+              type === "text/html" ? "<strong>Sample</strong>" : "Sample",
+          },
+          { gfm },
+        ),
+      ).toBe("**Sample**");
+      expect(
+        convertClipboardData(
+          { getData: (type) => (type === "text/html" ? " \n" : "Sample") },
+          { gfm },
+        ),
+      ).toBe("Sample");
+    });
 
     it("preserves partial inline and list text without introducing neighbors", () => {
       expect(
