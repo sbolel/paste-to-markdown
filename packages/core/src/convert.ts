@@ -1,5 +1,6 @@
 import TurndownService from "turndown";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
+import { addTableRules } from "./table-rules.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
 
 /** Minimal structural type matching the Turndown node properties used here. */
@@ -48,6 +49,7 @@ function createTurndownService(
   });
 
   addCodeRules(td);
+  addTableRules(td);
 
   if (options.gfm !== false) {
     td.addRule("strikethrough", {
