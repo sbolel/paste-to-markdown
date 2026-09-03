@@ -148,7 +148,9 @@ function blockCodeText(node: CodeNode): string {
   return segment.text + (segment.endsLine ? "\n" : "");
 }
 
-function structuredCodeBlock(node: CodeNode): string {
+type CodeBlockStyle = NonNullable<TurndownService.Options["codeBlockStyle"]>;
+
+function structuredCodeBlock(node: CodeNode, style: CodeBlockStyle): string {
   const code = Array.from(node.childNodes).find(
     (child) => child.nodeName === "CODE",
   );
@@ -156,6 +158,19 @@ function structuredCodeBlock(node: CodeNode): string {
   const language = classes.match(/(?:^|\s)language-([\w+-]+)/)?.[1] ?? "";
   // CODE identifies the language, but every PRE descendant contains source.
   const value = blockCodeText(node);
+  if (style === "indented") {
+    const text = value.replace(/\n$/, "");
+    // Indented Markdown discards boundary blank lines and whitespace-only
+    // blocks. Escaped HTML preserves those source values without a GFM fence.
+    if (!text.trim() || /^[ \t]*\n|\n[ \t]*$/.test(text)) {
+      const escaped = value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      return `\n\n<pre><code>${escaped}</code></pre>\n\n`;
+    }
+    return `\n\n${text.replace(/^/gm, "    ")}\n\n`;
+  }
   const runs = value.match(/`+/g) ?? [];
   const fence = "`".repeat(
     runs.reduce((length, run) => Math.max(length, run.length + 1), 3),
@@ -167,21 +182,27 @@ function structuredCodeBlock(node: CodeNode): string {
 export function preserveBlankCode(
   content: string,
   node: CodeNode,
+  style: CodeBlockStyle = "fenced",
 ): string | undefined {
-  if (node.nodeName === "PRE") return structuredCodeBlock(node);
+  if (node.nodeName === "PRE") return structuredCodeBlock(node, style);
   if (node.nodeName === "CODE" && !isInsidePre(node)) return inlineCode(node);
   // Keep the code delimiters already emitted by otherwise blank descendants.
   if (content.trim()) return node.isBlock ? `\n\n${content}\n\n` : content;
   return undefined;
 }
 
-export function addCodeRules(service: TurndownService): void {
+export function addCodeRules(
+  service: TurndownService,
+  style: CodeBlockStyle = "fenced",
+): void {
   service.addRule("structuredCodeBlock", {
     // Leave ordinary fenced blocks with Turndown's existing fence handling.
     filter: (node) =>
       node.nodeName === "PRE" &&
-      (hasStructuredLines(node) || hasCodeSiblings(node)),
-    replacement: (_content, node) => structuredCodeBlock(node),
+      (style === "indented" ||
+        hasStructuredLines(node) ||
+        hasCodeSiblings(node)),
+    replacement: (_content, node) => structuredCodeBlock(node, style),
   });
   service.addRule("decorativeCodeGutter", {
     filter: isDecorativeGutter,

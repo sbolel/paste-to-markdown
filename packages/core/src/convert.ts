@@ -50,20 +50,19 @@ function referenceKind(
 function createTurndownService(
   options: ConversionOptions = {},
 ): TurndownService {
-  const flavorOptions = options.flavor ? markdownFlavorOptions[options.flavor] : {};
+  const flavorOptions = markdownFlavorOptions[options.flavor ?? "github"];
   const td = new TurndownService({
-    headingStyle: "atx",
     hr: "---",
-    bulletListMarker: "-",
-    codeBlockStyle: "fenced",
     fence: "```",
-    emDelimiter: "_",
-    strongDelimiter: "**",
     linkStyle: "inlined",
     preformattedCode: true,
     ...flavorOptions,
     blankReplacement: (content, node) => {
-      const code = preserveBlankCode(content, node);
+      const code = preserveBlankCode(
+        content,
+        node,
+        flavorOptions.codeBlockStyle,
+      );
       if (code !== undefined) return code;
       // Turndown attaches `isBlock` to nodes internally to indicate block-level elements.
       return (node as unknown as TurndownNode).isBlock ||
@@ -73,10 +72,12 @@ function createTurndownService(
     },
   });
 
-  const useGfmHelpers = options.flavor ? options.flavor === "github" : options.gfm !== false;
+  const useGfmHelpers = options.flavor
+    ? options.flavor === "github"
+    : options.gfm !== false;
 
   addInlineLayoutRules(td);
-  addCodeRules(td);
+  addCodeRules(td, flavorOptions.codeBlockStyle);
   addTaskListRules(td, useGfmHelpers);
   addTableRules(td, useGfmHelpers);
 

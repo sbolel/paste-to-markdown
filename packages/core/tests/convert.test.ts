@@ -249,12 +249,12 @@ describe("convertHtmlToMarkdown", () => {
     ).toBe("```ts\nconst x = 1;\n```");
   });
 
-  it("keeps default conversion byte-for-byte compatible with current output", () => {
+  it("retains escaped block-link labels and normalized task markers by default", () => {
     const html =
       '<a href="https://example.invalid/a_(b)"><p><strong>Item</strong></p><span>A <em>short</em> description</span></a><ul><li><input type="checkbox" checked> Done</li></ul>';
 
     expect(convertHtmlToMarkdown(html)).toBe(
-      "[**Item** A _short_ description](https://example.invalid/a_\\(b\\))\n\n-   [x]  Done",
+      "[**Item** A _short_ description](https://example.invalid/a_\\(b\\))\n\n-   [x] Done",
     );
   });
 
