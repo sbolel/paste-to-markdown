@@ -49,12 +49,20 @@ function handlePaste(event: ClipboardEvent): void {
   const markdown = convertClipboardData(clipboardData);
 
   if (!markdown) {
-    showStatus("Nothing to convert — paste some rich text.", "info");
+    const hasImage = [...clipboardData.items].some((item) =>
+      item.type.startsWith("image/"),
+    );
+    showStatus(
+      hasImage
+        ? "Image-only input is not supported. Copy text or a linked image instead."
+        : "Nothing to convert — paste some rich text.",
+      "info",
+    );
     return;
   }
 
   const html = clipboardData.getData("text/html");
-  if (html) {
+  if (html.trim()) {
     sanitizeAndSetHtml(sourceEl, html);
   } else {
     sourceEl.textContent = clipboardData.getData("text/plain");
