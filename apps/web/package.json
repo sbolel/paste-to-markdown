@@ -12,7 +12,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@paste-to-markdown/core": "workspace:*",
@@ -51,6 +52,7 @@
     "tailwindcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.11",
     "vitest": "^4.1.2",
+    "@playwright/test": "^1.58.2",
     "jsdom": "^28.1.0"
   }
 }
