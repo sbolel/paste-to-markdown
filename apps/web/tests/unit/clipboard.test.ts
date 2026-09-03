@@ -12,7 +12,7 @@ describe("clipboard reading", () => {
     const clipboard = {
       read: vi.fn().mockResolvedValue([
         {
-          types: ["text/html", "text/plain"],
+          types: ["text/html", "text/plain", "image/png"],
           getType: vi.fn(async (type: string) => ({
             text: async () => (type === "text/html" ? "<b>rich</b>" : "rich"),
           })),
@@ -25,6 +25,43 @@ describe("clipboard reading", () => {
       text: "rich",
     });
     expect(readText).not.toHaveBeenCalled();
+  });
+
+  it.each(["absent", "empty", "denied"])(
+    "identifies image-only input without reading binary data when plain read is %s",
+    async (mode) => {
+      const getType = vi.fn();
+      const clipboard = {
+        read: async () => [{ types: ["image/png"], getType }],
+        ...(mode === "absent"
+          ? {}
+          : {
+              readText: async () => {
+                if (mode === "denied") throw new Error("denied");
+                return "";
+              },
+            }),
+      } as unknown as Clipboard;
+      expect(await readClipboard(clipboard)).toEqual({
+        html: "",
+        text: "",
+        hasImage: true,
+      });
+      expect(getType).not.toHaveBeenCalled();
+    },
+  );
+
+  it("uses available plain text alongside an image and blank HTML", async () => {
+    const getType = vi.fn(async () => ({ text: async () => "   " }));
+    const clipboard = {
+      read: async () => [{ types: ["image/png", "text/html"], getType }],
+      readText: async () => "<b>literal plain text</b>",
+    } as unknown as Clipboard;
+    expect(await readClipboard(clipboard)).toEqual({
+      html: "",
+      text: "<b>literal plain text</b>",
+    });
+    expect(getType).toHaveBeenCalledExactlyOnceWith("text/html");
   });
 
   it("falls back when rich clipboard reading is rejected", async () => {

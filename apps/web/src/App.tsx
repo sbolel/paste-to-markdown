@@ -137,9 +137,12 @@ function App() {
       if (!event.clipboardData) return;
       const html = event.clipboardData.getData("text/html");
       const text = event.clipboardData.getData("text/plain");
-      if (!html && !text) return;
+      const hasImage = Array.from(event.clipboardData.items).some((item) =>
+        item.type.startsWith("image/"),
+      );
+      if (!html && !text && !hasImage) return;
       event.preventDefault();
-      importClipboard({ html, text });
+      importClipboard({ html, text, ...(hasImage ? { hasImage } : {}) });
     };
     document.addEventListener("paste", handleGlobalPaste);
     return () => document.removeEventListener("paste", handleGlobalPaste);

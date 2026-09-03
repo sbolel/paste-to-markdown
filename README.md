@@ -11,7 +11,8 @@ Paste to Markdown is a browser-based HTML-to-Markdown converter built by [Sinan 
 
 ## What It Does
 
-- Pastes rich HTML from documents, email, webpages, and editors.
+- Pastes rich HTML from documents, email, webpages, and editors through keyboard paste or the clipboard button.
+- Keeps existing work intact when image-only input cannot be converted, with explanatory feedback.
 - Converts content to Markdown locally in the browser.
 - Lets you edit the raw Markdown and inspect a sanitized rendered preview.
 - Lets you copy Markdown to the clipboard or download it as a Markdown file.

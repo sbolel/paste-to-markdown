@@ -36,14 +36,14 @@ test("empty state has the purple theme, local fonts, and production CSP", async 
   await app.capture("empty", info);
 });
 
-test("HTML wins over plain text and multiline link labels normalize", async ({
+test("HTML wins over plain text and link labels retain explicit breaks", async ({
   app,
   page,
 }, info) => {
   await app.open();
   await app.paste(richClipboard);
   await expect(app.editor).toHaveValue(
-    "# Release notes\n\nA **small** improvement.\n\n[Review the guide](https://example.invalid/guide)\n\n-   First item\n-   Second item",
+    "# Release notes\n\nA **small** improvement.\n\n[Review the<br>guide](https://example.invalid/guide)\n\n-   First item\n-   Second item",
   );
   expect(
     await app.editor.evaluate(
@@ -57,6 +57,7 @@ test("HTML wins over plain text and multiline link labels normalize", async ({
   await expect(
     app.preview.getByRole("link", { name: "Review the guide" }),
   ).toHaveAttribute("href", "https://example.invalid/guide");
+  await expect(app.preview.locator("a br")).toHaveCount(1);
   await app.capture("converted-preview", info);
 });
 

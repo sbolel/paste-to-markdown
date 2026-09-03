@@ -1,6 +1,7 @@
 export interface ClipboardSource {
   html: string;
   text: string;
+  hasImage?: boolean;
 }
 
 /** Prefer the rich representation; older browsers can still supply plain text. */
@@ -8,12 +9,14 @@ export async function readClipboard(
   clipboard: Clipboard | undefined = navigator.clipboard,
 ): Promise<ClipboardSource> {
   let readError: unknown;
+  let hasImage = false;
   if (typeof clipboard?.read === "function") {
     try {
       const items = await clipboard.read();
       let html = "";
       let text = "";
       for (const item of items) {
+        hasImage ||= item.types.some((type) => type.startsWith("image/"));
         for (const type of ["text/html", "text/plain"] as const) {
           if (
             !item.types.includes(type) ||
@@ -30,14 +33,24 @@ export async function readClipboard(
           }
         }
       }
-      if (html || text) return { html, text };
+      if (html.trim() || text.trim()) return { html, text };
     } catch (error) {
       readError = error;
     }
   }
   if (typeof clipboard?.readText === "function") {
-    return { html: "", text: await clipboard.readText() };
+    try {
+      const text = await clipboard.readText();
+      return hasImage && !text.trim()
+        ? { html: "", text, hasImage }
+        : { html: "", text };
+    } catch (error) {
+      if (!hasImage) throw error;
+      // A successful rich read still identifies image-only input when the
+      // browser rejects its optional plain-text fallback.
+    }
   }
+  if (hasImage) return { html: "", text: "", hasImage };
   throw (
     readError ??
     new Error("Clipboard access is unavailable. Use Ctrl+V or ⌘+V to paste.")

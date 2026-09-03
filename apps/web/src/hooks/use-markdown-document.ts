@@ -126,12 +126,26 @@ export function useMarkdownDocument() {
   function importClipboard(clipboardSource: ClipboardSource): boolean {
     clipboardRequest.current += 1;
     if (!clipboardSource.html.trim() && !clipboardSource.text.trim()) {
+      if (clipboardSource.hasImage) {
+        toast.info(
+          "Image-only input is not supported. Copy text or a linked image instead.",
+        );
+        return false;
+      }
       toast.error("No content found in clipboard");
       return false;
     }
     try {
       const nextSource = { ...clipboardSource };
       const nextOutput = generate(nextSource, preferences);
+      if (!nextOutput.trim()) {
+        toast.info(
+          clipboardSource.hasImage
+            ? "Image-only input is not supported. Copy text or a linked image instead."
+            : "Nothing to convert — paste some rich text.",
+        );
+        return false;
+      }
       setDocumentState((current) => ({
         ...current,
         source: nextSource,

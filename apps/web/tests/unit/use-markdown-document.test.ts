@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { convertClipboardData } from "@paste-to-markdown/core";
 import { useMarkdownDocument } from "../../src/hooks/use-markdown-document";
 import { readClipboard } from "../../src/lib/clipboard";
+import { toast } from "sonner";
 import { sanitizedPreview } from "../../src/lib/markdown";
 
 vi.mock("../../src/lib/markdown", async (importOriginal) => {
@@ -12,7 +13,9 @@ vi.mock("../../src/lib/markdown", async (importOriginal) => {
   return { ...actual, sanitizedPreview: vi.fn(actual.sanitizedPreview) };
 });
 
-vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+vi.mock("sonner", () => ({
+  toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
+}));
 vi.mock("@paste-to-markdown/core", async (importOriginal) => {
   const actual =
     await importOriginal<typeof import("@paste-to-markdown/core")>();
@@ -188,6 +191,66 @@ describe("Markdown document state", () => {
     expect(api.detectedExtensions.strikethrough).toBe(true);
     expect(api.canRestore).toBe(false);
   });
+
+  it("explains image-only input without replacing the ready state or a clear snapshot", () => {
+    mount();
+    act(() =>
+      expect(api.importClipboard({ html: "", text: "", hasImage: true })).toBe(
+        false,
+      ),
+    );
+    expect(api.source).toBeNull();
+    expect(convertClipboardData).not.toHaveBeenCalled();
+    expect(toast.info).toHaveBeenCalledWith(
+      "Image-only input is not supported. Copy text or a linked image instead.",
+    );
+    act(() => api.handleFlavorChange("custom"));
+    act(() => api.importClipboard({ html: "<h1>Source</h1>", text: "Source" }));
+    act(() => api.setMarkdownOutput("**Saved edits**"));
+    act(() => api.setPreviewMode("preview"));
+    act(() => api.clear());
+    act(() =>
+      expect(api.importClipboard({ html: "", text: "", hasImage: true })).toBe(
+        false,
+      ),
+    );
+    expect(api.source).toBeNull();
+    expect(api.canRestore).toBe(true);
+    act(() => api.restore());
+    expect(api.markdownOutput).toBe("**Saved edits**");
+    expect(api.generatedOutput).toBe("Source\n======");
+    expect(api.markdownFlavor).toBe("custom");
+    expect(api.sanitizedPreviewHtml).toContain("<strong>Saved edits</strong>");
+  });
+
+  it.each([
+    { html: "", text: "", hasImage: true },
+    { html: "<div> </div>", text: "" },
+    { html: "<div> </div>", text: "", hasImage: true },
+  ])(
+    "preserves edited output, preview, and pending settings on an empty import: %j",
+    (source) => {
+      mount();
+      act(() =>
+        api.importClipboard({ html: "<h1>Source</h1>", text: "Source" }),
+      );
+      act(() => api.setMarkdownOutput("# Kept edits"));
+      act(() => api.setPreviewMode("preview"));
+      act(() => api.handleFlavorChange("strict"));
+      act(() => expect(api.importClipboard(source)).toBe(false));
+      expect(api.source?.html).toBe("<h1>Source</h1>");
+      expect(api.markdownOutput).toBe("# Kept edits");
+      expect(api.generatedOutput).toBe("# Source");
+      expect(api.markdownFlavor).toBe("github");
+      expect(api.pendingPreferences?.markdownFlavor).toBe("strict");
+      expect(api.sanitizedPreviewHtml).toContain("<h1>Kept edits</h1>");
+      expect(toast.info).toHaveBeenCalledWith(
+        source.hasImage
+          ? "Image-only input is not supported. Copy text or a linked image instead."
+          : "Nothing to convert — paste some rich text.",
+      );
+    },
+  );
 
   it("preserves existing content and settings when conversion fails", () => {
     mount();

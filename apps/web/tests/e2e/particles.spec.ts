@@ -14,21 +14,24 @@ test("normal-motion particles detach as a batch after movement stops", async ({
   await page.mouse.move(400, 300, { steps: 20 });
   const particles = page.getByTestId("cursor-sparkles").locator(":scope > div");
   await expect.poll(() => particles.count()).toBeGreaterThan(0);
-  const emitted = await particles.elementHandles();
-  await expect
-    .poll(
-      async () =>
-        (
-          await Promise.all(
-            emitted.map((node) =>
-              node.evaluate((element) => element.isConnected),
-            ),
-          )
-        ).every((connected) => !connected),
-      { timeout: 2200 },
-    )
-    .toBe(true);
-  await expect(particles).toHaveCount(0);
+  const emitted = await page
+    .getByTestId("cursor-sparkles")
+    .evaluateHandle((container) => Array.from(container.children));
+  try {
+    expect(await emitted.evaluate((nodes) => nodes.length)).toBeGreaterThan(0);
+    // Sample the captured nodes in one browser call. A growing polling interval
+    // can otherwise skip from before 1,600ms to beyond the 2,200ms deadline.
+    await expect
+      .poll(
+        () =>
+          emitted.evaluate((nodes) => nodes.every((node) => !node.isConnected)),
+        { timeout: 2200, intervals: [50] },
+      )
+      .toBe(true);
+    await expect(particles).toHaveCount(0);
+  } finally {
+    await emitted.dispose();
+  }
 });
 
 test("particles react to runtime reduced-motion and viewport changes", async ({

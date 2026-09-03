@@ -240,8 +240,12 @@ test("cheatsheet and shortcut help open and close accessibly", async ({
   ).toBeVisible();
   await app.capture("shortcut-help", info);
   await help.getByRole("button", { name: "Got it" }).click();
+  // Finish the close transition before focusing the underlying editor again.
+  await expect(help).toHaveCount(0);
   await app.editor.press("ControlOrMeta+/");
-  await expect(help).toBeVisible();
+  // Keyboard dismissal is checked once the animated modal is interactive.
+  await help.getByRole("button", { name: "Got it" }).click({ trial: true });
+  await expect(help.getByRole("button", { name: "Got it" })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(help).toHaveCount(0);
   await expect(app.editor).toBeFocused();
