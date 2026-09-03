@@ -103,10 +103,50 @@ const cases = [
     rendered: "<p>1. Literal numbered prose</p>\n",
   },
   {
+    name: "preserves explicit prose line breaks",
+    html: "<p>First<br>Second<br>Third</p>",
+    markdown: "First  \nSecond  \nThird",
+    rendered: "<p>First<br>Second<br>Third</p>\n",
+  },
+  {
+    name: "preserves explicit line breaks within a link",
+    html: '<a href="https://example.invalid/items/alpha">First<br>Second</a>',
+    markdown: "[First<br>Second](https://example.invalid/items/alpha)",
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha">First<br>Second</a></p>\n',
+  },
+  {
+    name: "documents collapsed CSS pre-wrap whitespace as readable prose",
+    html: '<p style="white-space:pre-wrap">First\nSecond  item</p>',
+    markdown: "First Second item",
+    rendered: "<p>First Second item</p>\n",
+  },
+  {
+    name: "retains non-breaking spaces in prose",
+    html: "<p>First&nbsp;Second&nbsp;&nbsp;Third</p>",
+    markdown: "First Second  Third",
+    rendered: "<p>First Second  Third</p>\n",
+  },
+  {
+    name: "keeps prose collapse separate from fenced code whitespace",
+    html: "<p>Prose\n  wraps here</p><p><code>inline  code</code></p><pre><code>first\n  second\n\nthird</code></pre>",
+    markdown:
+      "Prose wraps here\n\n`inline  code`\n\n```\nfirst\n  second\n\nthird\n```",
+    rendered:
+      "<p>Prose wraps here</p>\n<p><code>inline  code</code></p>\n<pre><code>first\n  second\n\nthird\n</code></pre>\n",
+  },
+  {
     name: "uses DOM order without inferring CSS order",
     html: '<span style="display:grid"><span style="display:block;order:2">First</span><span style="display:block;order:1">Second</span></span>',
     markdown: "First\n\nSecond",
     rendered: "<p>First</p>\n<p>Second</p>\n",
+  },
+  {
+    name: "preserves repeated explicit breaks inside a valid link label",
+    html: '<a href="https://example.invalid/items/alpha">First<br><br>Second</a>',
+    markdown: "[First<br><br>Second](https://example.invalid/items/alpha)",
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha">First<br><br>Second</a></p>\n',
   },
   {
     name: "preserves semantic ordered lists inside styled spans",
@@ -151,6 +191,13 @@ const cases = [
       "[**Alpha** _draft_ Details](https://example.invalid/items/alpha)",
     rendered:
       '<p><a href="https://example.invalid/items/alpha"><strong>Alpha</strong> <em>draft</em> Details</a></p>\n',
+  },
+  {
+    name: "preserves non-breaking spaces inside a block-backed label",
+    html: '<a href="https://example.invalid/items/alpha"><p>Alpha&nbsp;Beta</p><span>Details</span></a>',
+    markdown: "[Alpha Beta Details](https://example.invalid/items/alpha)",
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha">Alpha Beta Details</a></p>\n',
   },
   {
     name: "preserves paragraphs around a linked card",

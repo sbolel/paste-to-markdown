@@ -85,4 +85,10 @@ export function addInlineLayoutRules(td: TurndownService): void {
     // A Markdown label cannot contain a heading; keep its inline formatting.
     replacement: (content) => `\n\n${content}\n\n`,
   });
+
+  td.addRule("lineBreakInLink", {
+    filter: (node) => node.nodeName === "BR" && isInsideLink(node),
+    // Repeated Markdown hard breaks create blank lines and invalidate a label.
+    replacement: () => "<br>",
+  });
 }
