@@ -1,5 +1,6 @@
 import TurndownService from "turndown";
 import { addCodeRules, preserveBlankCode } from "./code-rules.js";
+import { addInlineLayoutRules, hasBlockLinkContent } from "./inline-layout.js";
 import { addTaskListRules } from "./list-rules.js";
 import { addTableRules } from "./table-rules.js";
 import type { ClipboardDataLike, ConversionOptions } from "./types.js";
@@ -49,6 +50,7 @@ function createTurndownService(
     },
   });
 
+  addInlineLayoutRules(td);
   addCodeRules(td);
   addTaskListRules(td, options.gfm !== false);
   addTableRules(td, options.gfm !== false);
@@ -58,8 +60,6 @@ function createTurndownService(
       filter: ["del", "s"],
       replacement: (content) => `~~${content}~~`,
     });
-
-
   }
 
   td.addRule("normalizedInlineLink", {
@@ -72,7 +72,8 @@ function createTurndownService(
       const href = n.getAttribute?.("href") ?? "";
       const title = n.getAttribute?.("title") ?? null;
 
-      return `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`;
+      const link = `[${normalizeInlineLinkContent(content)}](${escapeInlineLinkHref(href)}${formatInlineLinkTitle(title)})`;
+      return hasBlockLinkContent(node) ? `\n\n${link}\n\n` : link;
     },
   });
 
