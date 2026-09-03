@@ -76,6 +76,14 @@ const cases = [
       '<p><a href="https://example.invalid/items/alpha">Alpha First description</a></p>\n<p><a href="https://example.invalid/items/beta">Beta</a></p>\n',
   },
   {
+    name: "preserves punctuated labels, destinations, titles, and adjacent prose",
+    html: '<p>Read <a href="https://example.invalid/a\\(b) c" title="A &quot;quoted&quot; \\ title">[Alpha] \\ (draft)!</a>, then <a href="https://example.invalid/next">Beta?</a>.</p>',
+    markdown:
+      'Read [\\[Alpha\\] \\\\ (draft)!](https://example.invalid/a\\\\\\(b\\)%20c "A \\"quoted\\" \\\\ title"), then [Beta?](https://example.invalid/next).',
+    rendered:
+      '<p>Read <a href="https://example.invalid/a%5C(b)%20c" title="A &quot;quoted&quot; \\ title">[Alpha] \\ (draft)!</a>, then <a href="https://example.invalid/next">Beta?</a>.</p>\n',
+  },
+  {
     name: "preserves heading, strong, unordered, and ordered semantics",
     html: "<h2>Section</h2><p><strong>Important</strong> detail.</p><ul><li>First</li><li>Second</li></ul><ol><li>Step one</li><li>Step two</li></ol>",
     markdown:
@@ -206,6 +214,21 @@ const cases = [
       "Before\n\n[Alpha Details](https://example.invalid/items/alpha)\n\nAfter",
     rendered:
       '<p>Before</p>\n<p><a href="https://example.invalid/items/alpha">Alpha Details</a></p>\n<p>After</p>\n',
+  },
+  {
+    name: "preserves readable title text while cleaning repeated title newlines",
+    html: '<a href="https://example.invalid/items/alpha" title="First\n\nSecond">Alpha</a>',
+    markdown: '[Alpha](https://example.invalid/items/alpha "First\nSecond")',
+    rendered:
+      '<p><a href="https://example.invalid/items/alpha" title="First\nSecond">Alpha</a></p>\n',
+  },
+  {
+    name: "preserves escaped punctuation without a destination space",
+    html: '<p>Read <a href="https://example.invalid/a\\(b)" title="A &quot;quoted&quot; \\ title">[Alpha] \\ (draft)!</a>, then <a href="https://example.invalid/next">Beta?</a>.</p>',
+    markdown:
+      'Read [\\[Alpha\\] \\\\ (draft)!](https://example.invalid/a\\\\\\(b\\) "A \\"quoted\\" \\\\ title"), then [Beta?](https://example.invalid/next).',
+    rendered:
+      '<p>Read <a href="https://example.invalid/a%5C(b)" title="A &quot;quoted&quot; \\ title">[Alpha] \\ (draft)!</a>, then <a href="https://example.invalid/next">Beta?</a>.</p>\n',
   },
 ];
 

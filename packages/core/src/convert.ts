@@ -24,7 +24,9 @@ function normalizeInlineLinkContent(content: string): string {
 }
 
 function escapeInlineLinkHref(href: string): string {
-  return href.replace(/([\\()])/g, "\\$1");
+  return href
+    .replace(/[\s<>"]/g, (character) => encodeURIComponent(character))
+    .replace(/([\\()])/g, "\\$1");
 }
 
 function formatInlineLinkTitle(title: string | null): string {
@@ -83,6 +85,18 @@ function createTurndownService(
       return hasExplicitBlockDisplay(node) || hasBlockLinkContent(node)
         ? `\n\n${link}\n\n`
         : link;
+    },
+  });
+
+  td.addRule("portableImage", {
+    filter: "img",
+    replacement: (_content, node) => {
+      const src = node.getAttribute("src") ?? "";
+      const alt = td.escape(
+        normalizeInlineLinkContent(node.getAttribute("alt") ?? ""),
+      );
+      if (!src) return "";
+      return `![${alt}](${escapeInlineLinkHref(src)}${formatInlineLinkTitle(node.getAttribute("title"))})`;
     },
   });
 
