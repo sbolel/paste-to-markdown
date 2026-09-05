@@ -157,6 +157,18 @@ test("clear and restore retain edits, preview mode, and source for reconversion"
   await expect(
     page.getByRole("heading", { name: "Ready to Convert" }),
   ).toBeVisible();
+  const closeToastButtons = await page
+    .getByRole("button", { name: "Close toast" })
+    .elementHandles();
+  for (const closeToast of closeToastButtons) {
+    await closeToast.click();
+    await expect
+      .poll(() => closeToast.evaluate((element) => !element.isConnected))
+      .toBe(true);
+  }
+  await expect(page.getByRole("button", { name: "Close toast" })).toHaveCount(
+    0,
+  );
   await page
     .getByRole("button", { name: "Restore Last Cleared Content", exact: true })
     .click();

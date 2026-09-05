@@ -1,18 +1,21 @@
-import { createRoot } from "react-dom/client";
-import { ErrorBoundary } from "react-error-boundary";
-import { MotionConfig } from "framer-motion";
-import { Toaster } from "sonner";
-import App from "./App";
-import { ErrorFallback } from "./ErrorFallback";
+import { createRoot, hydrateRoot } from "react-dom/client";
+import { Application, APPLICATION_ID_PREFIX } from "./Application";
 import "./styles.css";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing application root");
-createRoot(root).render(
-  <ErrorBoundary FallbackComponent={ErrorFallback}>
-    <MotionConfig reducedMotion="user">
-      <App />
-      <Toaster theme="dark" richColors closeButton />
-    </MotionConfig>
-  </ErrorBoundary>,
-);
+if (import.meta.env.DEV) {
+  createRoot(root, { identifierPrefix: APPLICATION_ID_PREFIX }).render(
+    <Application />,
+  );
+} else {
+  if (!root.firstElementChild) {
+    throw new Error("Missing prerendered application content");
+  }
+  hydrateRoot(root, <Application />, {
+    identifierPrefix: APPLICATION_ID_PREFIX,
+    onRecoverableError(error) {
+      console.error("Application hydration failed", error);
+    },
+  });
+}

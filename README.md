@@ -79,6 +79,10 @@ See the [core package's runtime compatibility policy](packages/core/README.md#ru
 
 The React, Tailwind, Vite, and TypeScript website is the sole maintained application and GitHub Pages build. It consumes `@paste-to-markdown/core` for conversion while handling browser UI interactions, paste events, editable Markdown, sanitized preview, downloads, session-only restore, and formatting preferences. Fonts are bundled locally, with their licenses in `public/font-licenses/`.
 
+The production build prerenders the homepage's public content with React. The heading, description, ready state, attribution, and navigation remain visible with JavaScript disabled; conversion requires JavaScript. The browser hydrates the same component tree, restores formatting preferences, and attaches paste handling before enabling conversion. The About page remains static HTML.
+
+The build-only renderer runs with an empty document and deterministic defaults. It never reads clipboard content or saved browser preferences. Its temporary bundle is removed after rendering and is excluded from the Pages artifact. Development continues to use Vite's client rendering; production behavior is covered by the built-artifact browser tests in Chromium and WebKit at desktop and mobile sizes.
+
 This private package uses the workspace's Node.js `>=24.15.0` requirement for development and build tooling. The deployed application runs in the browser.
 
 The historical root implementation in `src/` remains outside the build as a reference. Make application changes in `apps/web`; the root implementation is not maintained.

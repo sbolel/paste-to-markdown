@@ -1,0 +1,804 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-04T17:32:52.524Z",
+  "baseline": {
+    "sha": "19941f909aecb80b3608637a01dd8832f72bcdfc",
+    "artifact": ".cache/baseline-dist"
+  },
+  "candidate": {
+    "description": "19941f9 with 27 working-tree change(s)",
+    "artifact": "apps/web/dist"
+  },
+  "browser": {
+    "name": "Chromium",
+    "version": "151.0.7922.34"
+  },
+  "conditions": {
+    "cache": "fresh browser context; Cache-Control: no-store",
+    "serviceWorkers": "blocked",
+    "cpu": "unthrottled",
+    "network": "unthrottled local loopback",
+    "compression": "identity",
+    "observationMs": 5000,
+    "interaction": "none",
+    "externalRequests": "blocked",
+    "resourceMeasurement": "Resource Timing encodedBodySize and transferSize for initial script resources including module preloads/imports"
+  },
+  "thresholds": {
+    "lcpIncrease": "greater than max(100 ms, 10% of baseline median)",
+    "cls": "candidate greater than 0.10 or increase greater than 0.01",
+    "encodedJavaScriptIncrease": "greater than max(10240 bytes, 5% of baseline median)"
+  },
+  "profiles": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1550,
+        "height": 964
+      },
+      "isMobile": false,
+      "baseline": {
+        "runs": 5,
+        "lcpMs": {
+          "median": 188,
+          "range": {
+            "min": 176,
+            "max": 200
+          }
+        },
+        "cls": {
+          "median": 0,
+          "range": {
+            "min": 0,
+            "max": 0
+          }
+        },
+        "encodedJavaScriptBytes": {
+          "median": 671794,
+          "range": {
+            "min": 671794,
+            "max": 671794
+          }
+        },
+        "transferJavaScriptBytes": {
+          "median": 672394,
+          "range": {
+            "min": 672394,
+            "max": 672394
+          }
+        },
+        "lcpElements": ["H1"]
+      },
+      "candidate": {
+        "runs": 5,
+        "lcpMs": {
+          "median": 72,
+          "range": {
+            "min": 64,
+            "max": 88
+          }
+        },
+        "cls": {
+          "median": 0.0006858062195327308,
+          "range": {
+            "min": 0.0006858062195327308,
+            "max": 0.0006858062195327308
+          }
+        },
+        "encodedJavaScriptBytes": {
+          "median": 672552,
+          "range": {
+            "min": 672552,
+            "max": 672552
+          }
+        },
+        "transferJavaScriptBytes": {
+          "median": 673152,
+          "range": {
+            "min": 673152,
+            "max": 673152
+          }
+        },
+        "lcpElements": ["H1"]
+      },
+      "assessment": {
+        "status": "within-investigation-thresholds",
+        "lcpIncreaseMs": -116,
+        "clsIncrease": 0.0006858062195327308,
+        "encodedJavaScriptIncreaseBytes": 758,
+        "findings": []
+      },
+      "rawRuns": {
+        "baseline": [
+          {
+            "run": 1,
+            "elapsedMs": 5063,
+            "lcp": {
+              "startTime": 192,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 57.899999998509884,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 2,
+            "elapsedMs": 5050,
+            "lcp": {
+              "startTime": 176,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 47.29999999701977,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 3,
+            "elapsedMs": 5078,
+            "lcp": {
+              "startTime": 200,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 68,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 4,
+            "elapsedMs": 5058,
+            "lcp": {
+              "startTime": 180,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 51.599999997764826,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 5,
+            "elapsedMs": 5069,
+            "lcp": {
+              "startTime": 188,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 62.30000000074506,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          }
+        ],
+        "candidate": [
+          {
+            "run": 1,
+            "elapsedMs": 5052,
+            "lcp": {
+              "startTime": 72,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0.0006858062195327308,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 60.30000000074506,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 2,
+            "elapsedMs": 5056,
+            "lcp": {
+              "startTime": 88,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0.0006858062195327308,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 45.19999999925494,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 3,
+            "elapsedMs": 5067,
+            "lcp": {
+              "startTime": 72,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0.0006858062195327308,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 63,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 4,
+            "elapsedMs": 5049,
+            "lcp": {
+              "startTime": 68,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0.0006858062195327308,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 59.600000001490116,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 5,
+            "elapsedMs": 5053,
+            "lcp": {
+              "startTime": 64,
+              "element": "H1",
+              "url": ""
+            },
+            "cls": 0.0006858062195327308,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 55.399999998509884,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "isMobile": true,
+      "baseline": {
+        "runs": 5,
+        "lcpMs": {
+          "median": 68,
+          "range": {
+            "min": 64,
+            "max": 84
+          }
+        },
+        "cls": {
+          "median": 0,
+          "range": {
+            "min": 0,
+            "max": 0
+          }
+        },
+        "encodedJavaScriptBytes": {
+          "median": 671794,
+          "range": {
+            "min": 671794,
+            "max": 671794
+          }
+        },
+        "transferJavaScriptBytes": {
+          "median": 672394,
+          "range": {
+            "min": 672394,
+            "max": 672394
+          }
+        },
+        "lcpElements": ["P"]
+      },
+      "candidate": {
+        "runs": 5,
+        "lcpMs": {
+          "median": 40,
+          "range": {
+            "min": 36,
+            "max": 44
+          }
+        },
+        "cls": {
+          "median": 0,
+          "range": {
+            "min": 0,
+            "max": 0
+          }
+        },
+        "encodedJavaScriptBytes": {
+          "median": 672552,
+          "range": {
+            "min": 672552,
+            "max": 672552
+          }
+        },
+        "transferJavaScriptBytes": {
+          "median": 673152,
+          "range": {
+            "min": 673152,
+            "max": 673152
+          }
+        },
+        "lcpElements": ["P"]
+      },
+      "assessment": {
+        "status": "within-investigation-thresholds",
+        "lcpIncreaseMs": -28,
+        "clsIncrease": 0,
+        "encodedJavaScriptIncreaseBytes": 758,
+        "findings": []
+      },
+      "rawRuns": {
+        "baseline": [
+          {
+            "run": 1,
+            "elapsedMs": 5037,
+            "lcp": {
+              "startTime": 68,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 33.5,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 2,
+            "elapsedMs": 5036,
+            "lcp": {
+              "startTime": 64,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 32.099999997764826,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 3,
+            "elapsedMs": 5036,
+            "lcp": {
+              "startTime": 68,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 33.100000001490116,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 4,
+            "elapsedMs": 5039,
+            "lcp": {
+              "startTime": 64,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 34.399999998509884,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 5,
+            "elapsedMs": 5041,
+            "lcp": {
+              "startTime": 84,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-bnM_P9GN.js",
+                "encodedBodySize": 671096,
+                "transferSize": 671396,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 671794,
+            "transferJavaScriptBytes": 672394,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 36.80000000074506,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          }
+        ],
+        "candidate": [
+          {
+            "run": 1,
+            "elapsedMs": 5050,
+            "lcp": {
+              "startTime": 40,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 43.69999999925494,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 2,
+            "elapsedMs": 5063,
+            "lcp": {
+              "startTime": 40,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 43.5,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 3,
+            "elapsedMs": 5085,
+            "lcp": {
+              "startTime": 44,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 46.69999999925494,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 4,
+            "elapsedMs": 5042,
+            "lcp": {
+              "startTime": 36,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 42.599999997764826,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          },
+          {
+            "run": 5,
+            "elapsedMs": 5057,
+            "lcp": {
+              "startTime": 44,
+              "element": "P",
+              "url": ""
+            },
+            "cls": 0,
+            "scripts": [
+              {
+                "path": "/paste-to-markdown/assets/styles-DPD91zGW.js",
+                "encodedBodySize": 698,
+                "transferSize": 998,
+                "contentEncoding": "identity"
+              },
+              {
+                "path": "/paste-to-markdown/assets/main-HPMKtQI8.js",
+                "encodedBodySize": 671854,
+                "transferSize": 672154,
+                "contentEncoding": "identity"
+              }
+            ],
+            "encodedJavaScriptBytes": 672552,
+            "transferJavaScriptBytes": 673152,
+            "devicePixelRatio": 1,
+            "navigationDurationMs": 46.100000001490116,
+            "pageErrors": [],
+            "unsuccessfulResponses": []
+          }
+        ]
+      }
+    }
+  ]
+}

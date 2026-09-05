@@ -22,6 +22,7 @@ interface DocumentState {
   markdownOutput: string;
   previewMode: PreviewMode;
   preferences: MarkdownPreferences;
+  preferencesReady: boolean;
 }
 
 const flavors: MarkdownFlavor[] = ["github", "commonmark", "strict", "custom"];
@@ -72,19 +73,36 @@ export function useMarkdownDocument() {
     generatedOutput: "",
     markdownOutput: "",
     previewMode: "raw",
-    preferences: readPreferences(),
+    preferences: { markdownFlavor: "github", removeBlankLines: true },
+    preferencesReady: false,
   }));
   const [lastCleared, setLastCleared] = useState<DocumentState | null>(null);
   const lastClearedRef = useRef<DocumentState | null>(null);
   const clipboardRequest = useRef(0);
   const [pendingPreferences, setPendingPreferences] =
     useState<MarkdownPreferences | null>(null);
-  const { source, generatedOutput, markdownOutput, previewMode, preferences } =
-    documentState;
+  const {
+    source,
+    generatedOutput,
+    markdownOutput,
+    previewMode,
+    preferences,
+    preferencesReady,
+  } = documentState;
   const { markdownFlavor, removeBlankLines } = preferences;
   const hasEdits = markdownOutput !== generatedOutput;
 
   useEffect(() => {
+    const restored = readPreferences();
+    setDocumentState((current) => ({
+      ...current,
+      preferences: restored,
+      preferencesReady: true,
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (!preferencesReady) return;
     // Only preferences are persistent. Source material and edits stay in memory.
     try {
       window.localStorage.setItem(
@@ -98,7 +116,7 @@ export function useMarkdownDocument() {
     } catch {
       // Storage may be blocked or full; in-memory preferences remain usable.
     }
-  }, [markdownFlavor, removeBlankLines]);
+  }, [markdownFlavor, removeBlankLines, preferencesReady]);
 
   const detectedExtensions = useMemo(
     () => detectMarkdownExtensions(markdownOutput),
@@ -107,10 +125,10 @@ export function useMarkdownDocument() {
   const hasDocument = source !== null;
   const sanitizedPreviewHtml = useMemo(
     () =>
-      hasDocument && previewMode === "preview"
+      preferencesReady && hasDocument && previewMode === "preview"
         ? sanitizedPreview(markdownOutput)
         : "",
-    [hasDocument, markdownOutput, previewMode],
+    [hasDocument, markdownOutput, previewMode, preferencesReady],
   );
 
   function setMarkdownOutput(value: string) {
@@ -124,6 +142,7 @@ export function useMarkdownDocument() {
   }
 
   function importClipboard(clipboardSource: ClipboardSource): boolean {
+    if (!preferencesReady) return false;
     clipboardRequest.current += 1;
     if (!clipboardSource.html.trim() && !clipboardSource.text.trim()) {
       if (clipboardSource.hasImage) {
@@ -164,6 +183,7 @@ export function useMarkdownDocument() {
   }
 
   async function pasteClipboard(): Promise<boolean> {
+    if (!preferencesReady) return false;
     const request = ++clipboardRequest.current;
     try {
       const incoming = await readClipboard();
@@ -179,6 +199,7 @@ export function useMarkdownDocument() {
   }
 
   function applyPreferences(next: MarkdownPreferences): boolean {
+    if (!preferencesReady) return false;
     clipboardRequest.current += 1;
     try {
       const nextOutput = generate(source, next);
@@ -265,6 +286,7 @@ export function useMarkdownDocument() {
     setPreviewMode,
     markdownFlavor,
     removeBlankLines,
+    preferencesReady,
     detectedExtensions,
     sanitizedPreviewHtml,
     hasEdits,
