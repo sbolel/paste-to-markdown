@@ -1,13 +1,13 @@
 import { test, expect } from "./fixtures";
+import type { TestInfo } from "@playwright/test";
+
+const hasFinePointer = (info: TestInfo) => info.project.use.hasTouch !== true;
 
 test("normal-motion particles detach as a batch after movement stops", async ({
   app,
   page,
 }, info) => {
-  test.skip(
-    info.project.name === "chromium-mobile",
-    "Particles require a desktop fine pointer",
-  );
+  test.skip(!hasFinePointer(info), "Particles require a desktop fine pointer");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await app.open();
   await page.mouse.move(100, 100);
@@ -38,10 +38,7 @@ test("particles react to runtime reduced-motion and viewport changes", async ({
   app,
   page,
 }, info) => {
-  test.skip(
-    info.project.name === "chromium-mobile",
-    "Particles require a desktop fine pointer",
-  );
+  test.skip(!hasFinePointer(info), "Particles require a desktop fine pointer");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await app.open();
   const container = page.getByTestId("cursor-sparkles");

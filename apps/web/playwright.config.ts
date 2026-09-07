@@ -41,6 +41,15 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      name: "webkit-mobile",
+      use: {
+        browserName: "webkit",
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
   ],
   webServer: {
     command: "pnpm preview --host 127.0.0.1 --port 5187 --strictPort",

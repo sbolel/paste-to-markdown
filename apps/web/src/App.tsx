@@ -77,6 +77,7 @@ function App() {
     setPreviewMode,
     markdownFlavor,
     removeBlankLines,
+    preferencesReady,
     detectedExtensions,
     sanitizedPreviewHtml,
     canRestore,
@@ -90,6 +91,7 @@ function App() {
     clear,
     restore,
   } = useMarkdownDocument();
+  const [isInteractive, setIsInteractive] = useState(false);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [showShortcutsDialog, setShowShortcutsDialog] = useState(false);
   const [filename, setFilename] = useState("markdown");
@@ -125,6 +127,7 @@ function App() {
   };
 
   useEffect(() => {
+    if (!preferencesReady) return;
     const handleGlobalPaste = (event: ClipboardEvent) => {
       const target = event.target;
       if (
@@ -145,8 +148,9 @@ function App() {
       importClipboard({ html, text, ...(hasImage ? { hasImage } : {}) });
     };
     document.addEventListener("paste", handleGlobalPaste);
+    setIsInteractive(true);
     return () => document.removeEventListener("paste", handleGlobalPaste);
-  }, [importClipboard]);
+  }, [importClipboard, preferencesReady]);
 
   useEffect(() => {
     if (!selectForManualCopy || previewMode !== "raw") return;
@@ -189,7 +193,7 @@ function App() {
       <div className="min-h-screen px-4 py-8 md:px-8 md:py-12 relative z-10">
         <div className="mx-auto max-w-7xl">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className="mb-8 text-center md:mb-12"
@@ -238,7 +242,7 @@ function App() {
 
           {source === null ? (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={false}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
               className="mx-auto max-w-2xl"
@@ -262,9 +266,14 @@ function App() {
                 >
                   Paste to get started. Markdown will appear instantly.
                 </p>
+                <p className="mb-6 text-center text-xs text-muted-foreground">
+                  Conversion requires JavaScript and runs locally in your
+                  browser.
+                </p>
                 <div className="flex flex-col gap-4">
                   <Button
                     onClick={handlePaste}
+                    disabled={!isInteractive}
                     size="lg"
                     className="gap-3 bg-accent text-accent-foreground transition-transform hover:bg-accent/90 hover:scale-105 active:scale-95"
                   >

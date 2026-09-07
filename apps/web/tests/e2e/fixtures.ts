@@ -8,6 +8,23 @@ import {
   type TestInfo,
 } from "@playwright/test";
 
+export type BrowserDiagnostics = {
+  allowConsoleError(message: string): void;
+  allowRequestFailure(url: string, errorText: string): void;
+  monitor(page: Page): Promise<void>;
+};
+
+/** Keep custom Playwright contexts equivalent to the normal app fixture. */
+export async function prepareBrowserPage(page: Page) {
+  // Browser integration uses synthetic clipboard events or explicit API stubs.
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: undefined,
+    });
+  });
+}
+
 // Authored fixtures only; no copied documents, provider labels, or real accounts.
 export const richClipboard = {
   html: '<h1>Release notes</h1><p>A <strong>small</strong> improvement.</p><p><a href="https://example.invalid/guide">  Review <span>the</span><br> guide  </a></p><ul><li>First item</li><li>Second item</li></ul>',
@@ -33,6 +50,9 @@ export class MarkdownPage {
     await expect(
       this.page.getByRole("heading", { name: "Ready to Convert" }),
     ).toBeVisible();
+    await expect(
+      this.page.getByRole("button", { name: "Paste from Clipboard" }),
+    ).toBeEnabled();
   }
 
   async paste(source: { html?: string; text?: string }) {
@@ -80,30 +100,58 @@ export class MarkdownPage {
 
 export const test = base.extend<{
   app: MarkdownPage;
-  browserDiagnostics: void;
+  browserDiagnostics: BrowserDiagnostics;
 }>({
   app: async ({ page }, use) => {
-    // Browser integration uses synthetic clipboard events or explicit API stubs.
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, "clipboard", {
-        configurable: true,
-        value: undefined,
-      });
-    });
+    await prepareBrowserPage(page);
     await use(new MarkdownPage(page));
   },
   browserDiagnostics: [
     async ({ page }, use) => {
       const errors: string[] = [];
-      page.on("pageerror", (error) => errors.push(error.message));
-      page.on("console", (message) => {
-        if (message.type() === "error") errors.push(message.text());
+      const allowedConsoleErrors = new Set<string>();
+      const allowedRequestFailures = new Map<string, string>();
+      const monitoredPages = new WeakSet<Page>();
+      const monitor = async (target: Page) => {
+        if (monitoredPages.has(target)) return;
+        monitoredPages.add(target);
+        await target.addInitScript(() => {
+          window.addEventListener("securitypolicyviolation", (event) => {
+            console.error(
+              `CSP violation: ${event.violatedDirective} blocked ${event.blockedURI}`,
+            );
+          });
+        });
+        target.on("pageerror", (error) => errors.push(error.message));
+        target.on("console", (message) => {
+          if (
+            (message.type() === "error" ||
+              (message.type() === "warning" &&
+                /hydrat/i.test(message.text()))) &&
+            !allowedConsoleErrors.has(message.text())
+          )
+            errors.push(message.text());
+        });
+        target.on("response", (response) => {
+          if (response.status() >= 400)
+            errors.push(`${response.status()} ${response.url()}`);
+        });
+        target.on("requestfailed", (request) => {
+          const expectedError = allowedRequestFailures.get(request.url());
+          if (request.failure()?.errorText !== expectedError) {
+            errors.push(
+              `requestfailed ${request.url()}: ${request.failure()?.errorText ?? "unknown"}`,
+            );
+          }
+        });
+      };
+      await monitor(page);
+      await use({
+        allowConsoleError: (message) => allowedConsoleErrors.add(message),
+        allowRequestFailure: (url, errorText) =>
+          allowedRequestFailures.set(url, errorText),
+        monitor,
       });
-      page.on("response", (response) => {
-        if (response.status() >= 400)
-          errors.push(`${response.status()} ${response.url()}`);
-      });
-      await use();
       expect(
         errors,
         "No runtime, console, CSP, or failed asset responses",
