@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkPrerenderArtifact } from "../apps/web/scripts/check-prerender.mjs";
 
 const artifactDir = fileURLToPath(
   new URL("../apps/web/dist/", import.meta.url),
@@ -174,4 +175,5 @@ if (!verification.includes("google-site-verification")) {
   );
 }
 
-console.log(`Verified Pages artifact: ${requiredFiles.join(", ")}`);
+await checkPrerenderArtifact(artifactDir);
+console.log(`Verified prerendered Pages artifact: ${requiredFiles.join(", ")}`);

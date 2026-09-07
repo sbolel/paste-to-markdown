@@ -26,13 +26,11 @@ export function CursorSparkles() {
   const [particles, setParticles] = useState<Particle[]>([]);
   const particleIdRef = useRef(0);
   const lastEmitTime = useRef(-Infinity);
-  const [enabled, setEnabled] = useState(
-    () => window.matchMedia(PARTICLE_MEDIA).matches,
-  );
+  const [enabled, setEnabled] = useState(false);
   const disabled = !enabled;
   const windowDimensionsRef = useRef({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 0,
+    height: 0,
   });
   const mousePositionRef = useRef({ x: 0, y: 0 });
 
@@ -60,6 +58,7 @@ export function CursorSparkles() {
       };
     };
 
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [disabled]);

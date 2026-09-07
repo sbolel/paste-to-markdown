@@ -1,4 +1,7 @@
 import { test, expect } from "./fixtures";
+import type { TestInfo } from "@playwright/test";
+
+const isMobileProject = (info: TestInfo) => info.project.use.isMobile === true;
 
 const shortcuts = [
   { label: "bold", keys: "ControlOrMeta+b", result: "**sample**" },
@@ -255,10 +258,7 @@ test("mobile layout stays inside the viewport through editing and dialogs", asyn
   app,
   page,
 }, info) => {
-  test.skip(
-    info.project.name !== "chromium-mobile",
-    "Dedicated narrow touch viewport check",
-  );
+  test.skip(!isMobileProject(info), "Dedicated narrow touch viewport check");
   const expectNoOverflow = async () => {
     expect(
       await page.evaluate(() => ({

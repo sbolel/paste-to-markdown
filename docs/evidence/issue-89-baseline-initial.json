@@ -1,0 +1,54 @@
+{
+  "browser": {
+    "name": "chromium",
+    "version": "151.0.7922.34"
+  },
+  "conditions": {
+    "cache": "fresh context plus no-store",
+    "cpu": "unthrottled",
+    "network": "unthrottled local loopback",
+    "compression": "identity",
+    "observationMs": 5000,
+    "externalRequests": "blocked"
+  },
+  "profiles": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1550,
+        "height": 964
+      },
+      "deviceScaleFactor": 1,
+      "runs": [
+        {
+          "lcp": {
+            "startTime": 160,
+            "element": "H1"
+          },
+          "cls": 0,
+          "encodedJavaScriptBytes": 671794,
+          "transferJavaScriptBytes": 672394
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 1,
+      "runs": [
+        {
+          "lcp": {
+            "startTime": 72,
+            "element": "P"
+          },
+          "cls": 0,
+          "encodedJavaScriptBytes": 671794,
+          "transferJavaScriptBytes": 672394
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -9,14 +9,35 @@ const contentSecurityPolicy =
 const siteBase = "/paste-to-markdown/";
 const workspaceRoot = new URL("../../", import.meta.url);
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, isSsrBuild }) => ({
   base: siteBase,
   publicDir: fileURLToPath(new URL("public", workspaceRoot)),
   plugins: [
     react(),
-    tailwindcss(),
-    ...(command === "build"
+    ...(!isSsrBuild ? [tailwindcss()] : []),
+    ...(command === "build" && !isSsrBuild
       ? [
+          {
+            name: "keep-server-rendering-out-of-browser",
+            generateBundle(_options, bundle) {
+              for (const output of Object.values(bundle)) {
+                if (output.type !== "chunk") continue;
+                if (
+                  output.moduleIds.some(
+                    (id) =>
+                      id.endsWith("/src/entry-server.tsx") ||
+                      /react-dom\/(?:cjs\/)?(?:react-dom-)?(?:server|static)[./-]/.test(
+                        id,
+                      ),
+                  )
+                ) {
+                  this.error(
+                    "Server rendering modules entered the browser bundle",
+                  );
+                }
+              }
+            },
+          } satisfies Plugin,
           {
             name: "inject-content-security-policy",
             transformIndexHtml(html: string) {
@@ -50,11 +71,8 @@ export default defineConfig(({ command }) => ({
     // Keep even small font subsets on-origin under the production CSP.
     assetsInlineLimit: 0,
     outDir: "dist",
-    rollupOptions: {
-      input: {
-        main: "index.html",
-        about: "about/index.html",
-      },
-    },
+    rolldownOptions: isSsrBuild
+      ? {}
+      : { input: { main: "index.html", about: "about/index.html" } },
   },
 }));
