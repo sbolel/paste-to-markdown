@@ -1,26 +1,14 @@
-import { createServer } from "node:http";
-import { readFile, stat, writeFile, mkdir } from "node:fs/promises";
-import { dirname, extname, join, normalize, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
+import { writeFile, mkdir } from "node:fs/promises";
+import { dirname } from "node:path";
 import { chromium } from "@playwright/test";
+import { startServer } from "./performance-server.mjs";
 
 const baselineSha = "19941f909aecb80b3608637a01dd8832f72bcdfc";
 const profiles = [
   { name: "desktop", viewport: { width: 1550, height: 964 }, isMobile: false },
   { name: "mobile", viewport: { width: 390, height: 844 }, isMobile: true },
 ];
-const mimeTypes = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".woff2": "font/woff2",
-  ".png": "image/png",
-  ".xml": "application/xml; charset=utf-8",
-  ".txt": "text/plain; charset=utf-8",
-};
-
 function readOption(name, fallback) {
   const argument = `--${name}`;
   const position = process.argv.indexOf(argument);
@@ -101,44 +89,6 @@ function assess(baseline, candidate) {
     encodedJavaScriptIncreaseBytes: jsIncrease,
     findings,
   };
-}
-
-function artifactServer(directory) {
-  const root = resolve(directory);
-  return createServer(async (request, response) => {
-    const pathname = new URL(request.url, "http://localhost").pathname;
-    if (!pathname.startsWith("/paste-to-markdown/"))
-      return response.writeHead(404).end();
-    const suffix = pathname.slice("/paste-to-markdown/".length) || "index.html";
-    const candidate = normalize(
-      join(root, suffix.endsWith("/") ? `${suffix}index.html` : suffix),
-    );
-    if (!candidate.startsWith(`${root}/`) && candidate !== root)
-      return response.writeHead(400).end();
-    try {
-      const info = await stat(candidate);
-      const file = info.isDirectory()
-        ? join(candidate, "index.html")
-        : candidate;
-      response.writeHead(200, {
-        "cache-control": "no-store",
-        "content-type": mimeTypes[extname(file)] ?? "application/octet-stream",
-        "timing-allow-origin": "http://127.0.0.1",
-      });
-      response.end(await readFile(file));
-    } catch {
-      response.writeHead(404).end();
-    }
-  });
-}
-
-async function startServer(directory) {
-  const server = artifactServer(directory);
-  await new Promise((resolveServer) =>
-    server.listen(0, "127.0.0.1", resolveServer),
-  );
-  const address = server.address();
-  return { server, origin: `http://127.0.0.1:${address.port}` };
 }
 
 async function measure(browser, origin, profile, run) {
