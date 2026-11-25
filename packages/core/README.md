@@ -2,6 +2,71 @@
 
 Shared HTML-to-Markdown conversion logic used by the web app.
 
+## Conversion behavior
+
+`convertHtmlToMarkdown(html, options?)` converts semantic HTML in DOM order.
+`convertClipboardData(data, options?)` prefers nonblank `text/html`, then returns
+`text/plain` unchanged, including Markdown-looking characters. The React app uses this interface for both keyboard paste and its clipboard-read
+button, with an explicit preset from the flavor selector.
+
+The optional `flavor` is `github`, `commonmark`, `strict`, or `custom`; an explicit
+flavor takes precedence over the legacy `gfm` option. Omitting `flavor` preserves
+the default GFM behavior, including `{ gfm: false }` support. The readonly
+`markdownFlavorOptions` export shares formatting markers with the editor.
+
+| Flavor     | Headings | Code blocks | Bullets | Emphasis / strong |
+| ---------- | -------- | ----------- | ------- | ----------------- |
+| GitHub     | ATX      | Fenced      | `-`     | `_` / `**`        |
+| CommonMark | ATX      | Fenced      | `-`     | `*` / `**`        |
+| Strict     | ATX      | Indented    | `*`     | `*` / `**`        |
+| Custom     | Setext   | Fenced      | `+`     | `_` / `__`        |
+
+Default/GitHub output supports strikethrough, task checkboxes, and simple
+rectangular tables with a genuine header row. Other presets and `{ gfm: false }`
+retain checkbox states as readable `(checked)` / `(unchecked)` text and use the
+table fallback below. The editor's strikethrough shortcut remains available in
+every flavor.
+
+- Linked cards retain readable labels, inline emphasis/images, and separate block
+  boundaries. Explicit line breaks within links use `<br>`.
+- Nested lists retain source starting numbers and continuation-block ownership.
+  Label/span wrappers do not change which list item owns a checkbox. A checkbox
+  followed only by nested blocks uses readable state instead of inventing a GFM
+  task label; table-cell checkboxes stay with their cell.
+- Table cells containing literal pipes retain their values. Complex spans,
+  headerless tables, block-containing cells and representations that cannot be
+  safely expressed as GFM pipe tables use nested Markdown lists of row/column
+  coordinates. Coordinates refer only to the supplied fragment; no missing
+  values or headers are invented. Spans and cell-owned blocks remain explicit.
+  Coordinate lists use the selected preset's bullet marker.
+- Fenced and highlighted code retain source characters, indentation, authored
+  line boundaries, and safe delimiters. Inline-code boundary/all-space content
+  is preserved; CommonMark normalizes inline newlines to spaces. Only explicitly
+  hidden `gutter` elements adjacent to or inside code are treated as decorative.
+  Strict uses indented blocks; when indentation cannot preserve whitespace-only
+  code or boundary blank lines, escaped `<pre><code>` HTML retains the source.
+- Absolute HTTP(S) links/images are retained; links also support `mailto:` and
+  `tel:`. Relative, protocol-relative, data, file and other unsupported references
+  become useful label/alt text plus an unresolved marker. Blob references receive
+  a temporary marker. A linked image's usable link survives independently.
+  There is no base-URL option: callers with a trusted source base must resolve
+  relative references before conversion. The converter never guesses the source
+  from its own location or an embedded `<base>` tag.
+- Explicit `<br>` and semantic `<pre>` preserve authored breaks. Nonbreaking
+  spaces remain nonbreaking. Inline CSS `display:block`-like spans retain block
+  boundaries, but computed styles, CSS ordering, generated content and visual
+  heading/list inference are unsupported. CSS `white-space:pre-wrap` alone uses
+  ordinary prose whitespace normalization; use `<br>`/`<pre>` for portable breaks.
+  Container width does not define hard breaks.
+
+Browser selection fragments containing orphan cells or rows receive only the
+table ancestors needed for parsing. Native platform clipboard headers and RTF are
+outside the `text/html` contract. Image-only paste is unsupported and leaves
+existing work intact with explanatory feedback.
+
+The acceptance matrix and exact synthetic reproduction evidence are in
+[`docs/formatting-delivery.md`](../../docs/formatting-delivery.md).
+
 ## Runtime compatibility
 
 The package exposes ESM JavaScript and TypeScript declarations. Its TypeScript

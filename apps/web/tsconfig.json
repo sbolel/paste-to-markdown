@@ -7,11 +7,17 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@paste-to-markdown/core": ["../../packages/core/src/index.ts"]
+      "@paste-to-markdown/core": ["../../packages/core/src/index.ts"],
+      "@/*": ["./src/*"]
     },
     "noEmit": true,
-    "declaration": false
+    "declaration": false,
+    "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "vite.config.ts"],
+  "include": [
+    "src/**/*",
+    "vite.config.ts",
+    "../../packages/core/src/**/*.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

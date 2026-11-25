@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import globals from "globals";
 
 const workspaceFiles = [
   "apps/web/**/*.{ts,tsx}",
@@ -10,6 +11,11 @@ const workspaceFiles = [
 export default [
   {
     ignores: ["**/dist/**", "**/node_modules/**"],
+  },
+  {
+    files: ["apps/web/scripts/**/*.mjs", "scripts/check-pages-artifact.mjs"],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    rules: js.configs.recommended.rules,
   },
   {
     files: workspaceFiles,

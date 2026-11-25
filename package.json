@@ -17,15 +17,17 @@
   },
   "scripts": {
     "dev": "pnpm --filter @paste-to-markdown/web dev",
-    "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build",
-    "test": "pnpm --filter @paste-to-markdown/core test",
+    "build": "pnpm --filter @paste-to-markdown/core build && pnpm --filter @paste-to-markdown/web build && pnpm artifact:check",
+    "test": "pnpm --filter @paste-to-markdown/core test && pnpm --filter @paste-to-markdown/web test",
     "lint": "eslint .",
     "typecheck": "pnpm --filter @paste-to-markdown/core typecheck && pnpm --filter @paste-to-markdown/web typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,css,html,md,yml}\"",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e",
     "audit:prod": "pnpm audit --prod",
     "semantic-release": "semantic-release",
-    "release:check": "node scripts/check-release-config.mjs"
+    "release:check": "node scripts/check-release-config.mjs",
+    "artifact:check": "node scripts/check-pages-artifact.mjs",
+    "test:e2e": "pnpm --filter @paste-to-markdown/web test:e2e"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -39,7 +41,7 @@
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "conventional-changelog-conventionalcommits": "^9.3.1",
-    "eslint": "^10.1.0",
+    "eslint": "^10.9.1",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "semantic-release": "^25.0.9",
